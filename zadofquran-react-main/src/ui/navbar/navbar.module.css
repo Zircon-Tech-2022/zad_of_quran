@@ -1,0 +1,225 @@
+.nav {
+    position: fixed;
+    background: transparent;
+    width: 100%;
+    color: var(--color-grey-0);
+    padding: 1rem 0;
+    transition: 0.3s all ease;
+    z-index: 99;
+    right: 0;
+}
+.navContent {
+    display: flex;
+    align-items: center;
+    gap: 3rem;
+}
+.nav.active {
+    background: var(--color-grey-0);
+    padding: 1.5rem 0;
+    position: fixed;
+    color: var(--color-grey-700);
+    box-shadow: 0 3px 15px rgba(0, 0, 0, 0.1);
+}
+
+.items {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+.list {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    font-weight: 600;
+    /* flex-wrap: nowrap; */
+}
+.list:lang(en) {
+    font-weight: 400;
+}
+.listItem {
+    min-width: fit-content;
+    position: relative;
+    padding: 0.5rem 0;
+}
+
+.listItem::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    background: var(--color-sec-500);
+    width: 0%;
+    height: 2px;
+    left: 50%;
+    transform: translate(-50%, 0);
+    transition: 0.3s all ease;
+}
+
+.activeListItem,
+.listItem:hover {
+    color: var(--color-sec-500);
+}
+.activeListItem::after,
+.listItem:hover::after {
+    width: 50%;
+}
+.navAction {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+}
+.mainAction {
+    font-weight: 600;
+    padding: 1rem 2rem;
+    border-radius: 1.2rem;
+    border: 2px solid transparent;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+.solid {
+    color: var(--color-brand-600);
+    background: var(--color-grey-0);
+    border-color: var(--color-grey-0);
+}
+
+.nonSolid {
+    color: var(--color-grey-0);
+    border-color: var(--color-grey-0);
+}
+.nav.active .solid {
+    background: var(--color-brand-600);
+    color: var(--color-grey-0);
+}
+.nav.active .nonSolid {
+    background: transparent;
+    border-color: var(--color-brand-600);
+    color: var(--color-brand-600);
+}
+.solid:hover,
+.nav.active .solid:hover,
+.nonSolid:hover,
+.nav.active .nonSolid:hover {
+    color: var(--color-grey-0) !important;
+    background: var(--color-sec-600) !important;
+    border-color: var(--color-sec-600) !important;
+}
+
+.icon {
+    font-size: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.toggleBarBtn {
+    display: none;
+    position: relative;
+    width: 30px;
+    background: none;
+    border: none;
+    height: 30px;
+}
+
+.toggleBarBtn span {
+    width: 30px;
+    height: 4px;
+    background-color: var(--color-grey-0);
+    border-radius: 10rem;
+    margin: 0.25rem 0;
+    left: 0;
+    transition: 0.3s all ease;
+    position: absolute;
+}
+.nav.active .toggleBarBtn span {
+    background: var(--color-brand-600);
+}
+
+.toggleBarBtn .topLine {
+    top: 0;
+}
+
+.toggleBarBtn .middleLine {
+    top: 8px;
+}
+
+.toggleBarBtn .bottomLine {
+    top: 16px;
+}
+
+.activeMobile .topLine {
+    width: 30px;
+    transform: rotate(-45deg);
+
+    transform-origin: right;
+}
+
+.activeMobile .middleLine {
+    opacity: 0;
+}
+
+.activeMobile .bottomLine {
+    width: 30px;
+    transform: rotate(45deg);
+    transform-origin: right;
+    top: 21.5px;
+}
+.langParent {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.langImg {
+    height: 100%;
+    max-width: 5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.langImg img {
+    height: 100%;
+    width: auto;
+}
+@media (max-width: 1350px) {
+    .navContent {
+        justify-content: space-between;
+    }
+    .toggleBarBtn {
+        display: block;
+    }
+    .items {
+        width: 100%;
+        position: fixed;
+        flex-direction: column-reverse;
+        gap: 3rem;
+        background: var(--color-grey-0);
+        z-index: 9;
+        max-width: 40rem;
+        top: -100%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 90%;
+        padding: 3rem;
+        color: var(--color-grey-700);
+        transition: 0.8s all ease;
+        border-radius: 2rem;
+        border-bottom: 10px solid var(--color-brand-600);
+        box-shadow: 0 0px 14px rgba(0, 0, 0, 0.2);
+    }
+    .navAction {
+        flex-direction: column;
+    }
+    .list {
+        flex-direction: column;
+    }
+    .activeMobile .items {
+        top: 50%;
+    }
+    .activeMobile .solid,
+    .nonSolid {
+        background: transparent;
+        border-color: var(--color-brand-600);
+        color: var(--color-brand-600);
+    }
+}

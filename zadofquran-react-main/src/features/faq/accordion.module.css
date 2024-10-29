@@ -1,0 +1,33 @@
+.faq {
+    transform: translateY(-6rem);
+    padding-bottom: 8rem;
+}
+
+.question {
+    font-size: 2.4rem;
+}
+.answer {
+    font-size: 1.8rem;
+    color: var(--color-grey-700);
+}
+.icon {
+    font-size: 2.8rem;
+}
+.white {
+    display: flex;
+    align-items: center;
+    gap: 4rem;
+    background: var(--color-grey-0);
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16);
+    padding: 3rem 3rem;
+    border-radius: 1.2rem;
+    position: relative;
+}
+@media (max-width: 600px) {
+    .question {
+        font-size: 2rem;
+    }
+    .answer {
+        font-size: 1.6rem;
+    }
+}

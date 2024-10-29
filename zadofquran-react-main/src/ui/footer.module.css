@@ -1,0 +1,76 @@
+.footer {
+    display: flex;
+    flex-direction: column;
+    background: linear-gradient(
+            to right,
+            rgb(49, 82, 89, 0.9),
+            rgb(49, 82, 89, 0.9)
+        ),
+        url(../../public/imgs/quran.webp) no-repeat;
+    background-size: cover;
+    overflow: hidden;
+}
+.contanct {
+    padding: 6rem 0 0;
+}
+
+.content {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    /* position: relative; */
+}
+.content h2 {
+    font-size: 4.6rem;
+    color: var(--color-grey-0);
+}
+.zadImg img {
+    position: absolute;
+    width: auto;
+    height: 100%;
+    top: 0;
+    right: 0;
+    opacity: 0.05;
+}
+
+.copyRight {
+    background: var(--color-brand-800);
+}
+.copyRightText {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    padding: 2rem;
+    color: var(--color-grey-0);
+    font-size: 2rem;
+    text-align: center;
+}
+.FooterLinks {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+}
+@media (max-width: 1200px) {
+    .content h2 {
+        font-size: 3.6rem;
+        color: var(--color-grey-0);
+    }
+}
+@media (max-width: 900px) {
+    .line {
+        display: none;
+    }
+    .copyRightText {
+        flex-direction: column;
+    }
+}
+.zircon {
+    text-decoration: underline;
+    color: var(--color-sec-500);
+}
+.zircon:hover {
+    color: var(--color-sec-700);
+}

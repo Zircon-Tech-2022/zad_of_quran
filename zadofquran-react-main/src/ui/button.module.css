@@ -1,0 +1,41 @@
+.button {
+    padding: 1.2rem 1.5rem;
+    color: var(--color-brand-600);
+    border: 1px solid var(--color-brand-600);
+    background: var(--color-grey-0);
+    border-radius: 1rem;
+    font-size: 1.7rem;
+    font-weight: 700;
+}
+.button:hover,
+.button.active {
+    color: var(--color-grey-0);
+    background: var(--color-brand-600);
+}
+.third {
+    background: var(--color-grey-400);
+    color: var(--color-grey-0);
+    padding: 1.2rem 2.5rem;
+}
+.third:hover {
+    background: var(--color-grey-600);
+    color: var(--color-grey-0);
+}
+.second {
+    background: var(--color-brand-600);
+    color: var(--color-grey-0);
+    padding: 1.2rem 2.5rem;
+}
+.second:hover {
+    background: var(--color-sec-600);
+    color: var(--color-grey-0);
+}
+.buttonFill {
+    background: var(--color-brand-600);
+    color: var(--color-grey-0);
+    font-size: 2rem;
+}
+.buttonFill:hover {
+    background: var(--color-sec-600);
+    border-color: var(--color-sec-600);
+}

@@ -1,0 +1,42 @@
+.testimonial {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    padding: 3rem 2rem;
+    background: var(--color-grey-0);
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16);
+    border-radius: 2rem;
+    /* width: 100%; */
+    margin: 3rem 1rem 1rem;
+    position: relative;
+    z-index: 3;
+    height: calc(100% - 4rem);
+    width: 100%;
+    /* overflow: auto; */
+}
+.testimonials {
+    margin-top: 5rem;
+    display: flex;
+}
+
+.content h3 {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: var(--color-brand-600);
+    margin-bottom: 2rem;
+}
+.TestiIcon {
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform: translate(50%, -50%);
+    width: 5rem;
+}
+.highlight {
+    position: absolute;
+    right: 0;
+    width: auto;
+    height: 100%;
+    top: 0;
+    z-index: -1;
+}

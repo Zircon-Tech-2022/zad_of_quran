@@ -1,0 +1,11 @@
+.header {
+    padding: 20rem 0;
+    background: linear-gradient(
+            to right,
+            rgb(49, 82, 89, 0.9),
+            rgb(49, 82, 89, 0.9)
+        ),
+        url(../../public/imgs/home/header.webp) no-repeat;
+    background-size: cover;
+    color: var(--color-grey-0);
+}

@@ -1,0 +1,6 @@
+.main {
+    background: url(../../public/imgs/pattern2.webp) no-repeat;
+    background-size: cover;
+    background-position: center;
+    min-height: 60vh;
+}
