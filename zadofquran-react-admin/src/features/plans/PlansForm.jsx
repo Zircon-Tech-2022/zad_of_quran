@@ -43,7 +43,6 @@ const PlansForm = (plansToEdit = {}) => {
     const { close } = useContext(ModalContext);
     function onSubmit(data) {
         if (isEditSession) {
-            console.log(data.type);
             editPlans(
                 {
                     newPlansData: {

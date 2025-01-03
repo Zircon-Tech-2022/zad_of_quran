@@ -42,7 +42,7 @@ const TeacherForm = (teacherToEdit = {}) => {
     const { errors, isSubmitted } = formState;
 
     const { close } = useContext(ModalContext);
-    console.log(teacherData);
+
     function onSubmit(data) {
         const image = typeof data.image === "string" ? null : data.image[0];
 
