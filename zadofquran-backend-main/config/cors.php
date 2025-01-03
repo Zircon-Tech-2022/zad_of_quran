@@ -20,14 +20,15 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => [
-        'https://admin.zadofquran.com',
-        'http://admin.zadofquran.com',
-        'https://www.zadofquran.com',
-        'http://www.zadofquran.com',
-        'https://zadofquran.com',
-        'http://zadofquran.com',
-    ],
+    'allowed_origins' =>  env('APP_ENV') === 'development' ? ['*'] :
+        [
+            'https://admin.zadofquran.com',
+            'http://admin.zadofquran.com',
+            'https://www.zadofquran.com',
+            'http://www.zadofquran.com',
+            'https://zadofquran.com',
+            'http://zadofquran.com',
+        ],
 
     'allowed_origins_patterns' => [],
 
