@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\Subscriber\Subscriber;
+namespace App\Http\Requests\Subscriber;
 
 use App\Rules\NumOfWords;
 use Illuminate\Foundation\Http\FormRequest;
