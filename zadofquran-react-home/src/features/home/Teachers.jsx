@@ -1,9 +1,6 @@
 import { Container } from "@mui/material";
 
 import React, { useEffect, useState } from "react";
-import SwiperCore, { Autoplay, Navigation } from "swiper";
-import { Swiper, SwiperSlide } from "swiper/react";
-import "swiper/swiper-bundle.min.css";
 import styles from "./teachers.module.css";
 import { BsArrowLeft, BsArrowRight } from "react-icons/bs";
 import { FaUserTie } from "react-icons/fa6";
@@ -13,7 +10,7 @@ import { API_URL } from "../../Constants";
 import { t } from "i18next";
 import Slider from "react-slick";
 import { useLangContext } from "../../context/LangContext";
-SwiperCore.use([Autoplay, Navigation]);
+
 const breakpoints = {
     0: {
         slidesPerView: 1,
@@ -97,7 +94,7 @@ const Teachers = () => {
 
                 setData(data.data);
                 setLoading(false);
-            } catch (err) {}
+            } catch (err) { }
         }
         callFun();
     }, [language]);
@@ -125,85 +122,6 @@ const Teachers = () => {
 
                     {loading && <Spinner />}
                     {(!loading && data.length && (
-                        // <Swiper
-                        //     spaceBetween={30}
-                        //     grabCursor
-                        //     breakpoints={breakpoints}
-                        //     autoplay={{
-                        //         delay: 2500,
-                        //         disableOnInteraction: true,
-                        //     }}
-                        //     speed={400}
-                        //     navigation={{
-                        //         prevEl: ".swiper-button-prev",
-                        //         nextEl: ".swiper-button-next",
-                        //     }}
-                        //     data-aos="fade-up"
-                        //     data-aos-duration="1000"
-                        //     data-aos-delay="100"
-                        // >
-                        //     {data.map((item, i) => (
-                        //         <SwiperSlide key={i}>
-                        //             <div className={styles.item}>
-                        //                 <div className={styles.cover}>
-                        //                     <div className={styles.teacherImg}>
-                        //                         <img
-                        //                             src={item.image}
-                        //                             alt="teacher"
-                        //                             width={300}
-                        //                             height={400}
-                        //                         />
-                        //                     </div>
-                        //                     <div className={styles.info}>
-                        //                         <span
-                        //                             className={styles.infoIcon}
-                        //                         >
-                        //                             <FaUserTie />
-                        //                         </span>
-                        //                         <h4
-                        //                             className={styles.infoTitle}
-                        //                         >
-                        //                             {item.name}
-                        //                         </h4>
-                        //                     </div>
-                        //                 </div>
-                        //                 <div className={styles.realContent}>
-                        //                     <h3
-                        //                         className={`${styles.hoverName} mainHeading`}
-                        //                     >
-                        //                         {item.name}
-                        //                     </h3>
-                        //                     <div
-                        //                         className={styles.content}
-                        //                         dangerouslySetInnerHTML={{
-                        //                             __html: item.qualifications,
-                        //                         }}
-                        //                     ></div>
-                        //                 </div>
-                        //             </div>
-                        //         </SwiperSlide>
-                        //     ))}
-                        //     <button
-                        //         className="swiper-button-prev swiperControl"
-                        //         name="teachers_prev"
-                        //         id="teachers_prev"
-                        //         title="teachers_prev"
-                        //     >
-                        //         <span>
-                        //             <BsArrowRight />
-                        //         </span>
-                        //     </button>
-                        //     <button
-                        //         className="swiper-button-next swiperControl"
-                        //         name="teachers_next"
-                        //         id="teachers_next"
-                        //         title="teachers_next"
-                        //     >
-                        //         <span>
-                        //             <BsArrowLeft />
-                        //         </span>
-                        //     </button>
-                        // </Swiper>
                         <Slider {...settings}>
                             {data.map((item, i) => (
                                 <div className="slideitem">

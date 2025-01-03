@@ -2,42 +2,19 @@ import React from "react";
 import styles from "./payments.module.css";
 
 import { Container } from "@mui/material";
-import SwiperCore, { Autoplay, Navigation } from "swiper";
-import { Swiper, SwiperSlide } from "swiper/react";
-import "swiper/swiper-bundle.min.css";
 import { BsArrowLeft, BsArrowRight } from "react-icons/bs";
-SwiperCore.use([Autoplay, Navigation]);
+import Slider from "react-slick";
 
 const breakpoints = {
-    0: {
-        slidesPerView: 1.5,
-        spaceBetween: 20,
-    },
-    400: {
-        slidesPerView: 2,
-        spaceBetween: 20,
-    },
-    500: {
-        slidesPerView: 3,
-        spaceBetween: 30,
-    },
-    800: {
-        slidesPerView: 4,
-        spaceBetween: 30,
-    },
-    1200: {
-        slidesPerView: 4,
-        spaceBetween: 40,
-    },
-    1360: {
-        slidesPerView: 5,
-        spaceBetween: 30,
-    },
-    1450: {
-        slidesPerView: 6,
-        spaceBetween: 30,
-    },
+    0: { slidesToShow: 1.5, slidesToScroll: 1 },
+    400: { slidesToShow: 2, slidesToScroll: 1 },
+    500: { slidesToShow: 3, slidesToScroll: 1 },
+    800: { slidesToShow: 4, slidesToScroll: 1 },
+    1200: { slidesToShow: 4, slidesToScroll: 1 },
+    1360: { slidesToShow: 5, slidesToScroll: 1 },
+    1450: { slidesToShow: 6, slidesToScroll: 1 },
 };
+
 const payments = [
     "/imgs/home/payments/1.webp",
     "/imgs/home/payments/2.webp",
@@ -49,6 +26,34 @@ const payments = [
     "/imgs/home/payments/8.webp",
     "/imgs/home/payments/9.webp",
 ];
+
+var settings = {
+    infinite: true,
+    autoplay: true,
+    autoplaySpeed: 2500,
+    speed: 400,
+    arrows: true,
+    prevArrow: (
+        <button className="slick-prev slick-arrow">
+            <BsArrowRight />
+        </button>
+    ),
+    nextArrow: (
+        <button className="slick-next slick-arrow">
+            <BsArrowLeft />
+        </button>
+    ),
+    responsive: [
+        { breakpoint: 0, settings: breakpoints[0] },
+        { breakpoint: 400, settings: breakpoints[400] },
+        { breakpoint: 500, settings: breakpoints[500] },
+        { breakpoint: 800, settings: breakpoints[800] },
+        { breakpoint: 1200, settings: breakpoints[1200] },
+        { breakpoint: 1360, settings: breakpoints[1360] },
+        { breakpoint: 1450, settings: breakpoints[1450] },
+    ],
+};
+
 const Payments = () => {
     return (
         <section className={styles.payments}>
@@ -60,58 +65,13 @@ const Payments = () => {
                 alt="pattern"
             />
             <Container maxWidth="xl">
-                <Swiper
-                    spaceBetween={30}
-                    grabCursor
-                    breakpoints={breakpoints}
-                    autoplay={{
-                        delay: 2500,
-                        disableOnInteraction: true,
-                    }}
-                    speed={400}
-                    navigation={{
-                        prevEl: ".swiper-button-prev",
-                        nextEl: ".swiper-button-next",
-                    }}
-                    data-aos="fade-up"
-                    data-aos-duration="1000"
-                    data-aos-delay="100"
-                >
-                    {payments.map((item, index) => {
-                        return (
-                            <SwiperSlide key={index}>
-                                <div className={styles.payment}>
-                                    <img
-                                        src={item}
-                                        alt="payment"
-                                        width={200}
-                                        height={100}
-                                    />
-                                </div>
-                            </SwiperSlide>
-                        );
-                    })}
-                    <button
-                        className="swiper-button-prev swiperControl"
-                        name="payment_prev"
-                        id="payment_prev"
-                        title="payment_prev"
-                    >
-                        <span>
-                            <BsArrowRight />
-                        </span>
-                    </button>
-                    <button
-                        className="swiper-button-next swiperControl"
-                        name="payment_next"
-                        id="payment_next"
-                        title="payment_next"
-                    >
-                        <span>
-                            <BsArrowLeft />
-                        </span>
-                    </button>
-                </Swiper>
+                <Slider {...settings}>
+                    {payments.map((item, index) => (
+                        <div key={index} className={styles.payment}>
+                            <img src={item} alt="payment" width={200} height={100} />
+                        </div>
+                    ))}
+                </Slider>
             </Container>
         </section>
     );

@@ -1,10 +1,6 @@
 import React, { useEffect, useLayoutEffect, useState } from "react";
 import styles from "./testimonials.module.css";
 import { Container } from "@mui/material";
-// import SwiperCore, { Autoplay, Navigation } from "swiper";
-// import { Swiper, SwiperSlide } from "swiper/react";
-// import "swiper/swiper-bundle.min.css";
-
 import { BsArrowLeft, BsArrowRight } from "react-icons/bs";
 import Empty from "../../ui/Empty";
 import { useSearchParams } from "react-router-dom";
@@ -15,8 +11,6 @@ import { useLangContext } from "../../context/LangContext";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-
-// SwiperCore.use([Autoplay, Navigation]);
 
 async function getTestimonials(language) {
     const res = await fetch(`${API_URL}testimonials`, {
@@ -103,7 +97,7 @@ const Testimonials = () => {
 
                 setData(data.data);
                 setLoading(false);
-            } catch (err) {}
+            } catch (err) { }
         }
         callFun();
     }, [language]);
@@ -129,78 +123,10 @@ const Testimonials = () => {
                     {!data.length && !loading && (
                         <Empty text={t("no-testimonials")} />
                     )}
-                    {/* {
-                        <Swiper
-                            spaceBetween={30}
-                            grabCursor
-                            breakpoints={breakpoints}
-                            autoplay={{
-                                delay: 2500,
-                                disableOnInteraction: true,
-                            }}
-                            speed={400}
-                            navigation={{
-                                prevEl: ".swiper-button-prev",
-                                nextEl: ".swiper-button-next",
-                            }}
-                            data-aos="fade-up"
-                            data-aos-duration="1000"
-                            data-aos-delay="100"
-                        >
-                            {data.map((item, i) => (
-                                <SwiperSlide
-                                    key={i}
-                                    style={{ maxWidth: "400px" }}
-                                >
-                                    <div className={styles.testimonial}>
-                                        <span className={styles.TestiIcon}>
-                                            <img
-                                                src="/imgs/home/quote.svg"
-                                                width={50}
-                                                height={50}
-                                                alt="testimonial icon"
-                                            />
-                                        </span>
-                                        <img
-                                            className={styles.highlight}
-                                            src="/imgs/zad-solid.svg"
-                                            width={50}
-                                            height={50}
-                                            alt="testimonial pic"
-                                        />
-                                        <div className={styles.content}>
-                                            <h3>{item.name}:</h3>
-                                            <p>{item.content}</p>
-                                        </div>
-                                    </div>
-                                </SwiperSlide>
-                            ))}
-                            <button
-                                className="swiper-button-prev swiperControl"
-                                name="testimonials_prev"
-                                id="testimonials_prev"
-                                title="testimonials_prev"
-                            >
-                                <span>
-                                    <BsArrowRight />
-                                </span>
-                            </button>
-                            <button
-                                className="swiper-button-next swiperControl"
-                                name="testimonials_next"
-                                title="testimonials_next"
-                                id="testimonials_next"
-                            >
-                                <span>
-                                    <BsArrowLeft />
-                                </span>
-                            </button>
-                        </Swiper>
-                    } */}
                     {(!loading && data.length && (
                         <Slider {...settings}>
                             {data.map((item, i) => (
-                                <div className="slideitem">
+                                <div key={i} className="slideitem">
                                     <div className={styles.testimonial}>
                                         <span className={styles.TestiIcon}>
                                             <img
