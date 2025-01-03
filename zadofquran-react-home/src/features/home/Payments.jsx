@@ -32,6 +32,8 @@ var settings = {
     autoplay: true,
     autoplaySpeed: 2500,
     speed: 400,
+    slidesToShow: 6, 
+    slidesToScroll: 1,
     arrows: true,
     prevArrow: (
         <button className="slick-prev slick-arrow">
