@@ -11,10 +11,14 @@ import Insta from "./Insta";
 import Snap from "./Snap";
 import { t } from "i18next";
 import TikTok from "./TikTok";
+import { useLocation } from "react-router-dom";
 const Footer = () => {
+    const location = useLocation();
+    const containsTeacher = location.pathname.includes('teacher');
+
     return (
         <section id="footer" className={styles.footer}>
-            <div className={styles.contanct}>
+            {!containsTeacher && (<div className={styles.contanct}>
                 <Container maxWidth="xl">
                     <Grid container spacing="3rem" justifyContent="center">
                         <Grid
@@ -56,7 +60,7 @@ const Footer = () => {
                         </Grid>
                     </Grid>
                 </Container>
-            </div>
+            </div>)}
             <img
                 src="/imgs/footer.svg"
                 alt="footer"
