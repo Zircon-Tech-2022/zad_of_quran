@@ -42,4 +42,29 @@ class Staff extends Model
             ->orWhere('email', 'like', "%$q%")
             ->orWhere('qualifications', 'like', "%$q%");
     }
+
+    public function details()
+    {
+        return $this->hasOne(StaffDetails::class);
+    }
+
+    public function getAgeAttribute()
+    {
+        return $this->details->age;
+    }
+
+    public function getGenderAttribute()
+    {
+        return $this->details->gender;
+    }
+
+    public function availabilities()
+    {
+        return $this->hasMany(StaffAvailability::class);
+    }
+
+    public function courses()
+    {
+        return $this->belongsToMany(Course::class, 'staff_courses');
+    }
 }

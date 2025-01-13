@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -26,13 +25,23 @@ Route::group(['prefix' => 'auth', 'namespace' => 'App\Http\Controllers', 'as' =>
     Route::get('/', 'AuthController@getUserInfo')->middleware('auth')->name('user');
 });
 
+Route::group(['prefix' => 'auth/staff', 'namespace' => 'App\Http\Controllers\Staff', 'as' => 'auth.staff.'], function () {
+    Route::post('register', 'AuthController@register')->middleware('guest')->name('register');
+    Route::post('login', 'AuthController@login')->middleware('guest')->name('login');
+    Route::post('logout', 'AuthController@logout')->middleware('auth')->name('logout');
+    Route::post('update', 'AuthController@updateUserInfo')->middleware('auth')->name('update');
+    Route::get('/', 'AuthController@getUserInfo')->middleware('auth')->name('user');
+});
+
 Route::post('admin/auth/login', [App\Http\Controllers\AdminAuthController::class, 'login'])->middleware('guest')->name('admin.auth.login');
 
 Route::get('admin/users/export', [App\Http\Controllers\UserController::class, 'export'])->name('admin.users.export')->middleware('auth');
 Route::apiResource('admin/users', App\Http\Controllers\UserController::class, ['as' => 'admin'])->middleware('auth');
 
+// ToDo: admin will update profile here
 Route::apiResource('admin/staff', App\Http\Controllers\StaffController::class, ['as' => 'admin'])->middleware('auth');
 Route::get('staff', [App\Http\Controllers\StaffController::class, 'staff']);
+Route::post('staff/match', [App\Http\Controllers\StaffController::class, 'match']);
 
 Route::apiResource('admin/FAQs', App\Http\Controllers\FAQController::class, ['as' => 'admin'])->middleware('auth');
 Route::get('FAQs', [App\Http\Controllers\FAQController::class, 'FAQs']);
