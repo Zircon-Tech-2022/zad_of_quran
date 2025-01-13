@@ -1,6 +1,6 @@
 import React from "react";
 import styles from "./navbar.module.css";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 
 import { Menu, MenuItem } from "@mui/material";
 import { BiLogOut } from "react-icons/bi";
@@ -12,6 +12,8 @@ import { useLangContext } from "../../context/LangContext";
 import { t } from "i18next";
 
 const NavActions = () => {
+    const location = useLocation();
+
     const { isLoading, isAuth, user } = useUser();
     const { logout, isLoading: isLogout } = useLogout();
     const [anchorEl, setAnchorEl] = React.useState(null);
@@ -21,6 +23,9 @@ const NavActions = () => {
 
     const [anchorEl2, setAnchorEl2] = React.useState(null);
     const open2 = Boolean(anchorEl2);
+
+    const containsTeacher = location.pathname.includes('teacher');
+
     const handleClick2 = (event) => {
         setAnchorEl2(event.currentTarget);
     };
@@ -35,7 +40,7 @@ const NavActions = () => {
     };
     return (
         <div className={`${styles.navAction} animated fade`}>
-            {!localStorage.getItem("token") && !isAuth && !isLoading ? (
+            {!localStorage.getItem("token") && !isAuth && !containsTeacher && !isLoading ? (
                 <>
                     <Link
                         to={`/${language}/login`}
@@ -60,7 +65,7 @@ const NavActions = () => {
                 ""
             )}
 
-            {!isLoading && isAuth && localStorage.getItem("token") && (
+            {!isLoading && !containsTeacher && isAuth && localStorage.getItem("token") && (
                 <>
                     <button
                         className={`${styles.nonSolid} ${styles.mainAction} animated fade`}

@@ -91,9 +91,14 @@
     "discount": "خصم",
     "copyRight": "جميع الحقوق محفوظة لأكاديمية زاد القرآن",
 
+    "teacher": "معلم",
+    "update-profile": "تحديث الحساب",
     "logout": "تسجيل خروج",
     "login": "تسجيل دخول",
     "signup": "تسجيل جديد",
+
+    "teacher-login-title": "سجل دخولك كمعلم",
+    "teacher-signup-title": "أنشئ حسابك كمعلم",
 
     "login-title": "سجل دخولك مع أكاديمية زاد القرآن",
     "signup-title": "أنشئ حسابك مع أكاديمية زاد القرآن",

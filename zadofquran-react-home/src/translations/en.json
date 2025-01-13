@@ -91,9 +91,14 @@
     "discount": "Discount",
     "copyRight": "All rights reserved to Zad Quran Academy",
 
+    "teacher": "Teacher",
+    "update-profile":"Update Profile",
     "logout": "Logout",
     "login": "Login",
     "signup": "Signup",
+
+    "teacher-login-title": "Login as a teacher",
+    "teacher-signup-title": "Create account as a teacher",
 
     "login-title": "Login with Zad Quran Academy",
     "signup-title": "signup with Zad Quran Academy",

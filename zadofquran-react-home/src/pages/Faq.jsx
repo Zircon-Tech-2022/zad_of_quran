@@ -10,7 +10,7 @@ import { t, use } from "i18next";
 import { useLangContext } from "../context/LangContext";
 async function getFaq(page, language) {
     const res = await fetch(
-        `https://api.zadofquran.com/FAQs?page=${page || 1}&limit=20`,
+        `${import.meta.env.VITE_API_URI}FAQs?page=${page || 1}&limit=20`,
         {
             headers: {
                 "accept-language": language,
@@ -39,7 +39,7 @@ const Faq = () => {
                 const data = await getFaq(page, language);
                 setFaq(data.data);
                 setLoading(false);
-            } catch (err) {}
+            } catch (err) { }
         }
         callFun();
     }, [page, language]);

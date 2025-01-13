@@ -51,5 +51,10 @@ export const NavLinks = [
     ar: "تواصل معنا",
     en: "Contact us",
   },
+  {
+    to: `teacher`,
+    ar: "معلم؟",
+    en: "Teacher?",
+  },
 ];
 export const langsArr = ["en", "ar"];

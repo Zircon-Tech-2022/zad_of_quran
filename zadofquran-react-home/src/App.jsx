@@ -1,16 +1,17 @@
+import { useEffect } from "react";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { ThemeProvider, createTheme } from "@mui/material";
-import { LangProvider, useLangContext } from "./context/LangContext";
-import "./globals.css";
+import { useLangContext } from "./context/LangContext";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-
 import { Toaster } from "react-hot-toast";
+import { Navigate, Route, Routes } from "react-router-dom";
+import { I18nextProvider } from "react-i18next";
+import AOS from "aos";
 
-import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
-
+import i18n from "./i18n";
 import AppLayout from "./ui/AppLayout";
 import NotFound from "./pages/NotFound";
 import AuthLayout from "./ui/AuthLayout";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import Home from "./pages/Home";
 import ProtectedRoutes from "./ui/ProtectedRoutes";
 import ProtectedAuth from "./ui/ProtectedAuth";
@@ -19,11 +20,13 @@ import Signup from "./pages/Signup";
 import Blogs from "./pages/Blogs";
 import Blog from "./pages/Blog";
 import Faq from "./pages/Faq";
-import { useEffect } from "react";
-import AOS from "aos";
+import TeacherLanding from "./pages/TeacherLanding";
+import TeacherLogin from "./pages/TeacherLogin";
+import TeacherSignup from "./pages/TeacherSignup";
+import TeacherUpdateProfile from "./pages/TeacherUpdateProfile";
+
 import "aos/dist/aos.css";
-import { I18nextProvider } from "react-i18next";
-import i18n from "./i18n";
+import "./globals.css";
 
 function App() {
     const theme = createTheme({
@@ -88,6 +91,14 @@ function App() {
                                     path="/:langParam/blogs/:blogSlug"
                                     element={<Blog />}
                                 />
+                                <Route
+                                    path="/:langParam/teacher"
+                                    element={<TeacherLanding />}
+                                />
+                                <Route
+                                    path="/:langParam/teacher/update-profile"
+                                    element={<TeacherUpdateProfile />}
+                                />
                             </Route>
                             <Route
                                 element={
@@ -103,6 +114,22 @@ function App() {
                                 <Route
                                     path="/:langParam/signup"
                                     element={<Signup />}
+                                />
+                            </Route>
+                            <Route
+                                element={
+                                    <ProtectedAuth>
+                                        <AuthLayout />
+                                    </ProtectedAuth>
+                                }
+                            >
+                                <Route
+                                    path="/:langParam/teacher/login"
+                                    element={<TeacherLogin />}
+                                />
+                                <Route
+                                    path="/:langParam/teacher/signup"
+                                    element={<TeacherSignup />}
                                 />
                             </Route>
                             <Route path="*" element={<NotFound />} />
