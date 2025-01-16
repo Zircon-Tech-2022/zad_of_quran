@@ -70,6 +70,6 @@ class Staff extends Model
 
     public function lessons()
     {
-        return $this->hasMany(Lesson::class);
+        return $this->hasMany(Lesson::class)->where('is_active', true);
     }
 }
