@@ -243,6 +243,90 @@ class PermissionSeeder extends Seeder
             ],
         ]);
 
+        // Lesson Permissions
+        array_push($permissions, ...[
+            [
+                'name' => 'lesson.list',
+                'display_name' => 'Lesson All List',
+                'description' => 'show List of Lesson',
+                'guard_name' => 'web',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+
+            [
+                'name' => 'lesson.create',
+                'display_name' => 'Create Lesson',
+                'description' => 'Create New Lesson',
+                'guard_name' => 'web',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+
+            [
+                'name' => 'lesson.update',
+                'display_name' => 'Update All Lesson',
+                'description' => 'Update All Lesson',
+                'guard_name' => 'web',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+
+            [
+                'name' => 'lesson.view',
+                'display_name' => 'View Lesson',
+                'description' => 'View Lesson Information',
+                'guard_name' => 'web',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+
+            [
+                'name' => 'lesson.softDelete',
+                'display_name' => 'Trash All Lesson',
+                'description' => 'move All Lesson to Trash',
+                'guard_name' => 'web',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+
+            [
+                'name' => 'lesson.trash.list',
+                'display_name' => 'Lesson All Trash List',
+                'description' => 'show List of Lesson in Trash',
+                'guard_name' => 'web',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+
+            [
+                'name' => 'lesson.restore',
+                'display_name' => 'Restore All Lesson',
+                'description' => 'Restore All Lesson from Trash',
+                'guard_name' => 'web',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+
+            [
+                'name' => 'lesson.delete',
+                'display_name' => 'Delete All Lesson',
+                'description' => 'Delete All Lesson from Trash',
+                'guard_name' => 'web',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+
+            [
+                'name' => 'lesson.forceDelete',
+                'display_name' => 'Force Delete All Lesson',
+                'description' => 'Force Delete All Lesson Permanently',
+                'guard_name' => 'web',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+        ]);
+
         // Role Permissions
         array_push($permissions, ...[
             [
@@ -802,6 +886,6 @@ class PermissionSeeder extends Seeder
             ]
         ]);
 
-        Permission::insert($permissions);
+        Permission::insertOrIgnore($permissions);
     }
 }

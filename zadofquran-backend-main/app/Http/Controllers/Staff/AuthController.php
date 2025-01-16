@@ -47,7 +47,7 @@ class AuthController extends Controller
             'gender' => $data['gender'],
         ]);
 
-        if ($data['availability'] && count($data['availability'])) {
+        if (array_key_exists('availability', $data) && count($data['availability'])) {
             $this->storeAvailabilities($this->reformAvailabilities($data['availability']), $staff);
         }
 
@@ -130,7 +130,26 @@ class AuthController extends Controller
 
         abort_if(!$staffDetails, 401);
 
-        $availabilities = $this->getAvailabilities($staffDetails->staff->availabilities);
+        $timezone = request('timezone_offset');
+        $availabilities = $this->getAvailabilities($staffDetails->staff->availabilities, $timezone);
+
+        $lessons = $staffDetails->staff->lessons;
+        $lessonsArray = [];
+        $lessonsAvailabilitiesArray = [];
+        foreach ($lessons as $lesson) {
+            $lessonAvailabilities = $this->getAvailabilities($lesson->availabilities);
+            foreach ($lessonAvailabilities as $lessonAvailability) {
+                $lessonsAvailabilitiesArray[] = $lessonAvailability;
+            }
+            $item = $lesson->toArray();
+            $item['availabilities'] = $lessonAvailabilities;
+            $lessonsArray[] = $item;
+        }
+
+        $netAvailabilities = $this->getTimesArrayInZones(
+            $this->getNetAvailabilities($availabilities, $lessonsAvailabilitiesArray),
+            $timezone
+        );
 
         return apiSuccessResponse(__('messages.user_found'), [
             'user' => [
@@ -139,8 +158,9 @@ class AuthController extends Controller
                     [
                         'age' => $staffDetails->age,
                         'gender' => $staffDetails->gender,
-                        'availabilities' => $availabilities,
+                        'availabilities' => $netAvailabilities,
                         'courses' => $staffDetails->staff->courses->toArray(),
+                        'lessons' => $lessonsArray,
                     ]
                 )
             ]
@@ -180,7 +200,7 @@ class AuthController extends Controller
             'age' => $data['age'] ?? $staffDetails->age,
         ]);
 
-        if ($data['availability'] && count($data['availability'])) {
+        if (array_key_exists('availability', $data) && count($data['availability'])) {
             $this->storeAvailabilities($this->reformAvailabilities($data['availability']), $staff, true);
         }
 

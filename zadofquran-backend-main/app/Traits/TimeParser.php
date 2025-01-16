@@ -82,4 +82,75 @@ trait TimeParser
     }
     return $updated;
   }
+
+  public function getTimesInZones($timezone_offset = null)
+  {
+    // Get the start and end times stored in GMT
+    $startTime = $this->getGmtTime($this->start_time, 'GMT');
+    $endTime = $this->getGmtTime($this->end_time, 'GMT');
+    $localDay = $this->day;
+
+    $timeZones = [
+      'gmt' => 'GMT',
+      'eg' => 'Africa/Cairo',          // Egypt time
+      'sa' => 'Asia/Riyadh',          // Saudi Arabia time
+      'local' => $timezone_offset ?? $this->timezone_offset ?? 'GMT+2', // Local timezone offset passed as argument or stored in DB
+    ];
+
+    $days = [];
+    $startTimes = [];
+    $endTimes = [];
+    foreach ($timeZones as $key => $zone) {
+      $zoneStartTime = $startTime->copy()->tz($zone);
+      $zoneEndTime = $endTime->copy()->tz($zone);
+
+      $days[$key] = $this->adjustDay($startTime, $zoneStartTime, $localDay);
+      $startTimes[$key] = $zoneStartTime->format('H:i');
+      $endTimes[$key] = $zoneEndTime->format('H:i');
+    }
+
+    return [
+      'days' => $days,
+      'start_times' => $startTimes,
+      'end_times' => $endTimes,
+    ];
+  }
+
+  public function getTimesArrayInZones($times, $timezone_offset = null)
+  {
+    $results = [];
+    foreach ($times as $time) {
+      $startTime = $this->getGmtTime($time['start_time'], 'GMT');
+      $endTime = $this->getGmtTime($time['end_time'], 'GMT');
+      $localDay = $time['day'];
+
+      $timeZones = [
+        'gmt' => 'GMT',
+        'eg' => 'Africa/Cairo',          // Egypt time
+        'sa' => 'Asia/Riyadh',          // Saudi Arabia time
+        'local' => $timezone_offset ?? 'GMT+2', // Local timezone offset passed as argument or stored in DB (if called from model) or default to GMT+2
+      ];
+
+      $days = [];
+      $startTimes = [];
+      $endTimes = [];
+
+      foreach ($timeZones as $key => $zone) {
+        $zoneStartTime = $startTime->copy()->tz($zone);
+        $zoneEndTime = $endTime->copy()->tz($zone);
+
+        $days[$key] = $this->adjustDay($startTime, $zoneStartTime, $localDay);
+        $startTimes[$key] = $zoneStartTime->format('H:i');
+        $endTimes[$key] = $zoneEndTime->format('H:i');
+      }
+
+      $results[] = [
+        'days' => $days,
+        'start_times' => $startTimes,
+        'end_times' => $endTimes,
+      ];
+    }
+
+    return $results;
+  }
 }

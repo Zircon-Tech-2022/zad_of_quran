@@ -11,9 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('staff_availabilities', function (Blueprint $table) {
+        Schema::create('lesson_availabilities', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('staff_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('lesson_id')->constrained()->cascadeOnDelete();
             $table->enum('day', ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday']);
             $table->time('start_time'); // time is saved in 24-hour format in GMT
             $table->time('end_time'); // time is saved in 24-hour format in GMT
@@ -27,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('staff_availabilities');
+        Schema::dropIfExists('lesson_availabilities');
     }
 };

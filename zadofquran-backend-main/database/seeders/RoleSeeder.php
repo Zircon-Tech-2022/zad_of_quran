@@ -17,87 +17,98 @@ class RoleSeeder extends Seeder
         $allPermissions = Permission::select('name')->get();
 
         // User Role
-        Role::create([
+        Role::firstOrCreate([
             'name' => 'user',
+            'guard_name' => 'web',
+        ], [
             'display_name' => 'User',
             'description' => 'User Role',
-            'guard_name' => 'web',
             'created_at' => now(),
             'updated_at' => now(),
         ])->givePermissionTo([
-                    // profile permissions
-                    ...['profile.view', 'profile.update', 'profile.softDelete'],
-                ]);
+            // profile permissions
+            ...['profile.view', 'profile.update', 'profile.softDelete'],
+        ]);
 
         // Super Admin Role
-        Role::create([
+        Role::firstOrCreate([
             'name' => 'super-admin',
+            'guard_name' => 'web',
+        ], [
             'display_name' => 'Super Admin',
             'description' => 'Super Admin Role',
-            'guard_name' => 'web',
             'created_at' => now(),
             'updated_at' => now(),
         ])->givePermissionTo(Permission::select('name')->get()->toArray());
 
         // Admin Role
-        Role::create([
+        Role::firstOrCreate([
             'name' => 'admin',
+            'guard_name' => 'web',
+        ], [
             'display_name' => 'Admin',
             'description' => 'Admin Role',
-            'guard_name' => 'web',
             'created_at' => now(),
             'updated_at' => now(),
         ])->givePermissionTo(Permission::select('name')->where('name', 'NOT LIKE', '%telescope%')->get()->toArray());
 
         // Manager Role
-        Role::create([
+        Role::firstOrCreate([
             'name' => 'manager',
+            'guard_name' => 'web',
+        ], [
             'display_name' => 'Manager',
             'description' => 'Manager Role',
-            'guard_name' => 'web',
             'created_at' => now(),
             'updated_at' => now(),
         ])->givePermissionTo([
-                    // user permissions
-                    ...['users.create', 'users.list', 'users.view', 'users.update', 'users.softDelete', 'users.trash.list', 'users.trash.delete', 'users.restore', 'users.forceDelete'],
+            // user permissions
+            ...['users.create', 'users.list', 'users.view', 'users.update', 'users.softDelete', 'users.trash.list', 'users.trash.delete', 'users.restore', 'users.forceDelete'],
 
-                    // staff permissions
-                    ...['staff.create', 'staff.list', 'staff.view', 'staff.update', 'staff.softDelete', 'staff.trash.list', 'staff.delete', 'staff.restore', 'staff.forceDelete'],
+            // staff permissions
+            ...['staff.create', 'staff.list', 'staff.view', 'staff.update', 'staff.softDelete', 'staff.trash.list', 'staff.delete', 'staff.restore', 'staff.forceDelete'],
 
-                    // role permissions
-                    ...['role.create', 'role.list', 'role.view', 'role.update', 'role.softDelete', 'role.restore', 'role.forceDelete', 'role.assignPermission', 'role.removePermission'],
+            // role permissions
+            ...['role.create', 'role.list', 'role.view', 'role.update', 'role.softDelete', 'role.restore', 'role.forceDelete', 'role.assignPermission', 'role.removePermission'],
 
 
-                    // Testimonials permission
-                    ...['testimonials.create', 'testimonials.list', 'testimonials.update', 'testimonials.softDelete', 'testimonials.restore', 'testimonials.delete', 'testimonials.forceDelete', 'testimonials.view'],
+            // Testimonials permission
+            ...['testimonials.create', 'testimonials.list', 'testimonials.update', 'testimonials.softDelete', 'testimonials.restore', 'testimonials.delete', 'testimonials.forceDelete', 'testimonials.view'],
 
-                    // Course permissions
-                    ...['courses.create', 'courses.list', 'courses.update', 'courses.softDelete', 'courses.restore', 'courses.forceDelete', 'courses.view'],
+            // Course permissions
+            ...['courses.create', 'courses.list', 'courses.update', 'courses.softDelete', 'courses.restore', 'courses.forceDelete', 'courses.view'],
 
-                    // Blog permissions
-                    ...['blogs.create', 'blogs.list', 'blogs.update', 'blogs.softDelete', 'blogs.restore', 'blogs.forceDelete', 'blogs.view'],
-                ]);
+            // Lesson permissions
+            ...['lesson.create', 'lesson.list', 'lesson.update', 'lesson.softDelete', 'lesson.restore', 'lesson.forceDelete', 'lesson.view'],
+
+            // Blog permissions
+            ...['blogs.create', 'blogs.list', 'blogs.update', 'blogs.softDelete', 'blogs.restore', 'blogs.forceDelete', 'blogs.view'],
+        ]);
 
         // Editor Role
-        Role::create([
+        Role::firstOrCreate([
             'name' => 'editor',
+            'guard_name' => 'web',
+        ], [
             'display_name' => 'Editor',
             'description' => 'Editor Role',
-            'guard_name' => 'web',
             'created_at' => now(),
             'updated_at' => now(),
         ])->givePermissionTo([
-                    // FAQ permissions
-                    ...['faqs.create', 'faqs.list', 'faqs.update', 'faqs.softDelete', 'faqs.restore', 'faqs.forceDelete', 'faqs.view'],
+            // FAQ permissions
+            ...['faqs.create', 'faqs.list', 'faqs.update', 'faqs.softDelete', 'faqs.restore', 'faqs.forceDelete', 'faqs.view'],
 
-                    // Testimonials permission
-                    ...['testimonials.create', 'testimonials.list', 'testimonials.update', 'testimonials.softDelete', 'testimonials.restore', 'testimonials.delete', 'testimonials.forceDelete', 'testimonials.view'],
+            // Testimonials permission
+            ...['testimonials.create', 'testimonials.list', 'testimonials.update', 'testimonials.softDelete', 'testimonials.restore', 'testimonials.delete', 'testimonials.forceDelete', 'testimonials.view'],
 
-                    // Course permissions
-                    ...['courses.create', 'courses.list', 'courses.update', 'courses.softDelete', 'courses.restore', 'courses.forceDelete', 'courses.view'],
+            // Course permissions
+            ...['courses.create', 'courses.list', 'courses.update', 'courses.softDelete', 'courses.restore', 'courses.forceDelete', 'courses.view'],
 
-                    // Blog permissions
-                    ...['blogs.create', 'blogs.list', 'blogs.update', 'blogs.softDelete', 'blogs.restore', 'blogs.forceDelete', 'blogs.view'],
-                ]);
+            // Lesson permissions
+            ...['lesson.create', 'lesson.list', 'lesson.update', 'lesson.softDelete', 'lesson.restore', 'lesson.forceDelete', 'lesson.view'],
+
+            // Blog permissions
+            ...['blogs.create', 'blogs.list', 'blogs.update', 'blogs.softDelete', 'blogs.restore', 'blogs.forceDelete', 'blogs.view'],
+        ]);
     }
 }

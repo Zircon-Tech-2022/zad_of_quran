@@ -66,7 +66,7 @@ class StaffController extends Controller
             'gender' => $data['gender'],
         ]);
 
-        if ($data['availability'] && count($data['availability'])) {
+        if (array_key_exists('availability', $data) && count($data['availability'])) {
             $this->storeAvailabilities($this->reformAvailabilities($data['availability']), $staff);
         }
 
@@ -106,7 +106,7 @@ class StaffController extends Controller
      */
     public function show($id)
     {
-        $staff = Staff::with('details', 'availabilities', 'courses')
+        $staff = Staff::with('details', 'availabilities', 'courses', 'lessons')
             ->where('id', $id)
             ->first();
 
@@ -114,7 +114,26 @@ class StaffController extends Controller
             return apiErrorResponse(__('messages.data_not_found'), null, 404);
         }
 
-        $availabilities = $this->getAvailabilities($staff->availabilities);
+        $timezone = request('timezone_offset');
+        $availabilities = $this->getAvailabilities($staff->availabilities, $timezone);
+
+        $lessons = $staff->lessons;
+        $lessonsArray = [];
+        $lessonsAvailabilitiesArray = [];
+        foreach ($lessons as $lesson) {
+            $lessonAvailabilities = $this->getAvailabilities($lesson->availabilities);
+            foreach ($lessonAvailabilities as $lessonAvailability) {
+                $lessonsAvailabilitiesArray[] = $lessonAvailability;
+            }
+            $item = $lesson->toArray();
+            $item['availabilities'] = $lessonAvailabilities;
+            $lessonsArray[] = $item;
+        }
+
+        $netAvailabilities = $this->getTimesArrayInZones(
+            $this->getNetAvailabilities($availabilities, $lessonsAvailabilitiesArray),
+            $timezone
+        );
 
         return apiSuccessResponse(__('messages.data_retrieved_successfully'), [
             array_merge(
@@ -133,8 +152,9 @@ class StaffController extends Controller
                 [
                     'age' => $staff->details->age,
                     'gender' => $staff->details->gender,
-                    'availabilities' => $availabilities,
+                    'availabilities' => $netAvailabilities,
                     'courses' => $staff->courses->toArray(),
+                    'lessons' => $lessonsArray,
                 ]
             )
         ]);
@@ -236,7 +256,7 @@ class StaffController extends Controller
             'age' => $data['age'] ?? $staffDetails->age,
         ]);
 
-        if ($data['availability'] && count($data['availability'])) {
+        if (array_key_exists('availability', $data) && count($data['availability'])) {
             $this->storeAvailabilities($this->reformAvailabilities($data['availability']), $staff, true);
         }
 

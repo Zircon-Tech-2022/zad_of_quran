@@ -67,4 +67,9 @@ class Staff extends Model
     {
         return $this->belongsToMany(Course::class, 'staff_courses');
     }
+
+    public function lessons()
+    {
+        return $this->hasMany(Lesson::class);
+    }
 }
