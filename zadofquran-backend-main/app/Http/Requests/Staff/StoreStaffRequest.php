@@ -28,7 +28,7 @@ class StoreStaffRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'min:2', 'max:255', new NumOfWords(2)],
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:10240',
-            'phone' => ['required', 'string', 'max:255', 'phone_number', 'unique:staff,phone,NULL,id,deleted_at,NULL'],
+            'phone' => ['required', 'string', 'max:13', 'min:13', 'phone_number', 'unique:staff,phone,NULL,id,deleted_at,NULL'],
             'email' => 'required|email|unique:staff,email,|unique:staff_details,email',
             'password' => 'required|string|confirmed|min:8',
             'gender' => ['required', Rule::in(['male', 'female'])],

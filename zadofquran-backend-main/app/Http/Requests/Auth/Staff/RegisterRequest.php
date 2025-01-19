@@ -29,7 +29,7 @@ class RegisterRequest extends FormRequest
             'name' => ['required', 'string', 'min:2', 'max:255', new NumOfWords(2)],
             'email' => 'required|email|unique:staff,email,|unique:staff_details,email',
             'password' => 'required|string|confirmed|min:8',
-            'phone' => 'required|string|phone_number|unique:staff,phone',
+            'phone' => 'required|string|phone_number|unique:staff,phone,NULL,id,deleted_at,NULL|min:13|max:13',
             'age' => 'required|integer|min:18',
             'gender' => ['required', Rule::in(['male', 'female'])],
             'courses' => 'required|array|min:1|exists:courses,id',

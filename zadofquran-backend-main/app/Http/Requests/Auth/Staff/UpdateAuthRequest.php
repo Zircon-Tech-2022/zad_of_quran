@@ -28,7 +28,7 @@ class UpdateAuthRequest extends FormRequest
         return [
             'name' => ['nullable', 'string', 'min:2', 'max:255', new NumOfWords(2)],
             'password' => 'nullable|string|confirmed|min:8',
-            'phone' => 'nullable|string|phone_number|unique:staff,phone,' . $this->user()->staff->id,
+            'phone' => 'nullable|string|min:13|max:13|phone_number|unique:staff,phone,' . $this->user()->staff->id . ',id,deleted_at,NULL',
             'age' => 'nullable|integer|min:18',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:10240',
             'availability' => 'nullable|array|min:1',
