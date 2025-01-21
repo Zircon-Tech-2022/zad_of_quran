@@ -9,6 +9,7 @@ use App\Http\Requests\Auth\Staff\UpdateAuthRequest;
 use App\Models\StaffDetails;
 use App\Models\Staff;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 
@@ -60,28 +61,26 @@ class AuthController extends Controller
 
         return apiSuccessResponse(__('messages.register_success'), [
             'token' => $token,
-            'user' => [
-                array_merge(
-                    $staff->only([
-                        "id",
-                        "name",
-                        "image",
-                        "phone",
-                        "email",
-                        "qualifications",
-                        "locale",
-                        "deleted_at",
-                        "created_at",
-                        "updated_at",
-                    ]),
-                    [
-                        'age' => $staff->details->age,
-                        'gender' => $staff->details->gender,
-                        'availabilities' => $availabilities,
-                        'courses' => $staff->courses->toArray(),
-                    ]
-                )
-            ]
+            'user' => array_merge(
+                $staff->only([
+                    "id",
+                    "name",
+                    "image",
+                    "phone",
+                    "email",
+                    "qualifications",
+                    "locale",
+                    "deleted_at",
+                    "created_at",
+                    "updated_at",
+                ]),
+                [
+                    'age' => $staff->details->age,
+                    'gender' => $staff->details->gender,
+                    'availabilities' => $availabilities,
+                    'courses' => $staff->courses->toArray(),
+                ]
+            )
         ], 201);
     }
 
@@ -106,22 +105,18 @@ class AuthController extends Controller
 
         return apiSuccessResponse(__('messages.login_success'), [
             'token' => $token,
-
-            'user' => [
-                array_merge(
-                    $staffDetails->staff->toArray(),
-                    [
-                        'age' => $staffDetails->age,
-                        'gender' => $staffDetails->gender,
-                        'availabilities' => $availabilities,
-                        'courses' => $staffDetails->staff->courses->toArray(),
-                    ]
-                )
-            ]
+            'user' => array_merge(
+                $staffDetails->staff->toArray(),
+                [
+                    'age' => $staffDetails->age,
+                    'gender' => $staffDetails->gender,
+                    'availabilities' => $availabilities,
+                    'courses' => $staffDetails->staff->courses->toArray(),
+                ]
+            )
         ]);
     }
 
-    // ToDo: -- note that will be attached to lessons then
     public function getUserInfo(Request $request)
     {
         $staffDetails = $request->user(); // token is valid
@@ -152,18 +147,16 @@ class AuthController extends Controller
         );
 
         return apiSuccessResponse(__('messages.user_found'), [
-            'user' => [
-                array_merge(
-                    $staffDetails->staff->toArray(),
-                    [
-                        'age' => $staffDetails->age,
-                        'gender' => $staffDetails->gender,
-                        'availabilities' => $netAvailabilities,
-                        'courses' => $staffDetails->staff->courses->toArray(),
-                        'lessons' => $lessonsArray,
-                    ]
-                )
-            ]
+            'user' => array_merge(
+                $staffDetails->staff->toArray(),
+                [
+                    'age' => $staffDetails->age,
+                    'gender' => $staffDetails->gender,
+                    'availabilities' => $netAvailabilities,
+                    'courses' => $staffDetails->staff->courses->toArray(),
+                    'lessons' => $lessonsArray,
+                ]
+            )
         ]);
     }
 
@@ -192,11 +185,12 @@ class AuthController extends Controller
         $staff = $staffDetails->staff;
 
         if ($data['password']) {
-            $staffDetails->tokens()->delete();
+            $currentTokenId = auth()->user()->currentAccessToken()->id;
+            $staffDetails->tokens()->where('id', '!=', $currentTokenId)->delete();
         }
 
         $staffDetails->update([
-            'password' => Hash::make($data['password']) ?? $staffDetails->password,
+            'password' => isset($data['password']) && !empty($data['password']) ? Hash::make($data['password']) : $staffDetails->password,
             'age' => $data['age'] ?? $staffDetails->age,
         ]);
 
@@ -207,28 +201,26 @@ class AuthController extends Controller
         $availabilities = $this->getAvailabilities($staff->availabilities);
 
         return apiSuccessResponse(__('messages.updated_success'), [
-            'user' => [
-                array_merge(
-                    $staff->only([
-                        "id",
-                        "name",
-                        "image",
-                        "phone",
-                        "email",
-                        "qualifications",
-                        "locale",
-                        "deleted_at",
-                        "created_at",
-                        "updated_at",
-                    ]),
-                    [
-                        'age' => $staff->details->age,
-                        'gender' => $staff->details->gender,
-                        'availabilities' => $availabilities,
-                        'courses' => $staff->courses->toArray(),
-                    ]
-                )
-            ]
+            'user' => array_merge(
+                $staff->only([
+                    "id",
+                    "name",
+                    "image",
+                    "phone",
+                    "email",
+                    "qualifications",
+                    "locale",
+                    "deleted_at",
+                    "created_at",
+                    "updated_at",
+                ]),
+                [
+                    'age' => $staff->details->age,
+                    'gender' => $staff->details->gender,
+                    'availabilities' => $availabilities,
+                    'courses' => $staff->courses->toArray(),
+                ]
+            )
         ]);
     }
 

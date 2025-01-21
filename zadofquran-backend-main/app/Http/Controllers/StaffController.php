@@ -77,7 +77,8 @@ class StaffController extends Controller
 
         $availabilities = $this->getAvailabilities($staff->availabilities);
 
-        return apiSuccessResponse(__('messages.added_success'), [
+        return apiSuccessResponse(
+            __('messages.added_success'),
             array_merge(
                 $staff->only([
                     "id",
@@ -98,7 +99,7 @@ class StaffController extends Controller
                     'courses' => $staff->courses->toArray(),
                 ]
             )
-        ]);
+        );
     }
 
     /**
@@ -135,7 +136,8 @@ class StaffController extends Controller
             $timezone
         );
 
-        return apiSuccessResponse(__('messages.data_retrieved_successfully'), [
+        return apiSuccessResponse(
+            __('messages.data_retrieved_successfully'),
             array_merge(
                 $staff->only([
                     "id",
@@ -157,7 +159,7 @@ class StaffController extends Controller
                     'lessons' => $lessonsArray,
                 ]
             )
-        ]);
+        );
     }
 
     public function match(Request $request)
@@ -268,7 +270,8 @@ class StaffController extends Controller
 
         $availabilities = $this->getAvailabilities($staff->availabilities);
 
-        return apiSuccessResponse(__('messages.updated_success'), [
+        return apiSuccessResponse(
+            __('messages.updated_success'),
             array_merge(
                 $staff->only([
                     "id",
@@ -289,7 +292,7 @@ class StaffController extends Controller
                     'courses' => $staff->courses->toArray(),
                 ]
             )
-        ]);
+        );
     }
 
     /**

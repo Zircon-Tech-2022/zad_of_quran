@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Http\Requests\Subscriber\StoreSubscriberRequest;
 use App\Http\Requests\Subscriber\Subscriber\UpdateSubscriberRequest;
+use Illuminate\Support\Facades\Mail;
 use Maatwebsite\Excel\Facades\Excel;
 
 class SubscriberController extends Controller
@@ -40,7 +41,7 @@ class SubscriberController extends Controller
         $data = $request->validated();
         $subscriber = Subscriber::create($data);
         $mail = new NewSubscriber($data);
-        \Mail::send($mail);
+        Mail::send($mail);
         $subscriber = $subscriber->only('id', 'name', 'email', 'phone');
         return apiSuccessResponse(__('messages.register_success'), $subscriber);
     }

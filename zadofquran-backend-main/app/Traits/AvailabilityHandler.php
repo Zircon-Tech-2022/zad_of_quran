@@ -39,10 +39,6 @@ trait AvailabilityHandler
   {
     $netAvailabilities = [];
 
-    if (empty($lessonAvailabilities)) {
-      return $availabilities;
-    }
-
     foreach ($availabilities as $availability) {
       $availabilityStart = Carbon::parse($availability['start_times']['gmt']);
       $availabilityEnd = Carbon::parse($availability['end_times']['gmt']);
