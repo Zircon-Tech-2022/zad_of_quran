@@ -1,5 +1,6 @@
-import { Avatar, Card, CardContent, Grid, Typography } from "@mui/material";
 import React from "react";
+import { Avatar, Card, CardContent, Grid, Typography } from "@mui/material";
+import { t } from "i18next";
 
 const ProfileInfo = ({ user }) => (
     <Card>
@@ -11,9 +12,9 @@ const ProfileInfo = ({ user }) => (
                 <Grid item>
                     <Typography variant="h5">{user.name}</Typography>
                     <Typography variant="body1">{user.email}</Typography>
-                    <Typography variant="body2">Phone: {user.phone}</Typography>
-                    <Typography variant="body2">Age: {user.age}</Typography>
-                    <Typography variant="body2">Qualifications: {user.qualifications}</Typography>
+                    <Typography variant="body2">{t('phone')}: {user.phone}</Typography>
+                    <Typography variant="body2">{t('age')}: {user.age}</Typography>
+                    <Typography variant="body2">{t('qualifications')}: {user.qualifications}</Typography>
                 </Grid>
             </Grid>
         </CardContent>

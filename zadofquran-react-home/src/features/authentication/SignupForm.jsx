@@ -88,24 +88,20 @@ const SignupForm = () => {
     useEffect(() => {
         const fetchCourses = async () => {
             if (containsTeacher) {
-                try {
-                    const res = await fetch(`${API_URL}courses`, {
-                        headers: {
-                            "accept-language": "ar",
-                            Accept: "application/json",
-                            "Content-Type": "application/json",
-                        },
-                    });
+                const res = await fetch(`${API_URL}courses`, {
+                    headers: {
+                        "accept-language": "ar",
+                        Accept: "application/json",
+                        "Content-Type": "application/json",
+                    },
+                });
 
-                    if (!res.ok) {
-                        throw new Error(`Failed to fetch courses: ${res.statusText}`);
-                    }
-
-                    const data = await res.json();
-                    setCourses(data.data);
-                } catch (error) {
-                    console.error("Error fetching courses:", error);
+                if (!res.ok) {
+                    throw new Error(`Failed to fetch courses: ${res.statusText}`);
                 }
+
+                const data = await res.json();
+                setCourses(data.data);
             }
         };
 
@@ -246,7 +242,7 @@ const SignupForm = () => {
                             color: "var(--color-grey-0)",
                             fontSize: "1.6rem",
                         }}>
-                            {t("input-courses")}
+                            {t("coursesWord")}
                         </InputLabel>
                         <StyleSelect
                             labelId="courses-select-label"
@@ -257,7 +253,7 @@ const SignupForm = () => {
                             value={selectedCourses}
                             onChange={(e) => setSelectedCourses(e.target.value)}
                             error={errors?.courses}
-                            label={t("input-courses")}
+                            label={t("coursesWord")}
                             id="outlined-required"
                         >
                             {courses.map((course) => (

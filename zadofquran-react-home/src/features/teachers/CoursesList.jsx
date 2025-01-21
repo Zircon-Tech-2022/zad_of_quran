@@ -1,11 +1,12 @@
-import { Avatar, Card, CardContent, List, ListItem, ListItemAvatar, ListItemText, Typography } from "@mui/material";
 import React from "react";
+import { Avatar, Card, CardContent, List, ListItem, ListItemAvatar, ListItemText, Typography } from "@mui/material";
+import { t } from "i18next";
 
 const CoursesList = ({ courses }) => (
     <Card>
         <CardContent>
             <Typography variant="h6" gutterBottom>
-                Courses
+                {t("coursesWord")}
             </Typography>
             <List>
                 {courses.map((course, index) => (

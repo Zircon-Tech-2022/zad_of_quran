@@ -1,5 +1,6 @@
-import { Card, CardContent, Chip, Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@mui/material";
 import React from "react";
+import { Card, CardContent, Chip, Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@mui/material";
+import { t } from "i18next";
 
 const AvailabilityTable = ({ availabilities }) => {
     const daysOfWeek = ['saturday', 'sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday'];
@@ -17,13 +18,13 @@ const AvailabilityTable = ({ availabilities }) => {
         <Card>
             <CardContent>
                 <Typography variant="h6" gutterBottom>
-                    Net Availability
+                    {t('availability')}
                 </Typography>
                 <Table>
                     <TableHead>
                         <TableRow>
-                            <TableCell>Day</TableCell>
-                            <TableCell>Slots</TableCell>
+                            <TableCell>{t('day')}</TableCell>
+                            <TableCell>{t('slots')}</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -43,7 +44,7 @@ const AvailabilityTable = ({ availabilities }) => {
                                             ))}
                                         </ul>
                                     ) : (
-                                        'No availability'
+                                        t('noAvailabilitySolts')
                                     )}
                                 </TableCell>
                             </TableRow>

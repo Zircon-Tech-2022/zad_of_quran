@@ -1,5 +1,6 @@
-import { Card, CardContent, Chip, Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@mui/material";
 import React from "react";
+import { Card, CardContent, Chip, Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@mui/material";
+import { t } from "i18next";
 
 const LessonsTable = ({ lessons }) => {
     const daysOfWeek = ['saturday', 'sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday'];
@@ -21,13 +22,13 @@ const LessonsTable = ({ lessons }) => {
         <Card>
             <CardContent>
                 <Typography variant="h6" gutterBottom>
-                    Lessons
+                    {t('lessonsWord')}
                 </Typography>
                 <Table>
                     <TableHead>
                         <TableRow>
-                            <TableCell>Day</TableCell>
-                            <TableCell>Slots</TableCell>
+                            <TableCell>{t('day')}</TableCell>
+                            <TableCell>{t('slots')}</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -47,7 +48,7 @@ const LessonsTable = ({ lessons }) => {
                                             ))}
                                         </ul>
                                     ) : (
-                                        'No lessons'
+                                        t('noLessons')
                                     )}
                                 </TableCell>
                             </TableRow>
