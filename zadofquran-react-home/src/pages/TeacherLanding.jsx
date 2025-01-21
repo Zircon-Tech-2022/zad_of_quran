@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Body from "../ui/Body";
 import Header from "../ui/Header";
 import Spinner from "../ui/Spinner";
@@ -7,19 +7,33 @@ import { t } from "i18next";
 import styles from "./teacher.module.css";
 import { Link } from "react-router-dom";
 
-import { Menu, MenuItem } from "@mui/material";
+import { Avatar, Menu, MenuItem } from "@mui/material";
 import { BiLogOut } from "react-icons/bi";
 import { FaGraduationCap, FaUserGraduate } from "react-icons/fa6";
 import { useUser } from "./../features/authentication/useUser";
 import { useLogout } from "../features/useLogout";
 import { useLangContext } from "./../context/LangContext";
+import ProfileInfo from './../features/teachers/ProfileInfo';
+import TimezoneButton from "../features/teachers/TimezoneButton";
+import CoursesList from "../features/teachers/CoursesList";
+import AvailabilityTable from './../features/teachers/AvailabilityTable';
+import LessonsTable from "../features/teachers/LessonsTable";
+import { calculateTimezone } from "./../utils/helpers";
 
 const TeacherLanding = () => {
-    const { isLoading, isAuth, user } = useUser();
+    const { isLoading, isAuth, user, updateTimezone, isUpdateTimezoneLoading } = useUser();
     const { logout, isLoading: isLogout } = useLogout();
     const [anchorEl, setAnchorEl] = useState(null);
     const { language } = useLangContext();
     const open = Boolean(anchorEl);
+
+    let defaultTimezone = "GMT+2";
+    const isTeacher = localStorage.getItem('user-type') === "teacher";
+
+    if (!isLoading && !isUpdateTimezoneLoading && user?.data?.user?.availabilities) {
+        defaultTimezone = calculateTimezone(user.data.user.availabilities[0].start_times['local'],
+            user.data.user.availabilities[0].start_times['gmt']);
+    }
 
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
@@ -27,6 +41,10 @@ const TeacherLanding = () => {
     const handleClose = () => {
         setAnchorEl(null);
     };
+
+    const handleTimezoneChange = async (e) => {
+        updateTimezone(e.target.value);
+    }
 
     return (
         <PageLayout>
@@ -38,40 +56,43 @@ const TeacherLanding = () => {
                         alignItems: !isAuth ? "center" : "start",
                     }}
                 >
-                    {!localStorage.getItem("token") && !isAuth && !isLoading && (
-                        <>
-                            <Link
-                                to={`/${language}/teacher/login`}
-                                className={`${styles.nonSolid} ${styles.mainAction} ${styles.link} ${styles.mainLink}`}
-                            >
-                                <span className={styles.icon}>
-                                    <FaUserGraduate />
-                                </span>
-                                {t("teacher-login-title")}
-                            </Link>
-                            <Link
-                                to={`/${language}/teacher/signup`}
-                                className={`${styles.solid} ${styles.mainAction} ${styles.link}`}
-                            >
-                                <span className={styles.icon}>
-                                    <FaGraduationCap />
-                                </span>
-                                {t("teacher-signup-title")}
-                            </Link>
-                        </>
-                    )}
+                    {(isLoading || isUpdateTimezoneLoading) && <Spinner />}
+                    {((!localStorage.getItem("token") && !isAuth && !isLoading && !isUpdateTimezoneLoading) ||
+                        (localStorage.getItem("token") && isAuth && !isTeacher && !isLoading && !isUpdateTimezoneLoading))
+                        && (
+                            <>
+                                <Link
+                                    to={`/${language}/teacher/login`}
+                                    className={`${styles.nonSolid} ${styles.mainAction} ${styles.link} ${styles.mainLink}`}
+                                >
+                                    <span className={styles.icon}>
+                                        <FaUserGraduate />
+                                    </span>
+                                    {t("teacher-login-title")}
+                                </Link>
+                                <Link
+                                    to={`/${language}/teacher/signup`}
+                                    className={`${styles.solid} ${styles.mainAction} ${styles.link}`}
+                                >
+                                    <span className={styles.icon}>
+                                        <FaGraduationCap />
+                                    </span>
+                                    {t("teacher-signup-title")}
+                                </Link>
+                            </>
+                        )}
 
-                    {!isLoading && isAuth && localStorage.getItem("token") && (
+                    {!isLoading && !isUpdateTimezoneLoading && isTeacher && isAuth && localStorage.getItem("token") && (
                         <>
                             <button
                                 className={`${styles.nonSolid} ${styles.mainAction} ${styles.btn} animated fade`}
                                 open={open}
                                 onClick={handleClick}
                             >
-                                <span className={styles.icon}>
-                                    <FaGraduationCap />
+                                <span >
+                                    <Avatar alt={user?.data?.user?.name} src={user?.data?.user?.image} />
                                 </span>
-                                {user?.data?.name}
+                                {user?.data?.user?.name}
                             </button>
                             <Menu
                                 id="basic-menu"
@@ -112,6 +133,15 @@ const TeacherLanding = () => {
                         </>
                     )}
                 </div>
+                {!isLoading && !isUpdateTimezoneLoading && user && (
+                    <div className={styles.profileContainer}>
+                        <ProfileInfo user={user?.data?.user} />
+                        <TimezoneButton defaultValue={defaultTimezone} handleChange={handleTimezoneChange} />
+                        <CoursesList courses={user?.data?.user.courses} />
+                        <AvailabilityTable availabilities={user?.data?.user.availabilities} />
+                        <LessonsTable lessons={user?.data?.user.lessons} />
+                    </div>
+                )}
             </Body>
         </PageLayout >
     );

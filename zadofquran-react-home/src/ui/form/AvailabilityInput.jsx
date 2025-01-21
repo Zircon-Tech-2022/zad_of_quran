@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
-import { BiCalendar, BiTime } from "react-icons/bi";
-import { useFieldArray } from "react-hook-form";
+import { BiCalendar } from "react-icons/bi";
+import { Controller, useFieldArray } from "react-hook-form";
 import { t } from "i18next";
 import Button from "../../ui/Button";
 import MyInput from "../../ui/form/MyInput";
@@ -78,22 +78,24 @@ const StyleSelect = styled(Select)`
 }
 `;
 
+const timezoneOffsets = [
+  "GMT-12", "GMT-11", "GMT-10", "GMT-9:30", "GMT-9",
+  "GMT-8", "GMT-7", "GMT-6", "GMT-5", "GMT-4:30",
+  "GMT-4", "GMT-3:30", "GMT-3", "GMT-2", "GMT-1",
+  "GMT", "GMT+1", "GMT+2", "GMT+3", "GMT+3:30",
+  "GMT+4", "GMT+4:30", "GMT+5", "GMT+5:30", "GMT+5:45",
+  "GMT+6", "GMT+6:30", "GMT+7", "GMT+8", "GMT+8:45",
+  "GMT+9", "GMT+9:30", "GMT+10", "GMT+10:30", "GMT+11",
+  "GMT+11:30", "GMT+12", "GMT+12:45", "GMT+13", "GMT+14"
+];
+
+const daysOfWeek = ['saturday', 'sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday'];
+
 const AvailabilityInput = ({ control, register, error }) => {
   const { fields, append, remove } = useFieldArray({
     control,
     name: "availability",
   });
-
-  const offsets = [
-    "GMT-12", "GMT-11", "GMT-10", "GMT-9:30", "GMT-9",
-    "GMT-8", "GMT-7", "GMT-6", "GMT-5", "GMT-4:30",
-    "GMT-4", "GMT-3:30", "GMT-3", "GMT-2", "GMT-1",
-    "GMT", "GMT+1", "GMT+2", "GMT+3", "GMT+3:30",
-    "GMT+4", "GMT+4:30", "GMT+5", "GMT+5:30", "GMT+5:45",
-    "GMT+6", "GMT+6:30", "GMT+7", "GMT+8", "GMT+8:45",
-    "GMT+9", "GMT+9:30", "GMT+10", "GMT+10:30", "GMT+11",
-    "GMT+11:30", "GMT+12", "GMT+12:45", "GMT+13", "GMT+14"
-  ];
 
   return (
     <Wrapper>
@@ -105,53 +107,50 @@ const AvailabilityInput = ({ control, register, error }) => {
       </InputLabel>
       {fields.map((field, index) => (
         <Entry key={field.id}>
-          <FormControl >
-            <InputLabel id={`day-label-${field.id}`} style={{
-              color: "var(--color-grey-0)",
-              fontSize: "1.6rem",
-            }}>
+          <FormControl>
+            <InputLabel
+              id={`day-label-${field.id}`}
+              style={{
+                color: "var(--color-grey-0)",
+                fontSize: "1.6rem",
+              }}
+            >
               {t("day")}
             </InputLabel>
-            <StyleSelect
-              labelId={`day-label-${field.id}`}
-              {...register(`availability.${index}.day`, {
-                required: t("required"),
-              })}
-              error={error?.[index]?.day}
-              label={t("day")}
-              id="outlined-required"
-              InputAdornment={<BiCalendar />}
-            >
-              <MenuItem value="Sunday">{t("sunday")}</MenuItem>
-              <MenuItem value="Monday">{t("monday")}</MenuItem>
-              <MenuItem value="Tuesday">{t("tuesday")}</MenuItem>
-              <MenuItem value="Wednesday">{t("wednesday")}</MenuItem>
-              <MenuItem value="Thursday">{t("thursday")}</MenuItem>
-              <MenuItem value="Friday">{t("friday")}</MenuItem>
-              <MenuItem value="Saturday">{t("saturday")}</MenuItem>
-            </StyleSelect>
-            <FormHelperText style={{
-              color: "#d32f2f",
-              fontSize: "1.6rem",
-            }}>{error?.[index]?.day?.message}</FormHelperText>
+            <Controller
+              name={`availability.${index}.day`}
+              control={control}
+              defaultValue="" // Ensure a default value is provided
+              rules={{ required: t("required") }}
+              render={({ field: controllerField, fieldState: { error } }) => (
+                <>
+                  <StyleSelect
+                    {...controllerField}
+                    labelId={`day-label-${field.id}`}
+                    error={!!error}
+                    label={t("day")}
+                    id="outlined-required"
+                    InputAdornment={<BiCalendar />}
+                  >
+                    {daysOfWeek.map((day) => (
+                      <MenuItem key={day} value={day}>
+                        {t(day)}
+                      </MenuItem>)
+                    )}
+                  </StyleSelect>
+                  <FormHelperText
+                    style={{
+                      color: "#d32f2f",
+                      fontSize: "1.6rem",
+                    }}
+                  >
+                    {error?.message}
+                  </FormHelperText>
+                </>
+              )}
+            />
           </FormControl>
-          {/* <StyleInput
-            reg={{
-              ...register(`availability.${index}.timezone`, {
-                required: t("required"),
-              }),
-            }}
-            error={error?.[index]?.timezone}
-            type="select"
-            label={t("timezone")}
-          >
-            <option value="">{t("selectTimezone")}</option>
-            {timezones.map((tz) => (
-              <option key={tz} value={tz}>
-                {tz}
-              </option>
-            ))}
-          </StyleInput> */}
+
           <FormControl>
             <InputLabel
               id={`timezone-label-${field.id}`}
@@ -162,29 +161,37 @@ const AvailabilityInput = ({ control, register, error }) => {
             >
               {t("timezone")}
             </InputLabel>
-            <StyleSelect
-              labelId={`timezone-label-${field.id}`}
-              {...register(`availability.${index}.timezone`, {
-                required: t("required"),
-              })}
-              error={error?.[index]?.timezone}
-              label={t("timezone")}
-              id="timezone-select"
-            >
-              {offsets.map((offset) => (
-                <MenuItem key={offset} value={offset}>
-                  {offset}
-                </MenuItem>
-              ))}
-            </StyleSelect>
-            <FormHelperText
-              style={{
-                color: "#d32f2f",
-                fontSize: "1.6rem",
-              }}
-            >
-              {error?.[index]?.timezone?.message}
-            </FormHelperText>
+            <Controller
+              name={`availability.${index}.timezone`}
+              control={control}
+              defaultValue="" // Ensure a default value is provided
+              rules={{ required: t("required") }}
+              render={({ field: controllerField, fieldState: { error } }) => (
+                <>
+                  <StyleSelect
+                    {...controllerField}
+                    labelId={`timezone-label-${field.id}`}
+                    error={!!error}
+                    label={t("timezone")}
+                    id="timezone-select"
+                  >
+                    {timezoneOffsets.map((offset) => (
+                      <MenuItem key={offset} value={offset}>
+                        {offset}
+                      </MenuItem>
+                    ))}
+                  </StyleSelect>
+                  <FormHelperText
+                    style={{
+                      color: "#d32f2f",
+                      fontSize: "1.6rem",
+                    }}
+                  >
+                    {error?.message}
+                  </FormHelperText>
+                </>
+              )}
+            />
           </FormControl>
 
           <StyleInput

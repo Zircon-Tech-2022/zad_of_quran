@@ -1,9 +1,11 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getCurrentUser } from "../../services/apiAuth";
 import { useLangContext } from "../../context/LangContext";
+import toast from "react-hot-toast";
 
 export function useUser() {
   const { language } = useLangContext();
+  const queryClient = useQueryClient();
   const { isLoading, data: user } = useQuery({
     queryKey: ["user"],
     queryFn: async () => {
@@ -18,5 +20,21 @@ export function useUser() {
     staleTime: 0,
     refetchOnWindowFocus: false,
   });
-  return { isLoading, isAuth: user?.data, user };
+
+  const { mutate: updateTimezone, isUpdateTimezoneLoading } = useMutation({
+    mutationFn: (timezone) => getCurrentUser(localStorage.getItem("token"), timezone),
+    onSuccess: (user) => {
+      queryClient.setQueryData(["user"], user);
+    },
+    onError: (err) => {
+      toast.error(err.message);
+    },
+  });
+  return {
+    isLoading,
+    isAuth: user?.data,
+    user,
+    updateTimezone,
+    isUpdateTimezoneLoading,
+  };
 }

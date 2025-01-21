@@ -10,6 +10,8 @@ import { t } from "i18next";
 import { FormControl, FormHelperText, InputLabel, MenuItem, Select } from "@mui/material";
 import AvailabilityInput from "../../ui/form/AvailabilityInput";
 import { useLocation } from "react-router-dom";
+import { API_URL } from "../../Constants";
+
 
 const StyleForm = styled.form`
     display: flex;
@@ -52,7 +54,7 @@ const StyleSelect = styled(Select)`
         border-color: var(--color-grey-0);
     }
     & .MuiInputBase-root:hover .MuiOutlinedInput-notchedOutline {
-        border-color: var(--color-grey-0);
+        border-color: var(--color-sec-500);
     }
 
     & .MuiFormLabel-root {
@@ -70,26 +72,45 @@ const StyleSelect = styled(Select)`
     }
 `;
 
-// values: for setting default values of form in case of update profile
-const SignupForm = ({ values }) => {
+const SignupForm = () => {
     const location = useLocation();
     const containsTeacher = location.pathname.includes('teacher');
-    const containsUpdateProfile = location.pathname.includes('update-profile');
 
     const [selectedCourses, setSelectedCourses] = React.useState([]);
-    const [courses, setCourses] = React.useState([
-        { id: "1", name: "New Course 1" },
-        { id: "2", name: "New Course 2" },
-        { id: "3", name: "New Course 3" },
-        { id: "4", name: "New Course 4" },
-        { id: "5", name: "New Course 5" },
-    ]);
+    const [courses, setCourses] = React.useState([]);
+    const [imageFile, setImageFile] = React.useState(null);
+
+    const handleImageChange = (e) => {
+        const file = e.target.files[0];
+        setImageFile(file);
+    };
 
     useEffect(() => {
-        if (containsTeacher && !containsUpdateProfile) {
-            // fetch courses
-        }
-    })
+        const fetchCourses = async () => {
+            if (containsTeacher) {
+                try {
+                    const res = await fetch(`${API_URL}courses`, {
+                        headers: {
+                            "accept-language": "ar",
+                            Accept: "application/json",
+                            "Content-Type": "application/json",
+                        },
+                    });
+
+                    if (!res.ok) {
+                        throw new Error(`Failed to fetch courses: ${res.statusText}`);
+                    }
+
+                    const data = await res.json();
+                    setCourses(data.data);
+                } catch (error) {
+                    console.error("Error fetching courses:", error);
+                }
+            }
+        };
+
+        fetchCourses();
+    }, [containsTeacher]);
 
     const {
         register,
@@ -107,9 +128,34 @@ const SignupForm = ({ values }) => {
 
     const { signup, isLoading } = useSignup(setError);
     function onSubmit(data) {
-        console.log(data)
-        // add flag for teacher
-        signup(data);
+        const formData = new FormData();
+
+        for (const key in data) {
+            if (key === "availability" && Array.isArray(data[key])) {
+                data[key].forEach((item, index) => {
+                    formData.append(`${key}[${index}][day]`, item.day);
+                    formData.append(`${key}[${index}][start_time]`, item.start_time);
+                    formData.append(`${key}[${index}][end_time]`, item.end_time);
+                    formData.append(`${key}[${index}][timezone]`, item.timezone);
+                });
+            } else if (key === "courses" && Array.isArray(data[key])) {
+                data[key].forEach((course, index) => {
+                    formData.append(`${key}[${index}]`, course);
+                });
+            } else {
+                formData.append(key, data[key]);
+            }
+        }
+
+        if (imageFile) {
+            formData.append("image", imageFile);
+        }
+
+        if (containsTeacher) {
+            formData.append("type", "teacher");
+        }
+
+        signup(formData);
     }
     return (
         <StyleForm onSubmit={handleSubmit(onSubmit)}>
@@ -157,6 +203,7 @@ const SignupForm = ({ values }) => {
                         reg={{
                             ...register(`image`, {
                                 required: t("required"),
+                                onChange: (e) => handleImageChange(e),
                             }),
                         }}
                         error={errors?.image}
@@ -194,12 +241,12 @@ const SignupForm = ({ values }) => {
                         }}>{errors?.gender?.message}</FormHelperText>
                     </FormControl>
                     <AvailabilityInput control={control} register={register} error={errors?.availability} />
-                    {!containsUpdateProfile && <FormControl sx={{}}>
+                    <FormControl sx={{}}>
                         <InputLabel id="courses-select-label" style={{
                             color: "var(--color-grey-0)",
                             fontSize: "1.6rem",
                         }}>
-                            {t("courses")}
+                            {t("input-courses")}
                         </InputLabel>
                         <StyleSelect
                             labelId="courses-select-label"
@@ -210,7 +257,7 @@ const SignupForm = ({ values }) => {
                             value={selectedCourses}
                             onChange={(e) => setSelectedCourses(e.target.value)}
                             error={errors?.courses}
-                            label={t("courses")}
+                            label={t("input-courses")}
                             id="outlined-required"
                         >
                             {courses.map((course) => (
@@ -223,7 +270,7 @@ const SignupForm = ({ values }) => {
                             color: "#d32f2f",
                             fontSize: "1.6rem",
                         }}>{errors?.courses?.message}</FormHelperText>
-                    </FormControl>}
+                    </FormControl>
                 </>
             )}
             <StyleInput
@@ -274,7 +321,7 @@ const SignupForm = ({ values }) => {
 
             {isLoading && <Spinner />}
             <Button disabled={isLoading} type="submit">
-                {containsUpdateProfile ? t("update-profile") : t("send")}
+                {t("send")}
             </Button>
         </StyleForm >
     );

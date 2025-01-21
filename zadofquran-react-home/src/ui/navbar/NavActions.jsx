@@ -25,6 +25,7 @@ const NavActions = () => {
     const open2 = Boolean(anchorEl2);
 
     const containsTeacher = location.pathname.includes('teacher');
+    const isAuthTeacher = localStorage.getItem('user-type') === "teacher";
 
     const handleClick2 = (event) => {
         setAnchorEl2(event.currentTarget);
@@ -40,7 +41,7 @@ const NavActions = () => {
     };
     return (
         <div className={`${styles.navAction} animated fade`}>
-            {!localStorage.getItem("token") && !isAuth && !containsTeacher && !isLoading ? (
+            {!isLoading && !localStorage.getItem("token") && !isAuth && !containsTeacher ? (
                 <>
                     <Link
                         to={`/${language}/login`}
@@ -65,7 +66,7 @@ const NavActions = () => {
                 ""
             )}
 
-            {!isLoading && !containsTeacher && isAuth && localStorage.getItem("token") && (
+            {!isLoading && !containsTeacher && isAuth && localStorage.getItem("token") && !isAuthTeacher && (
                 <>
                     <button
                         className={`${styles.nonSolid} ${styles.mainAction} animated fade`}

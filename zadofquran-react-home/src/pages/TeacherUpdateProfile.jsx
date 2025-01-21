@@ -4,11 +4,14 @@ import { Container, Grid } from "@mui/material";
 
 import styled from "styled-components";
 import Heading from "../ui/Heading";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { BsArrowLeft, BsArrowRight } from "react-icons/bs";
-import SignupForm from "../features/authentication/SignupForm";
 import { t } from "i18next";
 import { useLangContext } from "../context/LangContext";
+import { useUser } from "../features/authentication/useUser";
+import Spinner from "../ui/Spinner";
+import UpdateTeacherForm from "../features/teachers/UpdateTeacherForm";
+import { calculateTimezone} from "../utils/helpers";
 
 const StyleLogin = styled.div`
     min-height: 100vh;
@@ -117,9 +120,30 @@ const LeftLogo = styled.div`
         display: block;
     }
 `;
+
 const TeacherUpdateProfile = () => {
     const { language } = useLangContext();
-    return (
+    const navigate = useNavigate();
+    const { isLoading, isAuth, user } = useUser();
+
+    if (!isAuth && !isLoading) {
+        navigate(`/${language}/teacher`);
+    }
+
+    if (!isLoading && user) {
+        const availability = user?.data?.user?.availabilities.map((item) => {
+            return {
+                day: item.days.local,
+                start_time: item.start_times.local,
+                end_time: item.end_times.local,
+                timezone: calculateTimezone(item.start_times.local, item.start_times.gmt),
+            }
+        });
+
+        user.data.user.availability = availability;
+    }
+
+    return !isLoading && (
         <StyleLogin>
             <Container maxWidth="xl">
                 <StyleGrid container alignItems={"center"} width="70%">
@@ -171,7 +195,8 @@ const TeacherUpdateProfile = () => {
                             >
                                 {t("update-profile")}
                             </HeadLogin>
-                            <SignupForm values={{}} />
+                            {isLoading && <Spinner />}
+                            {!isLoading && <UpdateTeacherForm values={user?.data?.user} />}
                         </Left>
                     </Grid>
                 </StyleGrid>

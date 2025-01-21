@@ -7,6 +7,7 @@ import Spinner from "../../ui/Spinner";
 import MyInput from "../../ui/form/MyInput";
 import Button from "../../ui/Button";
 import { t } from "i18next";
+import { useLocation } from "react-router-dom";
 const StyleForm = styled.form`
     display: flex;
     flex-direction: column;
@@ -37,9 +38,11 @@ const StyleInput = styled(MyInput)`
     }
 `;
 const LoginForm = () => {
+    const location = useLocation();
+    const containsTeacher = location.pathname.includes('teacher');
+
     const {
         register,
-
         handleSubmit,
         formState: { errors },
         setError,
@@ -48,6 +51,9 @@ const LoginForm = () => {
     const { login, isLoading } = useLogin(setError);
 
     function onSubmit(data) {
+        if (containsTeacher) {
+            data.type = "teacher";
+        }
         login(data);
     }
     return (

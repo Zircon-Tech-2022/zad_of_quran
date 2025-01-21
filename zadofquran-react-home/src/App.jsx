@@ -27,6 +27,8 @@ import TeacherUpdateProfile from "./pages/TeacherUpdateProfile";
 
 import "aos/dist/aos.css";
 import "./globals.css";
+import ProtectedTeacherAuth from "./ui/ProtectedTeacherAuth";
+import AuthTeacherLayout from "./ui/AuthTeacherLayout";
 
 function App() {
     const theme = createTheme({
@@ -118,9 +120,9 @@ function App() {
                             </Route>
                             <Route
                                 element={
-                                    <ProtectedAuth>
-                                        <AuthLayout />
-                                    </ProtectedAuth>
+                                    <ProtectedTeacherAuth>
+                                        <AuthTeacherLayout />
+                                    </ProtectedTeacherAuth>
                                 }
                             >
                                 <Route

@@ -86,3 +86,22 @@
     margin: 30px 15px;
   }
 }
+
+.profileContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding: 2rem 20rem;
+}
+
+@media (min-width: 768px) and (max-width: 1120px) {
+  .profileContainer {
+    padding: 2rem 10rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .profileContainer {
+    padding: 1rem 1rem;
+  }
+}

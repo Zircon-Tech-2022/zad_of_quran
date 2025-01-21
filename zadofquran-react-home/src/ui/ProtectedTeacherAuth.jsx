@@ -11,7 +11,7 @@ const FullPage = styled.div`
     align-items: center;
     justify-content: center;
 `;
-const ProtectedAuth = ({ children }) => {
+const ProtectedTeacherAuth = ({ children }) => {
     const navigate = useNavigate();
     const { language } = useLangContext();
     // 1. Load the authenticated user and check if is teacher
@@ -20,7 +20,7 @@ const ProtectedAuth = ({ children }) => {
     // 2. If there is NO authenticated user, redirect to the /login
     useEffect(
         function () {
-            if (isAuth && !isAuthTeacher && !isLoading) navigate(`/${language}`);
+            if (isAuth && isAuthTeacher && !isLoading) navigate(`/${language}/teacher`);
         },
         [navigate, isAuth, isLoading, language, isAuthTeacher]
     );
@@ -35,7 +35,7 @@ const ProtectedAuth = ({ children }) => {
 
     // 4. If there IS a user, render the app
     // if (isAuth) return children;
-    if (!isAuth || isAuthTeacher) return <>{children}</>;
+    if (!isAuth || !isAuthTeacher) return <>{children}</>;
 };
 
-export default ProtectedAuth;
+export default ProtectedTeacherAuth;

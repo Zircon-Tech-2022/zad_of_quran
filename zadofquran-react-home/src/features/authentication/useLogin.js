@@ -5,21 +5,27 @@ import { useNavigate } from "react-router-dom";
 import { useLangContext } from "../../context/LangContext";
 
 export function useLogin(setError) {
-    const navigate = useNavigate();
-    const queryClient = useQueryClient();
-    const { language } = useLangContext();
-    const { mutate: login, isLoading } = useMutation({
-        mutationFn: ({ email, password }) =>
-            loginApi({ email, password }, setError),
-        onSuccess: (user) => {
-            localStorage.setItem("token", user.data.token);
-            queryClient.setQueryData(["user"], user.user);
-            navigate(`/${language}`, { replace: true });
-        },
-        onError: (err) => {
-            toast.error(err.message);
-        },
-    });
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const { language } = useLangContext();
+  const { mutate: login, isLoading } = useMutation({
+    mutationFn: ({ email, password, type }) =>
+      loginApi({ email, password, type }, setError),
+    onSuccess: (user) => {
+      localStorage.setItem("token", user.data.token);
+      queryClient.setQueryData(["user"], user.data.user);
+      if (user.data.user.availabilities) {
+        localStorage.setItem("user-type", "teacher");
+        navigate(`/${language}/teacher`, { replace: true });
+      } else {
+        localStorage.removeItem("user-type");
+        navigate(`/${language}`, { replace: true });
+      }
+    },
+    onError: (err) => {
+      toast.error(err.message);
+    },
+  });
 
-    return { login, isLoading };
+  return { login, isLoading };
 }
