@@ -69,7 +69,7 @@ const LoginForm = () => {
                         required: "يجب ادخال هذا الحقل",
                     }),
                 }}
-                type="passowrd"
+                type="password"
                 label="كلمة المرور"
                 icon={<BiLock />}
             />
