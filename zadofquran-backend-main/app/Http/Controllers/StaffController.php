@@ -152,8 +152,8 @@ class StaffController extends Controller
                     "updated_at",
                 ]),
                 [
-                    'age' => $staff->details->age,
-                    'gender' => $staff->details->gender,
+                    'age' => $staff->details?->age,
+                    'gender' => $staff->details?->gender,
                     'availabilities' => $netAvailabilities,
                     'courses' => $staff->courses->toArray(),
                     'lessons' => $lessonsArray,
@@ -256,6 +256,7 @@ class StaffController extends Controller
 
         $staffDetails->update([
             'age' => $data['age'] ?? $staffDetails->age,
+            'gender' => $data['gender'] ?? $staffDetails->gender,
         ]);
 
         if (array_key_exists('availability', $data) && count($data['availability'])) {

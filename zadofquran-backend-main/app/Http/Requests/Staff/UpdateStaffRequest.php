@@ -8,6 +8,7 @@ use Illuminate\Validation\Rule;
 
 class UpdateStaffRequest extends FormRequest
 {
+    use \App\Traits\UnifyPhone;
     /**
      * Determine if the user is authorized to make this request.
      */
@@ -29,6 +30,7 @@ class UpdateStaffRequest extends FormRequest
             'phone' => ['nullable', 'string', 'max:13', 'min:13', 'phone_number', "unique:staff,phone,{$this->staff->id},id,deleted_at,NULL"],
             'email' => ['nullable', 'email', 'max:255', "unique:staff,email,{$this->staff->id},id,deleted_at,NULL"],
             'qualifications' => 'nullable|string',
+            'gender' => ['nullable', Rule::in(['male', 'female'])],
             'courses' => 'nullable|array|min:1|exists:courses,id',
             'age' => 'nullable|integer|min:18',
             'locale' => ['nullable', 'string', 'in:' . implode(',', array_keys(config('app.locales')))],
