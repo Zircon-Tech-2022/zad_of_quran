@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import MultiSelect from "../../ui/form/MultiSelect";
 import MyInput from "../../ui/form/MyInput";
 import { useCreateTeacher } from "./useCreateTeacher";
@@ -9,7 +9,13 @@ import styled from "styled-components";
 import FileInput from "../../ui/form/FileInput";
 import Editor from "../../ui/form/Editor";
 import { useEditTeacher } from "./useEditTeacher";
-import FilterSelect from "../../ui/form/FilterSelect";
+import AvailabilityInput from "./AvailabilityInput";
+import { BiLock } from "react-icons/bi";
+import { Avatar, FormControl, FormHelperText, InputLabel, MenuItem, Select } from "@mui/material";
+import { API_URL } from "../../../Constants";
+import { useTeacherShow } from "./useTeacherShow";
+import Spinner from "../../ui/Spinner";
+import { calculateTimezone } from "../../utils/helpers";
 
 const FormStyle = styled.form`
     display: flex;
@@ -17,10 +23,15 @@ const FormStyle = styled.form`
     gap: 3rem;
 `;
 
-const TeacherForm = (teacherToEdit = {}) => {
-    const teacherData = teacherToEdit?.teacherToEdit;
+const TeacherForm = ({ teacherToEdit = {} }) => {
+    const [selectedCourses, setSelectedCourses] = React.useState([]);
+    const [courses, setCourses] = React.useState([]);
 
-    const isEditSession = Boolean(teacherData?.id);
+    const isEditSession = Boolean(teacherToEdit?.id); // check if we are editing a teacher
+
+    const { isLoading, data } = useTeacherShow(teacherToEdit?.id);
+    const teacherData = React.useRef(teacherToEdit);
+
     const {
         register,
         handleSubmit,
@@ -31,13 +42,60 @@ const TeacherForm = (teacherToEdit = {}) => {
         setError,
         setValue,
     } = useForm({
-        defaultValues: isEditSession ? teacherData : {},
+        defaultValues: {
+            "availability": [
+                { day: "", start_time: "", end_time: "", timezone: "" }
+            ]
+        },
     });
+
+    if (!isLoading && teacherData.current && data) {
+        teacherData.current = data.data;
+        const availability = teacherData.current?.availabilities.map((item) => {
+            return {
+                day: item.days.local,
+                start_time: item.start_times.local,
+                end_time: item.end_times.local,
+                timezone: calculateTimezone(item.start_times.local, item.start_times.gmt),
+            }
+        });
+
+        teacherData.current.availability = availability;
+    }
 
     const { isEditing, editTeacher } = useEditTeacher(setError);
     const { isCreating, createTeacher } = useCreateTeacher(setError);
 
-    const isWorking = isCreating || isEditing;
+    useEffect(() => {
+        const fetchCourses = async () => {
+            const res = await fetch(`${API_URL}courses`, {
+                headers: {
+                    "accept-language": "ar",
+                    Accept: "application/json",
+                    "Content-Type": "application/json",
+                },
+            });
+
+            if (!res.ok) {
+                throw new Error(`Failed to fetch courses: ${res.statusText}`);
+            }
+
+            const data = await res.json();
+            setCourses(data.data);
+        };
+
+        fetchCourses();
+    }, []);
+
+    useEffect(() => {
+        if (isEditSession && !isLoading && teacherData?.current) {
+            reset(teacherData.current);
+            setSelectedCourses(teacherData.current.courses.map((item) => item.id));
+        }
+    }, [isEditSession, isLoading, teacherData, reset]);
+
+
+    const isWorking = isCreating || isEditing; // loading state
 
     const { errors, isSubmitted } = formState;
 
@@ -45,17 +103,29 @@ const TeacherForm = (teacherToEdit = {}) => {
 
     function onSubmit(data) {
         const image = typeof data.image === "string" ? null : data.image[0];
+        let availability = {};
+        let courses = {};
+
+        data.availability.forEach((item, index) => {
+            availability[`availability[${index}][day]`] = item.day;
+            availability[`availability[${index}][start_time]`] = item.start_time;
+            availability[`availability[${index}][end_time]`] = item.end_time;
+            availability[`availability[${index}][timezone]`] = item.timezone;
+        });
+        data.courses.forEach((item, index) => {
+            courses[`courses[${index}]`] = item.id ?? item;
+        });
+
+        data.qualifications = data.qualifications.replace("<p>", "");
+        data.qualifications = data.qualifications.replace("</p>", "");
 
         if (isEditSession) {
             editTeacher(
                 {
                     newTeacherData: {
-                        ...data,
-                        image: image,
-                        phone: "",
-                        email: "",
+                        ...data, ...availability, ...courses, image
                     },
-                    id: teacherData.id,
+                    id: teacherToEdit.id,
                 },
                 {
                     onSuccess: (data) => {
@@ -65,7 +135,7 @@ const TeacherForm = (teacherToEdit = {}) => {
                 }
             );
         } else {
-            const obj = { ...data, image: image, phone: "", email: "" };
+            const obj = { ...data, ...availability, ...courses, image };
             createTeacher(obj, {
                 onSuccess: (data) => {
                     reset();
@@ -73,6 +143,10 @@ const TeacherForm = (teacherToEdit = {}) => {
                 },
             });
         }
+    }
+
+    if (isEditSession && isLoading) {
+        return <Spinner />;
     }
 
     return (
@@ -86,23 +160,22 @@ const TeacherForm = (teacherToEdit = {}) => {
                     }),
                 }}
                 error={errors?.name}
-                disabled={isCreating}
+                disabled={isWorking}
             />
-            <MultiSelect
-                fieldName="حالة المعلم"
-                id="locale"
-                setFormValue={setValue}
-                defaultValue={teacherData?.locale}
-                error={errors?.locale}
-                name="locale"
-                control={control}
-                myOptions={[
-                    { value: "ar", title: "عرب" },
-                    { value: "en", title: "اعاجم" },
-                ]}
+            <MyInput
+                label="سن المدرس"
+                id="age"
+                reg={{
+                    ...register("age", {
+                        required: "يجب ادخال هذا الحقل",
+                    }),
+                }}
+                type="number"
+                error={errors?.age}
+                disabled={isWorking}
             />
-            {/* <MyInput
-                label="رقم الهاتف"
+            <MyInput
+                label="رقم الهاتف(201111111111+)"
                 id="phone"
                 reg={{
                     ...register("phone", {
@@ -110,26 +183,103 @@ const TeacherForm = (teacherToEdit = {}) => {
                     }),
                 }}
                 error={errors?.phone}
-                disabled={isCreating}
+                disabled={isWorking}
             />
-            <MyInput
-                label="البريد الالكتروني"
-                id="email"
-                reg={{
-                    ...register("email", {
+            {!isEditSession && (
+                <>
+                    <MyInput
+                        label="البريد الالكتروني"
+                        id="email"
+                        reg={{
+                            ...register("email", {
+                                required: "يجب ادخال هذا الحقل",
+                            }),
+                        }}
+                        error={errors?.email}
+                        disabled={isWorking}
+                    />
+                    <MyInput
+                        error={errors?.password}
+                        reg={{
+                            ...register("password", {
+                                required: "يجب ادخال هذا الحقل",
+                            }),
+                        }}
+                        type="password"
+                        label="كلمة المرور"
+                        icon={<BiLock />}
+                    />
+                    <MyInput
+                        error={errors?.password}
+                        reg={{
+                            ...register("password_confirmation", {
+                                required: "يجب ادخال هذا الحقل",
+                            }),
+                        }}
+                        name="password_confirmation"
+                        type="password"
+                        label="تأكيد كلمة المرور"
+                        icon={<BiLock />}
+                    />
+                </>
+            )}
+            <MultiSelect
+                fieldName="النوع"
+                id="gender"
+                setFormValue={setValue}
+                defaultValue={teacherData.current?.gender}
+                error={errors?.gender}
+                name="gender"
+                control={control}
+                myOptions={[
+                    { value: "male", title: "ذكر" },
+                    { value: "female", title: "أنثى" },
+                ]}
+            />
+            <FormControl sx={{}}>
+                <InputLabel id="courses-select-label" style={{
+                    fontSize: "1.6rem",
+                }}>
+                    الدورات
+                </InputLabel>
+                <Select
+                    labelId="courses-select-label"
+                    {...register("courses", {
                         required: "يجب ادخال هذا الحقل",
-                    }),
+                    })}
+                    multiple
+                    value={selectedCourses}
+                    onChange={(e) => setSelectedCourses(e.target.value)}
+                    error={errors?.courses}
+                    label="الدورات"
+                    id="outlined-required"
+                >
+                    {courses.map((course) => (
+                        <MenuItem key={course.id} value={course.id}>
+                            {course.name}
+                        </MenuItem>
+                    ))}
+                </Select>
+                <FormHelperText style={{
+                    color: "#d32f2f",
+                    fontSize: "1.6rem",
+                }}>{errors?.courses?.message}</FormHelperText>
+            </FormControl>
+            <AvailabilityInput control={control} register={register} error={errors?.availability} />
+            <InputLabel
+                style={{
+                    fontSize: "1.6rem",
                 }}
-                error={errors?.email}
-                disabled={isCreating}
-            /> */}
+            >
+                المؤهلات
+            </InputLabel>
             <div style={{ marginBottom: "3rem" }}>
                 <Editor
                     control={control}
                     name="qualifications"
                     setValue={setValue}
                     isEditSession={isEditSession}
-                    editValue={teacherData?.qualifications}
+                    editValue={teacherData.current?.qualifications}
                     reg={{
                         ...register("qualifications", {
                             required: "يجب ادخال هذا الحقل",
@@ -141,6 +291,13 @@ const TeacherForm = (teacherToEdit = {}) => {
                 </span>
             </div>
             <div>
+                {isEditSession && (
+                    <div style={{ display: "flex", justifyContent: "center", marginBottom: "10px" }}>
+                        <Avatar alt={teacherData.current?.name} src={teacherData.current?.image}
+                            sx={{ width: 100, height: 100 }}
+                        />
+                    </div>
+                )}
                 <FileInput
                     id="image"
                     setValue={setValue}
@@ -159,16 +316,16 @@ const TeacherForm = (teacherToEdit = {}) => {
             </div>
             <MyModal.Footer>
                 <Button
-                    disabled={isCreating}
+                    disabled={isWorking}
                     style={{
-                        background: isCreating ? "var(--color-grey-300)" : "",
+                        background: isWorking ? "var(--color-grey-300)" : "",
                     }}
                     type="submit"
                 >
                     حفظ
                 </Button>
                 <Button onClick={close} variation="third" type="button">
-                    الغاء
+                    إلغاء
                 </Button>
             </MyModal.Footer>
         </FormStyle>

@@ -1,7 +1,44 @@
 import { API_URL } from "../../Constants";
 
 // import { API_URL } from "../Constants";
-export async function getTeacherData({ search, page }, token) {
+export async function matchTeachersQuery({ search, page }, token) {
+    const res = await fetch(
+        `${API_URL}admin/staff?q=${search}&page=${page}&limit=15`,
+        {
+            headers: {
+                "accept-language": "ar",
+                Accept: "application/json",
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+        }
+    );
+
+    if (!res.ok) throw Error("حدث خطأ اثناء جلب البيانات");
+    const data = await res.json();
+    return data;
+}
+
+export async function getTeacherData(id, token) {
+    if (!id) return null; 
+    const res = await fetch(
+        `${API_URL}admin/staff/${id}`,
+        {
+            headers: {
+                "accept-language": "ar",
+                Accept: "application/json",
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+        }
+    );
+
+    if (!res.ok) throw Error("حدث خطأ اثناء جلب البيانات");
+    const data = await res.json();
+    return data;
+}
+
+export async function getTeachersQueryData({ search, page }, token) {
     const res = await fetch(
         `${API_URL}admin/staff?q=${search}&page=${page}&limit=15`,
         {

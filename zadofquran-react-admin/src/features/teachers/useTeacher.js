@@ -1,25 +1,23 @@
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { getTeacherData } from "../../services/apiTeacher";
+import { useQuery } from "@tanstack/react-query";
+import { getTeachersQueryData } from "../../services/apiTeacher";
 import { useSearchParams } from "react-router-dom";
 
 export function useTeacher() {
-    const [searchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
 
-    // search
-    const searchValue = searchParams.get("q");
-    const search = !searchValue || searchValue === "" ? "" : searchValue;
+  // search
+  const searchValue = searchParams.get("q");
+  const search = !searchValue || searchValue === "" ? "" : searchValue;
 
-    // PAGINATION
-    const page = !searchParams.get("page")
-        ? 1
-        : Number(searchParams.get("page"));
+  // PAGINATION
+  const page = !searchParams.get("page") ? 1 : Number(searchParams.get("page"));
 
-    // QUERY
-    const { isLoading, data, error } = useQuery({
-        queryKey: ["teachers", search, page],
-        queryFn: () =>
-            getTeacherData({ search, page }, localStorage.getItem("token")),
-    });
+  // QUERY
+  const { isLoading, data, error } = useQuery({
+    queryKey: ["teachers", search, page],
+    queryFn: () =>
+      getTeachersQueryData({ search, page }, localStorage.getItem("token")),
+  });
 
-    return { isLoading, error, data };
+  return { isLoading, error, data };
 }

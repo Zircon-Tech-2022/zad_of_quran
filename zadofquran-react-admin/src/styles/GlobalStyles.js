@@ -222,6 +222,11 @@ const GlobalStyle = createGlobalStyle`
     filter: grayscale(var(--image-grayscale)) opacity(var(--image-opacity));
   }
   
+  /* time inputs */
+  input[type="time"]::-webkit-calendar-picker-indicator{
+    display: none;
+  }
+
   /*
   FOR DARK MODE
   
