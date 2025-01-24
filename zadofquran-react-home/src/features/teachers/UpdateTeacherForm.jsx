@@ -9,9 +9,6 @@ import Button from "../../ui/Button";
 import { t } from "i18next";
 import { Avatar, FormControl, FormHelperText, InputLabel, MenuItem, Select } from "@mui/material";
 import AvailabilityInput from "../../ui/form/AvailabilityInput";
-import { useLocation } from "react-router-dom";
-import { API_URL } from "../../Constants";
-
 
 const StyleForm = styled.form`
     display: flex;
@@ -73,9 +70,6 @@ const StyleSelect = styled(Select)`
 `;
 
 const UpdateTeacherForm = ({ values }) => {
-    const location = useLocation();
-    const [selectedCourses, setSelectedCourses] = React.useState([]);
-    const [courses, setCourses] = React.useState([]);
     const [imageFile, setImageFile] = React.useState(null);
 
     const handleImageChange = (e) => {

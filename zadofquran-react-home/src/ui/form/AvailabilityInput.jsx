@@ -120,7 +120,6 @@ const AvailabilityInput = ({ control, register, error }) => {
             <Controller
               name={`availability.${index}.day`}
               control={control}
-              defaultValue="" // Ensure a default value is provided
               rules={{ required: t("required") }}
               render={({ field: controllerField, fieldState: { error } }) => (
                 <>
@@ -164,7 +163,6 @@ const AvailabilityInput = ({ control, register, error }) => {
             <Controller
               name={`availability.${index}.timezone`}
               control={control}
-              defaultValue="" // Ensure a default value is provided
               rules={{ required: t("required") }}
               render={({ field: controllerField, fieldState: { error } }) => (
                 <>
