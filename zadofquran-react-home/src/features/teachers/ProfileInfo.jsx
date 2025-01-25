@@ -12,7 +12,7 @@ const ProfileInfo = ({ user }) => (
                 <Grid item>
                     <Typography variant="h5">{user.name}</Typography>
                     <Typography variant="body1">{user.email}</Typography>
-                    <Typography variant="body2">{t('phone')}: {user.phone}</Typography>
+                    <Typography variant="body2">{t('phoneWord')}: {user.phone}</Typography>
                     <Typography variant="body2">{t('age')}: {user.age}</Typography>
                     <Typography variant="body2">{t('qualifications')}: {user.qualifications}</Typography>
                 </Grid>

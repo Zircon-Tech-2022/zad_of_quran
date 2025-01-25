@@ -59,6 +59,7 @@
     "name": "Name",
     "email": "Email",
     "phone": "Phone(+201111111111)",
+    "phoneWord": "Phone",
     "password": "Password",
     "confirmPassword": "Confirm Password",
     "required": "Please enter this field",
