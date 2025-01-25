@@ -1,10 +1,7 @@
 import React from "react";
-import Filters from "../../ui/Filters";
 import SearchFilter from "../../ui/SearchFilter";
 import FilterLayout from "../../ui/FilterLayout";
 import { Grid } from "@mui/material";
-import Button from "../../ui/Button";
-import MyModal from "../../ui/MyModal";
 import AddUserModal from "./AddUserModal";
 
 const UsersFilter = () => {

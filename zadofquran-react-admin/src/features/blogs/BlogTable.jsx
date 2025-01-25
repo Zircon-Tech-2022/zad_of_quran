@@ -1,9 +1,7 @@
-import React, { useState } from "react";
+import React from "react";
 import Table from "../../ui/table/Table";
 import BlogRow from "./BlogRow";
 import styled from "styled-components";
-import { Pagination } from "@mui/material";
-import { useSearchParams } from "react-router-dom";
 import { useBlog } from "./useBlog";
 import Spinner from "../../ui/Spinner";
 import MyPagination from "../../ui/MyPagination";

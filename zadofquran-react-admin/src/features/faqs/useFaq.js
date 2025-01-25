@@ -1,4 +1,4 @@
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { getFaqData } from "../../services/apiFaq";
 import { useSearchParams } from "react-router-dom";
 

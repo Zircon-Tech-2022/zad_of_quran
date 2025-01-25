@@ -2,14 +2,13 @@ import React from "react";
 import Table from "../../ui/table/Table";
 import { Cell } from "../../ui/table/Cell";
 
-import { Button, Menu, MenuItem, Modal } from "@mui/material";
-import { BsThreeDots, BsTrash3Fill } from "react-icons/bs";
+import { Menu, MenuItem } from "@mui/material";
+import { BsTrash3Fill } from "react-icons/bs";
 import { BiPencil } from "react-icons/bi";
 import MyModal from "../../ui/MyModal";
 import PlansForm from "./PlansForm";
 import ConfirmDelete from "../../ui/ConfirmDelete";
 import { useDeletePlans } from "./useDeletePlans";
-import { deletePlans } from "../../services/apiPlans";
 import Actions from "../../ui/table/Actions";
 import { BlueCell } from "../../ui/table/BlueCell";
 import { PinkCell } from "../../ui/table/PinkCell";
@@ -19,7 +18,7 @@ import { GreenCell } from "../../ui/table/GreenCell";
 import { LIMIT } from "../../../Constants";
 
 const PlansRow = ({ plan, num }) => {
-    const [searchParams, setSearchParams] = useSearchParams();
+    const [searchParams] = useSearchParams();
     const page = +searchParams.get("page") || 1;
     const tableNum = (page - 1) * LIMIT + num;
     const {

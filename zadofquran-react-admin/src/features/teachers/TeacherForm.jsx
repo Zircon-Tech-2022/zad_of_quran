@@ -29,7 +29,8 @@ const TeacherForm = ({ teacherToEdit = {} }) => {
 
     const isEditSession = Boolean(teacherToEdit?.id); // check if we are editing a teacher
 
-    const { isLoading, data } = useTeacherShow(teacherToEdit?.id);
+    let defaultTimezone = "GMT+2";
+    const { isLoading, user } = useTeacherShow(teacherToEdit?.id, defaultTimezone);
     const teacherData = React.useRef(teacherToEdit);
 
     const {
@@ -49,8 +50,8 @@ const TeacherForm = ({ teacherToEdit = {} }) => {
         },
     });
 
-    if (!isLoading && teacherData.current && data) {
-        teacherData.current = data.data;
+    if (!isLoading && teacherData.current && user) {
+        teacherData.current = user.data;
         const availability = teacherData.current?.availabilities.map((item) => {
             return {
                 day: item.days.local,
@@ -80,8 +81,8 @@ const TeacherForm = ({ teacherToEdit = {} }) => {
                 throw new Error(`Failed to fetch courses: ${res.statusText}`);
             }
 
-            const data = await res.json();
-            setCourses(data.data);
+            const courses = await res.json();
+            setCourses(courses.data);
         };
 
         fetchCourses();

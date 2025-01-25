@@ -1,4 +1,4 @@
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { getBlogData } from "../../services/apiBlog";
 import { useSearchParams } from "react-router-dom";
 

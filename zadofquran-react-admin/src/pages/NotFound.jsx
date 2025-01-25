@@ -35,7 +35,7 @@ const NotFound = () => {
     return (
         <Lay>
             <ErorrImg>
-                <img src="/imgs/404.svg" />
+                <img src="/imgs/404.svg" alt="404, Not Found"/>
             </ErorrImg>
             <StyleButton to="/">
                 الصفحة الرئيسية

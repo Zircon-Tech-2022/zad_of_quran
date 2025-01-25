@@ -1,15 +1,14 @@
-import React, { useEffect, useContext, useState, useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 
 import { useSideBarContext } from "../../context/SideBarContext";
-import styled, { css } from "styled-components";
+import styled from "styled-components";
 import { FaBars, FaPersonCircleQuestion, FaUsersGear } from "react-icons/fa6";
 import { ImPriceTags } from "react-icons/im";
 import { BsChatLeftQuote, BsWindowStack } from "react-icons/bs";
 import { MdGroup, MdOutlineLocalPostOffice } from "react-icons/md";
-import { LuLayoutDashboard, LuLogOut } from "react-icons/lu";
+import { LuLogOut } from "react-icons/lu";
 import SideItem, { NavHead, NavIcon } from "./SideItem";
 import SideBarBrand, { Brand, BrandImg, Type, Zircon } from "./SideBarBrand";
-import Logout from "./Logout";
 import { useLogout } from "../../features/authentication/useLogout";
 
 const Items = styled.div`

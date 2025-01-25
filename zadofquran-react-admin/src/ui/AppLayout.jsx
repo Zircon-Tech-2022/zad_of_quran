@@ -36,7 +36,7 @@ const Main = styled.div`
 
 const AppLayout = () => {
     const [width, setWindowWidth] = useState(0);
-    const { sideState, setSideState } = useSideBarContext();
+    const { sideState } = useSideBarContext();
     useEffect(() => {
         updateDimensions();
 

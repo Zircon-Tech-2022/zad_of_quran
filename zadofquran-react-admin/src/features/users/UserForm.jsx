@@ -22,10 +22,7 @@ const UserForm = (userToEdit = {}) => {
         handleSubmit,
         reset,
         formState,
-        control,
-        getValues,
         setError,
-        setValue,
     } = useForm({
         defaultValues: isEditSession ? userData : {},
     });
@@ -35,7 +32,7 @@ const UserForm = (userToEdit = {}) => {
 
     const isWorking = isCreating || isEditing;
 
-    const { errors, isSubmitted } = formState;
+    const { errors } = formState;
 
     const { close } = useContext(ModalContext);
 
@@ -75,7 +72,7 @@ const UserForm = (userToEdit = {}) => {
                     }),
                 }}
                 error={errors?.name}
-                disabled={isCreating}
+                disabled={isWorking}
             />
             <MyInput
                 label="رقم الهاتف"
@@ -86,7 +83,7 @@ const UserForm = (userToEdit = {}) => {
                     }),
                 }}
                 error={errors?.phone}
-                disabled={isCreating}
+                disabled={isWorking}
             />
             <MyInput
                 label="البريد الالكتروني"
@@ -97,7 +94,7 @@ const UserForm = (userToEdit = {}) => {
                     }),
                 }}
                 error={errors?.email}
-                disabled={isCreating}
+                disabled={isWorking}
             />
             <MyInput
                 label="كلمة المرور"
@@ -108,7 +105,7 @@ const UserForm = (userToEdit = {}) => {
                     }),
                 }}
                 error={errors?.password}
-                disabled={isCreating}
+                disabled={isWorking}
             />
             <MyInput
                 label="تأكيد كلمة المرور"
@@ -119,14 +116,14 @@ const UserForm = (userToEdit = {}) => {
                     }),
                 }}
                 error={errors?.password}
-                disabled={isCreating}
+                disabled={isWorking}
             />
 
             <MyModal.Footer>
                 <Button
-                    disabled={isCreating}
+                    disabled={isWorking}
                     style={{
-                        background: isCreating ? "var(--color-grey-300)" : "",
+                        background: isWorking ? "var(--color-grey-300)" : "",
                     }}
                     type="submit"
                 >

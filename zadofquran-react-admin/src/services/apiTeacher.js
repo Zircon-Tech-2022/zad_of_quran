@@ -19,10 +19,17 @@ export async function matchTeachersQuery({ search, page }, token) {
     return data;
 }
 
-export async function getTeacherData(id, token) {
+export async function getTeacherData(id, token, timezone = null) {
     if (!id) return null; 
+    let endpoint = `${API_URL}admin/staff/${id}`;
+    
+    if (timezone) {
+        const query = timezone.replace('+',"%2B"); // replace + with %2B to avoid encoding issue
+        endpoint+=`?timezone_offset=${query}`;
+    }
+    
     const res = await fetch(
-        `${API_URL}admin/staff/${id}`,
+        endpoint,
         {
             headers: {
                 "accept-language": "ar",

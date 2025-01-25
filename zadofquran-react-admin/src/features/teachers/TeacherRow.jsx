@@ -1,12 +1,11 @@
 import React from "react";
 import Table from "../../ui/table/Table";
-import styled from "styled-components";
 import { Cell } from "../../ui/table/Cell";
 import { TableImg } from "../../ui/table/TableImg";
-import { BlueCell } from "../../ui/table/BlueCell";
-import { Button, Menu, MenuItem, Modal } from "@mui/material";
-import { BsThreeDots, BsTrash3Fill } from "react-icons/bs";
+import { Menu, MenuItem } from "@mui/material";
+import { BsTrash3Fill } from "react-icons/bs";
 import { BiPencil } from "react-icons/bi";
+import { FaEye } from "react-icons/fa";
 import MyModal from "../../ui/MyModal";
 import TeacherForm from "./TeacherForm";
 import ConfirmDelete from "../../ui/ConfirmDelete";
@@ -16,15 +15,10 @@ import { useSearchParams } from "react-router-dom";
 import { LIMIT } from "../../../Constants";
 import { PinkCell } from "../../ui/table/PinkCell";
 import { OrangeCell } from "../../ui/table/OrangeCell";
+import TeacherProfile from "./TeacherProfile";
 
-const Describtion = styled.div`
-    /* width: 100%; */
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-`;
 const TeacherRow = ({ teacher, num }) => {
-    const [searchParams, setSearchParams] = useSearchParams();
+    const [searchParams] = useSearchParams();
     const page = +searchParams.get("page") || 1;
     const tableNum = (page - 1) * LIMIT + num;
     const { id, name, image, locale } = teacher;
@@ -63,6 +57,12 @@ const TeacherRow = ({ teacher, num }) => {
                         "aria-labelledby": "basic-button",
                     }}
                 >
+                    <MyModal.Open opens="view" onClick={handleClose}>
+                        <MenuItem sx={{ gap: "1.5rem", fontSize: "1.6rem" }}>
+                            عرض
+                            <FaEye />
+                        </MenuItem>
+                    </MyModal.Open>
                     <MyModal.Open opens="edit" onClick={handleClose}>
                         <MenuItem sx={{ gap: "1.5rem", fontSize: "1.6rem" }}>
                             تعديل
@@ -79,6 +79,9 @@ const TeacherRow = ({ teacher, num }) => {
                         </MenuItem>
                     </MyModal.Open>
                 </Menu>
+                <MyModal.Window name="view" title="بيانات المدرس">
+                    <TeacherProfile teacherToView={teacher} />
+                </MyModal.Window>
                 <MyModal.Window name="edit" title="تعديل المدرس">
                     <TeacherForm teacherToEdit={teacher} />
                 </MyModal.Window>
