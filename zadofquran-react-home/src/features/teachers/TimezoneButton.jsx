@@ -24,7 +24,7 @@ const TimezoneButton = ({ defaultValue, handleChange }) => (
                     color: (theme) => theme.palette.secondary.main,
                 }
             }}
-            id="timezone-select">{t("timezone")}</InputLabel>
+            id="timezone-label">{t("timezone")}</InputLabel>
         <Select
             sx={{
                 width: "200px",
