@@ -1,7 +1,7 @@
 import React from "react";
-import { Button, FormControl, InputLabel, MenuItem, Select } from "@mui/material";
+import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import { BiTimer } from "react-icons/bi";
-import { Controller } from "react-hook-form";
+import { t } from "i18next";
 
 const timezoneOffsets = [
     "GMT-12", "GMT-11", "GMT-10", "GMT-9:30", "GMT-9",
@@ -24,7 +24,7 @@ const TimezoneButton = ({ defaultValue, handleChange }) => (
                     color: (theme) => theme.palette.secondary.main,
                 }
             }}
-            id="demo-simple-select-label">timezone</InputLabel>
+            id="timezone-select">{t("timezone")}</InputLabel>
         <Select
             sx={{
                 width: "200px",
@@ -39,7 +39,7 @@ const TimezoneButton = ({ defaultValue, handleChange }) => (
             IconComponent={BiTimer}
             onChange={(e) => handleChange(e)}
             labelId={`timezone-label`}
-            label={("timezone")}
+            label={t("timezone")}
             id="timezone-select"
         >
             {timezoneOffsets.map((offset) => (
