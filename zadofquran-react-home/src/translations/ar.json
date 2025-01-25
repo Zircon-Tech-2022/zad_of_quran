@@ -119,5 +119,6 @@
     "addNewEntry": "إضافة حقل إدخال جديد",
     "removeEntry": "حذف حقل الإدخال",
     "noLessons": "لا يوجد حلقات",
+    "noCourses": "لا يوجد دورات",
     "noAvailabilitySolts": "لا توجد فترات متاحة"
 }

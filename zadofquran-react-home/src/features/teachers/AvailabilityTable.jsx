@@ -17,21 +17,40 @@ const AvailabilityTable = ({ availabilities }) => {
     return (
         <Card>
             <CardContent>
-                <Typography variant="h6" gutterBottom>
+                <Typography variant="h5" gutterBottom>
                     {t('availability')}
                 </Typography>
                 <Table>
                     <TableHead>
                         <TableRow>
-                            <TableCell>{t('day')}</TableCell>
-                            <TableCell>{t('slots')}</TableCell>
+                            <TableCell sx={{
+                                textAlign: /[\u0600-\u06FF]/.test(t('day')) ? "right" : "left",
+                            }}>
+                                <Typography variant="h6" gutterBottom>
+                                    {t('day')}
+                                </Typography>
+                            </TableCell>
+                            <TableCell sx={{
+                                textAlign: /[\u0600-\u06FF]/.test(t('slots')) ? "right" : "left",
+                            }}>
+                                <Typography variant="h6" gutterBottom>
+                                    {t('slots')}
+                                </Typography>
+                            </TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
                         {slotsByDay.map(({ day, slots }) => (
                             <TableRow key={day}>
-                                <TableCell>{day.charAt(0).toUpperCase() + day.slice(1)}</TableCell>
-                                <TableCell>
+                                <TableCell
+                                    sx={{
+                                        textAlign: /[\u0600-\u06FF]/.test(t(`${day}`)) ? "right" : "left",
+                                    }}
+                                >{t(`${day}`)}</TableCell>
+                                <TableCell sx={{
+                                    textAlign: /[\u0600-\u06FF]/.test(t(`${day}`)) ? "right" : "left",
+                                }}
+                                >
                                     {slots.length > 0 ? (
                                         <ul>
                                             {slots.map((slot, index) => (

@@ -15,7 +15,11 @@ const timezoneOffsets = [
 ];
 
 const TimezoneButton = ({ defaultValue, handleChange }) => (
-    <FormControl>
+    <FormControl
+        style={{
+            width: "200px",
+        }}
+    >
         <InputLabel
             sx={{
                 color: (theme) => theme.palette.secondary.main,
@@ -27,7 +31,7 @@ const TimezoneButton = ({ defaultValue, handleChange }) => (
             id="timezone-label">{t("timezone")}</InputLabel>
         <Select
             sx={{
-                width: "200px",
+                textAlign: "left",
                 borderColor: (theme) => theme.palette.secondary.main,
                 color: (theme) => theme.palette.secondary.main,
                 "& .MuiSelect-icon": {

@@ -5,18 +5,21 @@ import { t } from "i18next";
 const CoursesList = ({ courses }) => (
     <Card>
         <CardContent>
-            <Typography variant="h6" gutterBottom>
+            <Typography variant="h5" gutterBottom>
                 {t("coursesWord")}
             </Typography>
             <List>
-                {courses.map((course, index) => (
-                    <ListItem key={index}>
+                {courses.length > 0 ? courses.map((course, index) => (
+                    <ListItem sx={{
+                        textAlign: /[\u0600-\u06FF]/.test(course.name) ? "right" : "left",
+                        direction: /[\u0600-\u06FF]/.test(course.name) ? "rtl" : "ltr",
+                    }} key={index}>
                         <ListItemAvatar>
                             <Avatar alt={course.name} src={course.image} />
                         </ListItemAvatar>
                         <ListItemText primary={course.name} secondary={course.description} />
                     </ListItem>
-                ))}
+                )) : (t('noCourses'))}
             </List>
         </CardContent>
     </Card>

@@ -9,7 +9,11 @@ const ProfileInfo = ({ user }) => (
                 <Grid item>
                     <Avatar alt={user.name} src={user.image} sx={{ width: 80, height: 80 }} />
                 </Grid>
-                <Grid item>
+                <Grid item sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "3px",
+                }}>
                     <Typography variant="h5">{user.name}</Typography>
                     <Typography variant="body1">{user.email}</Typography>
                     <Typography variant="body2">{t('phoneWord')}: {user.phone}</Typography>
