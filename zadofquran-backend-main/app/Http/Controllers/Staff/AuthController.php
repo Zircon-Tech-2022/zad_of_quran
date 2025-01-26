@@ -132,7 +132,7 @@ class AuthController extends Controller
         $lessonsArray = [];
         $lessonsAvailabilitiesArray = [];
         foreach ($lessons as $lesson) {
-            $lessonAvailabilities = $this->getAvailabilities($lesson->availabilities);
+            $lessonAvailabilities = $this->getAvailabilities($lesson->availabilities, $timezone);
             foreach ($lessonAvailabilities as $lessonAvailability) {
                 $lessonsAvailabilitiesArray[] = $lessonAvailability;
             }

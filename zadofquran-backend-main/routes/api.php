@@ -68,6 +68,8 @@ Route::delete('admin/comments/{comment}', [App\Http\Controllers\CommentControlle
 
 Route::get('admin/subscribers/export', [App\Http\Controllers\SubscriberController::class, 'export'])->name('admin.subscribers.export')->middleware('auth');
 Route::get('admin/subscribers', [App\Http\Controllers\SubscriberController::class, 'index'])->name('admin.subscribers.index')->middleware('auth');
+Route::get('admin/subscribers/{subscriber}', [App\Http\Controllers\SubscriberController::class, 'show'])->name('admin.subscribers.show')->middleware('auth');
+Route::delete('admin/subscribers/{subscriber}', [App\Http\Controllers\SubscriberController::class, 'destroy'])->name('admin.subscribers.destroy')->middleware('auth');
 Route::post('subscribe', [App\Http\Controllers\SubscriberController::class, 'store']);
 
 Route::post('contact', [App\Http\Controllers\ContactController::class, 'sendMail']);

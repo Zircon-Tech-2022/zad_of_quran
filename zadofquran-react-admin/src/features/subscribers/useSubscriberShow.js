@@ -1,21 +1,22 @@
-import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
-import { getTeacherData } from "../../services/apiTeacher";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { getSubscriberData } from "../../services/apiSubscribers";
 import toast from "react-hot-toast";
 
-export function useTeacherShow(id, timezone) {
+export function useSubscriberShow(id, timezone) {
   // QUERY
   const { isLoading, data: user } = useQuery({
-    queryKey: ["teacher", id, timezone],
-    queryFn: () => getTeacherData(id, localStorage.getItem("token"), timezone),
+    queryKey: ["subscriber", id, timezone],
+    queryFn: () =>
+      getSubscriberData(id, localStorage.getItem("token"), timezone),
   });
 
   // MUTATION
   const queryClient = useQueryClient();
   const { mutate: updateTimezone, isUpdateTimezoneLoading } = useMutation({
     mutationFn: ({ id, timezone }) =>
-      getTeacherData(id, localStorage.getItem("token"), timezone),
+      getSubscriberData(id, localStorage.getItem("token"), timezone),
     onSuccess: (user) => {
-      queryClient.setQueryData(["teacher", id, timezone], user);
+      queryClient.setQueryData(["subscriber", id, timezone], user);
     },
     onError: (err) => {
       toast.error(err.message);

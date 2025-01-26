@@ -2,14 +2,12 @@ import React, { useContext } from "react";
 import MyModal, { ModalContext } from "../../ui/MyModal";
 import Button from "../../ui/Button";
 import styled from "styled-components";
-import { useTeacherShow } from "./useTeacherShow";
+import { useSubscriberShow } from "./useSubscriberShow";
 import Spinner from "../../ui/Spinner";
-import { calculateTimezone } from "../../utils/helpers";
 import ProfileInfo from "./ProfileInfo";
-import TimezoneButton from "./TimezoneButton";
-import CoursesList from "./CoursesList";
-import AvailabilityTable from "./AvailabilityTable";
 import LessonsTable from "./LessonsTable";
+import TimezoneButton from "../teachers/TimezoneButton";
+import { calculateTimezone } from "../../utils/helpers";
 
 const DivStyle = styled.div`
     display: flex;
@@ -17,18 +15,19 @@ const DivStyle = styled.div`
     gap: 2rem;
 `;
 
-const TeacherProfile = ({ teacherToView }) => {
+const SubscriberProfile = ({ subscriberToView }) => {
     let defaultTimezone = "GMT+2";
-    const { isLoading, user, updateTimezone, isUpdateTimezoneLoading } = useTeacherShow(teacherToView?.id, defaultTimezone);
+    const { isLoading, user, updateTimezone, isUpdateTimezoneLoading } = useSubscriberShow(subscriberToView?.id, defaultTimezone);
+
     const { close } = useContext(ModalContext);
 
-    if (!isLoading && !isUpdateTimezoneLoading && user?.data?.user?.availabilities) {
-        defaultTimezone = calculateTimezone(user.data.user.availabilities[0].start_times['local'],
-            user.data.user.availabilities[0].start_times['gmt']);
+    if (!isLoading && !isUpdateTimezoneLoading && user?.data?.lessons[0]?.availabilities) {
+        defaultTimezone = calculateTimezone(user.data.lessons[0].availabilities[0].start_times['local'],
+            user.data.lessons[0].availabilities[0].start_times['gmt']);
     }
 
     const handleTimezoneChange = async (e) => {
-        updateTimezone({ id: teacherToView?.id, timezone: e.target.value });
+        updateTimezone({ id: subscriberToView?.id, timezone: e.target.value });
     }
 
     if (isLoading || isUpdateTimezoneLoading) {
@@ -37,12 +36,10 @@ const TeacherProfile = ({ teacherToView }) => {
 
     return (
         <>
-            {!isLoading && !isUpdateTimezoneLoading && user && (
+            {!isLoading && user && (
                 <DivStyle>
-                    <ProfileInfo user={user?.data} />
+                    <ProfileInfo subscriber={user?.data} />
                     <TimezoneButton defaultValue={defaultTimezone} handleChange={handleTimezoneChange} />
-                    <CoursesList courses={user?.data?.courses} />
-                    <AvailabilityTable availabilities={user?.data?.availabilities} />
                     <LessonsTable lessons={user?.data?.lessons} />
                 </DivStyle>
             )}
@@ -55,4 +52,4 @@ const TeacherProfile = ({ teacherToView }) => {
     );
 };
 
-export default TeacherProfile;
+export default SubscriberProfile;

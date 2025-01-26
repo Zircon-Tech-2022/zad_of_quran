@@ -122,7 +122,7 @@ class StaffController extends Controller
         $lessonsArray = [];
         $lessonsAvailabilitiesArray = [];
         foreach ($lessons as $lesson) {
-            $lessonAvailabilities = $this->getAvailabilities($lesson->availabilities);
+            $lessonAvailabilities = $this->getAvailabilities($lesson->availabilities, $timezone);
             foreach ($lessonAvailabilities as $lessonAvailability) {
                 $lessonsAvailabilitiesArray[] = $lessonAvailability;
             }
@@ -301,6 +301,12 @@ class StaffController extends Controller
      */
     public function destroy(Staff $staff)
     {
+        if ($staff->lessons->count() > 0) {
+            return apiErrorResponse(__('messages.staff_has_lessons'));
+        }
+        if ($staff->image) {
+            Storage::disk('public')->delete($staff->image);
+        }
         $staff->delete();
         return apiSuccessResponse(__('messages.deleted_success'));
     }

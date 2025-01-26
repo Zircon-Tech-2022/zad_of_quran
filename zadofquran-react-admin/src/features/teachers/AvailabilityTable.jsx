@@ -63,7 +63,7 @@ const AvailabilityTable = ({ availabilities }) => {
                                                 <li key={index} style={{ marginBottom: "10px" }}>
                                                     <Chip sx={{
                                                         color: (theme) => theme.palette.common.white,
-                                                        backgroundColor: (theme) => theme.palette.secondary.main,
+                                                        backgroundColor: (theme) => theme.palette.primary.main,
                                                     }} variant="outlined" label={`${slot.startTime} - ${slot.endTime}`} />
                                                 </li>
                                             ))}

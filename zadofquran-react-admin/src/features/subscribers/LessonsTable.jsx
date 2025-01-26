@@ -21,6 +21,7 @@ const LessonsTable = ({ lessons }) => {
                 .map((slot) => ({
                     lessonId: lesson.id,
                     courseName: lesson.course.name,
+                    staffName: lesson.staff.name,
                     startTime: slot.start_times.local,
                     endTime: slot.end_times.local,
                 }))
@@ -68,7 +69,7 @@ const LessonsTable = ({ lessons }) => {
                                                     <Chip sx={{
                                                         color: (theme) => theme.palette.common.white,
                                                         backgroundColor: (theme) => theme.palette.primary.main,
-                                                    }} variant="outlined" label={`حلقة #${slot.lessonId} | ${slot.courseName} | ${slot.startTime} - ${slot.endTime}`} />
+                                                    }} variant="outlined" label={`حلقة #${slot.lessonId} | ${slot.staffName} | ${slot.courseName} | ${slot.startTime} - ${slot.endTime}`} />
                                                 </li>
                                             ))}
                                         </ul>

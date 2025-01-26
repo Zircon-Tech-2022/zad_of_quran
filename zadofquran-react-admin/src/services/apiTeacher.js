@@ -145,7 +145,7 @@ export async function deleteTeacher(id, token) {
         },
     });
 
-    if (!res.ok) throw Error("حدث خطأ اثناء المسح ");
+    if (!res.ok) throw Error("حدث خطأ اثناء المسح، ربما المدرس له حلقات نشطة");
     const data = await res.json();
     return data;
 }

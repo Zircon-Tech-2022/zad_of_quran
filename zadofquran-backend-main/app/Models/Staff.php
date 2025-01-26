@@ -10,6 +10,8 @@ class Staff extends Model
 {
     use HasFactory, SoftDeletes;
 
+    protected $table = 'staff';
+
     protected static function boot()
     {
         parent::boot();

@@ -7,6 +7,7 @@ import { ImPriceTags } from "react-icons/im";
 import { BsChatLeftQuote, BsWindowStack } from "react-icons/bs";
 import { MdGroup, MdOutlineLocalPostOffice } from "react-icons/md";
 import { LuLogOut } from "react-icons/lu";
+import { BiSolidNetworkChart } from "react-icons/bi";
 import SideItem, { NavHead, NavIcon } from "./SideItem";
 import SideBarBrand, { Brand, BrandImg, Type, Zircon } from "./SideBarBrand";
 import { useLogout } from "../../features/authentication/useLogout";
@@ -87,6 +88,11 @@ const items = [
         name: "كل الطلاب",
         to: "/users",
         icon: <MdGroup />,
+    },
+    {
+        name: "كل المشتركين",
+        to: "/subscribers",
+        icon: <BiSolidNetworkChart />,
     },
     {
         name: "كل المدرسين",
