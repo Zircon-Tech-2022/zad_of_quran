@@ -6,7 +6,7 @@ import { useSubscriberShow } from "./useSubscriberShow";
 import Spinner from "../../ui/Spinner";
 import ProfileInfo from "./ProfileInfo";
 import LessonsTable from "./LessonsTable";
-import TimezoneButton from "../teachers/TimezoneButton";
+import TimezoneButton from "../../ui/TimezoneButton";
 import { calculateTimezone } from "../../utils/helpers";
 
 const DivStyle = styled.div`

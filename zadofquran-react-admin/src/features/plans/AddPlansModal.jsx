@@ -6,10 +6,10 @@ const AddPlansModal = () => {
     return (
         <MyModal>
             <MyModal.Open opens="createEdit">
-                <Button>اضافة +</Button>
+                <Button>إضافة +</Button>
             </MyModal.Open>
 
-            <MyModal.Window title="اضافة خطة جديد" name="createEdit">
+            <MyModal.Window title="إضافة خطة جديد" name="createEdit">
                 <PlansForm />
             </MyModal.Window>
         </MyModal>

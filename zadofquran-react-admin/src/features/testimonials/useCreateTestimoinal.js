@@ -14,7 +14,7 @@ export function useCreateTestimoinal(setError) {
         },
 
         onSuccess: () => {
-            toast.success("تم الاضافة بنجاح");
+            toast.success("تم الإضافة بنجاح");
             queryClient.invalidateQueries({
                 queryKey: ["testimonials"],
             });

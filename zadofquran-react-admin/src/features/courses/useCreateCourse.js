@@ -14,7 +14,7 @@ export function useCreateCourse(setError) {
         },
 
         onSuccess: () => {
-            toast.success("تم اضافة الدورة بنجاح");
+            toast.success("تم إضافة الدورة بنجاح");
             queryClient.invalidateQueries({
                 queryKey: ["courses"],
             });

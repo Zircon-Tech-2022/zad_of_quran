@@ -8,7 +8,7 @@ export function useCreateTeacher() {
         // mutationFn: createEditTeacherApi,
 
         onSuccess: () => {
-            toast.success("تم اضافة المعلم بنجاح");
+            toast.success("تم إضافة المعلم بنجاح");
             queryClient.invalidateQueries({
                 queryKey: ["teachers"],
             });

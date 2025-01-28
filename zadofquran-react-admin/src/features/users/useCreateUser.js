@@ -14,7 +14,7 @@ export function useCreateUser(setError) {
         },
 
         onSuccess: () => {
-            toast.success("تم اضافة الطالب بنجاح");
+            toast.success("تم إضافة الطالب بنجاح");
             queryClient.invalidateQueries({
                 queryKey: ["users"],
             });

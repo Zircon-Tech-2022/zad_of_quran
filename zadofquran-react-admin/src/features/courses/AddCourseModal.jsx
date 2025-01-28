@@ -6,10 +6,10 @@ const AddCourseModal = () => {
     return (
         <MyModal>
             <MyModal.Open opens="createEditCourse">
-                <Button>اضافة +</Button>
+                <Button>إضافة +</Button>
             </MyModal.Open>
 
-            <MyModal.Window title="اضافة دورة جديد" name="createEditCourse">
+            <MyModal.Window title="إضافة دورة جديد" name="createEditCourse">
                 <CourseForm />
             </MyModal.Window>
         </MyModal>

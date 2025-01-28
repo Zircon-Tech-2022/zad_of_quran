@@ -11,7 +11,7 @@ return [
     'user_not_found' => 'المستخدم غير موجود',
     'user_found' => 'المستخدم موجود',
     'users_found' => 'تم العثور على المستخدمين',
-    'added_success' => 'تم الاضافة بنجاح',
+    'added_success' => 'تم الإضافة بنجاح',
     'updated_success' => 'تم التحديث بنجاح',
     'deleted_success' => 'تم الحذف بنجاح',
     'deleted_failed' => 'حدث خطأ أثناء الحذف يرجى المحاولة مرة أخرى',

@@ -14,7 +14,7 @@ export function useCreatePlans(setError) {
         },
 
         onSuccess: () => {
-            toast.success("تم الاضافة بنجاح");
+            toast.success("تم الإضافة بنجاح");
             queryClient.invalidateQueries({
                 queryKey: ["plans"],
             });

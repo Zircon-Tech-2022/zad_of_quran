@@ -14,7 +14,7 @@ import { useUser } from "./../features/authentication/useUser";
 import { useLogout } from "../features/useLogout";
 import { useLangContext } from "./../context/LangContext";
 import ProfileInfo from './../features/teachers/ProfileInfo';
-import TimezoneButton from "../features/teachers/TimezoneButton";
+import TimezoneButton from "../../ui/TimezoneButton";
 import CoursesList from "../features/teachers/CoursesList";
 import AvailabilityTable from './../features/teachers/AvailabilityTable';
 import LessonsTable from "../features/teachers/LessonsTable";

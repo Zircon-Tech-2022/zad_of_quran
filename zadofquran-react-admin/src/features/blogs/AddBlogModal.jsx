@@ -6,10 +6,10 @@ const AddBlogModal = () => {
     return (
         <MyModal>
             <MyModal.Open opens="createEditBlog">
-                <Button>اضافة +</Button>
+                <Button>إضافة +</Button>
             </MyModal.Open>
 
-            <MyModal.Window title="اضافة تدوينة جديدة" name="createEditBlog">
+            <MyModal.Window title="إضافة تدوينة جديدة" name="createEditBlog">
                 <BlogForm />
             </MyModal.Window>
         </MyModal>

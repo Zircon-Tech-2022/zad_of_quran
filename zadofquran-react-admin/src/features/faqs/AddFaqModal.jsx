@@ -6,10 +6,10 @@ const AddFaqModal = () => {
     return (
         <MyModal>
             <MyModal.Open opens="createEdit">
-                <Button>اضافة +</Button>
+                <Button>إضافة +</Button>
             </MyModal.Open>
 
-            <MyModal.Window title="اضافة سؤال جديد" name="createEdit">
+            <MyModal.Window title="إضافة سؤال جديد" name="createEdit">
                 <FaqForm />
             </MyModal.Window>
         </MyModal>

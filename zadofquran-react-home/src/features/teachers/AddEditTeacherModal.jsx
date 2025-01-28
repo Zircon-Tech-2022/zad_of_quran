@@ -5,10 +5,10 @@ const AddEditTeacherModal = () => {
     return (
         <MyModal>
             <MyModal.Open opens="createEditTeacher">
-                <button>اضافة مدرس</button>
+                <button>إضافة مدرس</button>
             </MyModal.Open>
 
-            <MyModal.Window title="اضافة مدرس جديد" name="createEditTeacher">
+            <MyModal.Window title="إضافة مدرس جديد" name="createEditTeacher">
                 <TeacherForm />
             </MyModal.Window>
         </MyModal>

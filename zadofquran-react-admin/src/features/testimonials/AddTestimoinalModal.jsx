@@ -6,10 +6,10 @@ const AddTestimoinalModal = () => {
     return (
         <MyModal>
             <MyModal.Open opens="createEdit">
-                <Button>اضافة +</Button>
+                <Button>إضافة +</Button>
             </MyModal.Open>
 
-            <MyModal.Window title="اضافة رأي جديد" name="createEdit">
+            <MyModal.Window title="إضافة رأي جديد" name="createEdit">
                 <TestimoinalForm />
             </MyModal.Window>
         </MyModal>

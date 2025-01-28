@@ -6,10 +6,10 @@ const AddUserModal = () => {
     return (
         <MyModal>
             <MyModal.Open opens="createEditUser">
-                <Button>اضافة +</Button>
+                <Button>إضافة +</Button>
             </MyModal.Open>
 
-            <MyModal.Window title="اضافة طالب جديد" name="createEditUser">
+            <MyModal.Window title="إضافة طالب جديد" name="createEditUser">
                 <UserForm />
             </MyModal.Window>
         </MyModal>

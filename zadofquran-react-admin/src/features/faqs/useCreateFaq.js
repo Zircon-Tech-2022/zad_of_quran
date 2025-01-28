@@ -14,7 +14,7 @@ export function useCreateFaq(setError) {
         },
 
         onSuccess: () => {
-            toast.success("تم الاضافة بنجاح");
+            toast.success("تم الإضافة بنجاح");
             queryClient.invalidateQueries({
                 queryKey: ["faqs"],
             });

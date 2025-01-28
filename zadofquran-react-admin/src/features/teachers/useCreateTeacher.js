@@ -14,7 +14,7 @@ export function useCreateTeacher(setError) {
         },
 
         onSuccess: () => {
-            toast.success("تم اضافة المعلم بنجاح");
+            toast.success("تم إضافة المعلم بنجاح");
             queryClient.invalidateQueries({
                 queryKey: ["teachers"],
             });

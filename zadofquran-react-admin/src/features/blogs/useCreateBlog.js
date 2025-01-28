@@ -14,7 +14,7 @@ export function useCreateBlog(setError) {
         },
 
         onSuccess: () => {
-            toast.success("تم اضافة تدوينة بنجاح");
+            toast.success("تم إضافة تدوينة بنجاح");
             queryClient.invalidateQueries({
                 queryKey: ["blogs"],
             });

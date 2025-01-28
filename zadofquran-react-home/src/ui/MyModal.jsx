@@ -68,7 +68,7 @@ const MyModal = ({ children }) => {
 const Window = ({
     children,
     name,
-    title = "اضافة",
+    title = "إضافة",
     type = "add",
     hasNext = false,
 }) => {
