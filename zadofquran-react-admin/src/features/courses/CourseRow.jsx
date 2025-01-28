@@ -11,7 +11,7 @@ import ConfirmDelete from "../../ui/ConfirmDelete";
 import { useDeleteCourse } from "./useDeleteCourse";
 import Actions from "../../ui/table/Actions";
 import { useSearchParams } from "react-router-dom";
-import { LIMIT } from "../../../Constants";
+import { LIMIT } from "../../Constants";
 import { PinkCell } from "../../ui/table/PinkCell";
 import { OrangeCell } from "../../ui/table/OrangeCell";
 

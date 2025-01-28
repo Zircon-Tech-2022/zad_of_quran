@@ -1,4 +1,4 @@
-import { API_URL } from "../../Constants";
+import { API_URL } from "../Constants";
 
 export async function getCourseData({ search, page }, token) {
     const res = await fetch(

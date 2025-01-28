@@ -12,7 +12,7 @@ import ConfirmDelete from "../../ui/ConfirmDelete";
 import { useDeleteUser } from "./useDeleteUser";
 import Actions from "../../ui/table/Actions";
 import { useSearchParams } from "react-router-dom";
-import { LIMIT } from "../../../Constants";
+import { LIMIT } from "../../Constants";
 
 const UserRow = ({ user, num }) => {
     const [searchParams] = useSearchParams();

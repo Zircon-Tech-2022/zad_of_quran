@@ -9,7 +9,7 @@ import ConfirmDelete from "../../ui/ConfirmDelete";
 import { useDeleteLesson } from "./useDeleteLesson";
 import Actions from "../../ui/table/Actions";
 import { Link, useSearchParams } from "react-router-dom";
-import { LIMIT } from "../../../Constants";
+import { LIMIT } from "../../Constants";
 import { FaEye, FaToggleOn } from "react-icons/fa6";
 import LessonView from "./LessonView";
 import { PinkCell } from "../../ui/table/PinkCell";

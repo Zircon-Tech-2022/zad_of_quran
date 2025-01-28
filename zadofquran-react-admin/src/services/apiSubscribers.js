@@ -1,4 +1,4 @@
-import { API_URL } from "../../Constants";
+import { API_URL } from "../Constants";
 
 export async function getSubscribers({ search, page }, token, includeAll = 0) {
     let endpoint = `${API_URL}admin/subscribers`;

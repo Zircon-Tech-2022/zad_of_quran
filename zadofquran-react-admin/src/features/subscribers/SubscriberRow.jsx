@@ -9,7 +9,7 @@ import ConfirmDelete from "../../ui/ConfirmDelete";
 import { useDeleteSubscriber } from "./useDeleteSubscriber";
 import Actions from "../../ui/table/Actions";
 import { useSearchParams } from "react-router-dom";
-import { LIMIT } from "../../../Constants";
+import { LIMIT } from "../../Constants";
 import { FaEye } from "react-icons/fa6";
 import SubscriberProfile from "./SubscriberProfile";
 

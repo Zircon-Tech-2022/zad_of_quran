@@ -12,7 +12,7 @@ import { useEditTeacher } from "./useEditTeacher";
 import AvailabilityInput from "../../ui/form/AvailabilityInput";
 import { BiLock } from "react-icons/bi";
 import { Avatar, FormControl, FormHelperText, InputLabel, MenuItem, Select } from "@mui/material";
-import { API_URL } from "../../../Constants";
+import { API_URL } from "../../Constants";
 import { useTeacherShow } from "./useTeacherShow";
 import Spinner from "../../ui/Spinner";
 import { calculateTimezone } from "../../utils/helpers";

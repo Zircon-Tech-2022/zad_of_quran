@@ -15,7 +15,7 @@ import { PinkCell } from "../../ui/table/PinkCell";
 import { useSearchParams } from "react-router-dom";
 import { OrangeCell } from "../../ui/table/OrangeCell";
 import { GreenCell } from "../../ui/table/GreenCell";
-import { LIMIT } from "../../../Constants";
+import { LIMIT } from "../../Constants";
 
 const PlansRow = ({ plan, num }) => {
     const [searchParams] = useSearchParams();

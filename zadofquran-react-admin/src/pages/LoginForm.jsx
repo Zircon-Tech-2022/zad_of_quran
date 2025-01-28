@@ -1,6 +1,6 @@
 import React from "react";
 import { useForm } from "react-hook-form";
-import { API_URL } from "../../Constants";
+import { API_URL } from "../Constants";
 
 const LoginForm = () => {
     const {

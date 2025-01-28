@@ -8,7 +8,7 @@ import styled from "styled-components";
 import { useEditLesson } from "./useEditLesson";
 import AvailabilityInput from "../../ui/form/AvailabilityInput";
 import { FormControl, FormHelperText, InputLabel, MenuItem, Select } from "@mui/material";
-import { API_URL } from "../../../Constants";
+import { API_URL } from "../../Constants";
 import { useLessonShow } from "./useLessonShow";
 import Spinner from "../../ui/Spinner";
 import { calculateTimezone } from "../../utils/helpers";

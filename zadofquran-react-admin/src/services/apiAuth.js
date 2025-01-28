@@ -1,4 +1,4 @@
-import { API_URL } from "../../Constants";
+import { API_URL } from "../Constants";
 
 export async function getCurrentUser(token) {
     try {
