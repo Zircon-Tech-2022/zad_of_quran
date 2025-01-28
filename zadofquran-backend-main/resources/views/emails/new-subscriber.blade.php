@@ -21,6 +21,7 @@
         }
     --}}
     <p>My Name: {{ $name }}</p>
+    <p>My Email: {{ $email }}</p>
     <p>My Age: {{ $age }}</p>
     <p>My Gender: {{ $gender }}</p>
     <p>Persons Count: {{ $persons_count }}</p>
