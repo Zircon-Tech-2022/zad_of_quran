@@ -1,6 +1,6 @@
 import React from "react";
 import { useForm } from "react-hook-form";
-import {VITE_SERVER_URI} from "../../Constants";
+import { API_URL } from "../../Constants";
 
 const LoginForm = () => {
     const {
@@ -14,7 +14,7 @@ const LoginForm = () => {
         try {
             // Simulate API call to login
             const response = await fetch(
-                `${VITE_SERVER_URI}auth/login`,
+                `${API_URL}auth/login`,
                 {
                     method: "POST",
                     headers: {
@@ -35,7 +35,7 @@ const LoginForm = () => {
                 const errorData = await response.json();
                 setError("email", { message: errorData.message });
             }
-        } catch (error) {}
+        } catch (error) { }
     };
 
     return (
