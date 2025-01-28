@@ -1,6 +1,6 @@
 import React from "react";
 import { useForm } from "react-hook-form";
-import {VITE_SERVER_URI} from "../Constants";
+import {VITE_SERVER_URI} from "../../Constants";
 
 const LoginForm = () => {
     const {
