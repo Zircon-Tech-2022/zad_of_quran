@@ -1,5 +1,6 @@
 import React from "react";
 import { useForm } from "react-hook-form";
+import {VITE_SERVER_URI} from "../Constants";
 
 const LoginForm = () => {
     const {
@@ -13,7 +14,7 @@ const LoginForm = () => {
         try {
             // Simulate API call to login
             const response = await fetch(
-                "https://api.zadofquran-backend.test/auth/login",
+                `${VITE_SERVER_URI}auth/login`,
                 {
                     method: "POST",
                     headers: {
