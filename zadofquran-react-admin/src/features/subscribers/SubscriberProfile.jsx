@@ -21,7 +21,7 @@ const SubscriberProfile = ({ subscriberToView }) => {
 
     const { close } = useContext(ModalContext);
 
-    if (!isLoading && !isUpdateTimezoneLoading && user?.data?.lessons[0]?.availabilities) {
+    if (!isLoading && !isUpdateTimezoneLoading && user?.data?.lessons[0]?.availabilities[0]) {
         defaultTimezone = calculateTimezone(user.data.lessons[0].availabilities[0].start_times['local'],
             user.data.lessons[0].availabilities[0].start_times['gmt']);
     }

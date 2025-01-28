@@ -26,6 +26,7 @@ import CourseCrud from "./pages/CourseCrud";
 import TestimoinalsCrud from "./pages/TestimoinalsCrud";
 import UsersCrud from "./pages/UsersCrud";
 import SubscribersCrud from "./pages/SubscribersCrud";
+import LessonsCrud from "./pages/LessonsCrud";
 
 function App() {
     const theme = createTheme({
@@ -92,6 +93,10 @@ function App() {
                                         <Route
                                             path="/teachers"
                                             element={<TeacherCrud />}
+                                        />
+                                        <Route
+                                            path="/lessons"
+                                            element={<LessonsCrud />}
                                         />
                                         <Route
                                             path="/plans"

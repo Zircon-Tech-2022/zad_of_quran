@@ -1,6 +1,5 @@
 import { API_URL } from "../../Constants";
 
-// import { API_URL } from "../Constants";
 export async function matchTeachersQuery({ search, page }, token) {
     const res = await fetch(
         `${API_URL}admin/staff?q=${search}&page=${page}&limit=15`,
@@ -100,6 +99,7 @@ export async function updateTeacherApi(teacherData, id, token, setError) {
         throw new Error(error.message);
     }
 }
+
 export async function createTeacherApi(teacherData, token, setError) {
     try {
         const formData = new FormData();
@@ -146,6 +146,22 @@ export async function deleteTeacher(id, token) {
     });
 
     if (!res.ok) throw Error("حدث خطأ اثناء المسح، ربما المدرس له حلقات نشطة");
+    const data = await res.json();
+    return data;
+}
+
+export async function matchTeachers(matchData) {
+    const res = await fetch(`${API_URL}staff/match`, {
+        method: "POST",
+        headers: {
+            "accept-language": "ar",
+            Accept: "application/json",
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(matchData),
+    });
+
+    if (!res.ok) throw Error("حدث خطأ اثناء المسح ");
     const data = await res.json();
     return data;
 }

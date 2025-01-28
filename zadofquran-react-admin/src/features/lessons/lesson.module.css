@@ -1,0 +1,4 @@
+.link:hover {
+  color: var(--color-brand-500);
+  font-style: italic;
+}

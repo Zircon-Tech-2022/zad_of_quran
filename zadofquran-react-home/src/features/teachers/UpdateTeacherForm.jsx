@@ -163,7 +163,7 @@ const UpdateTeacherForm = ({ values }) => {
                 type="file"
                 label=""
             />
-            <FormControl sx={{}}>
+            <FormControl>
                 <InputLabel
                     id="gender-select-label"
                     style={{

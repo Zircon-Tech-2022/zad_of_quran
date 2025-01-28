@@ -22,7 +22,7 @@ const TeacherProfile = ({ teacherToView }) => {
     const { isLoading, user, updateTimezone, isUpdateTimezoneLoading } = useTeacherShow(teacherToView?.id, defaultTimezone);
     const { close } = useContext(ModalContext);
 
-    if (!isLoading && !isUpdateTimezoneLoading && user?.data?.user?.availabilities) {
+    if (!isLoading && !isUpdateTimezoneLoading && user?.data?.user?.availabilities[0]) {
         defaultTimezone = calculateTimezone(user.data.user.availabilities[0].start_times['local'],
             user.data.user.availabilities[0].start_times['gmt']);
     }

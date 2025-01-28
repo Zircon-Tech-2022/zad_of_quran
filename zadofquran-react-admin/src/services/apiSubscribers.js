@@ -1,8 +1,16 @@
 import { API_URL } from "../../Constants";
 
-export async function getSubscribers({ search, page }, token) {
+export async function getSubscribers({ search, page }, token, includeAll = 0) {
+    let endpoint = `${API_URL}admin/subscribers`;
+
+    if (search && includeAll) {
+        endpoint += `?q=${search}&all=1`
+    } else {
+        endpoint += `?q=${search}&page=${page}&limit=15`
+    }
+
     const res = await fetch(
-        `${API_URL}admin/subscribers?q=${search}&page=${page}&limit=15`,
+        endpoint,
         {
             headers: {
                 "accept-language": "ar",
@@ -18,13 +26,13 @@ export async function getSubscribers({ search, page }, token) {
     return data;
 }
 
-export async function getSubscriberData(id,token, timezone = null) {
-    if (!id) return null; 
+export async function getSubscriberData(id, token, timezone = null) {
+    if (!id) return null;
     let endpoint = `${API_URL}admin/subscribers/${id}`;
-    
+
     if (timezone) {
-        const query = timezone.replace('+',"%2B"); // replace + with %2B to avoid encoding issue
-        endpoint+=`?timezone_offset=${query}`;
+        const query = timezone.replace('+', "%2B"); // replace + with %2B to avoid encoding issue
+        endpoint += `?timezone_offset=${query}`;
     }
 
     const res = await fetch(
@@ -60,5 +68,3 @@ export async function deleteSubscriber(id, token) {
     return data;
 }
 
-
-// match

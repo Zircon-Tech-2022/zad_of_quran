@@ -1,6 +1,5 @@
 import { API_URL } from "../../Constants";
 
-// import { API_URL } from "../Constants";
 export async function getUserData({ search, page }, token) {
     const res = await fetch(
         `${API_URL}admin/users?q=${search}&page=${page}&limit=15`,

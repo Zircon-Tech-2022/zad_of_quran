@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 
 import { useSideBarContext } from "../../context/SideBarContext";
 import styled from "styled-components";
-import { FaBars, FaPersonCircleQuestion, FaUsersGear } from "react-icons/fa6";
+import { FaBars, FaPersonCircleQuestion, FaRegCircle, FaUsersGear } from "react-icons/fa6";
 import { ImPriceTags } from "react-icons/im";
 import { BsChatLeftQuote, BsWindowStack } from "react-icons/bs";
 import { MdGroup, MdOutlineLocalPostOffice } from "react-icons/md";
@@ -98,6 +98,11 @@ const items = [
         name: "كل المدرسين",
         to: "/teachers",
         icon: <FaUsersGear />,
+    },
+    {
+        name: "الحلقات",
+        to: "/lessons",
+        icon: <FaRegCircle />,
     },
     {
         name: "خطط التسعير",

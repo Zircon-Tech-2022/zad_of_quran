@@ -57,9 +57,11 @@ class CourseController extends Controller
     public function courses()
     {
         $courses = Course::select(['id', 'name', 'image', 'locale', 'description'])
-            ->orderBy('id')
-            ->where('locale', app()->getLocale())
+            ->orderBy('id');
+
+        $courses =  request('all') ? $courses->get() : $courses->where('locale', app()->getLocale())
             ->get();
+
         return apiSuccessResponse(__('messages.data_retrieved_successfully'), $courses);
     }
 

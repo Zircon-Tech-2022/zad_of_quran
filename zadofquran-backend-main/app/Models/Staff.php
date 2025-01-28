@@ -50,16 +50,6 @@ class Staff extends Model
         return $this->hasOne(StaffDetails::class);
     }
 
-    public function getAgeAttribute()
-    {
-        return $this->details->age;
-    }
-
-    public function getGenderAttribute()
-    {
-        return $this->details->gender;
-    }
-
     public function availabilities()
     {
         return $this->hasMany(StaffAvailability::class);

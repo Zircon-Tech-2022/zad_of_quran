@@ -25,9 +25,14 @@ class LessonController extends Controller
      */
     public function index()
     {
-        $lessons = Lesson::with('staff:id,name', 'subscriber:id,name', 'course:id,name')
+        $lessons = Lesson::when(request('q'), fn($query, $q) => $query->search($q))
+            ->with('staff:id,name,email,phone', 'subscriber:id,name,email,phone', 'course:id,name')
             ->orderBy(request('orderBy', 'id'), request('orderDir', 'asc'))
             ->paginate(request('limit', 25));
+
+        $lessons->getCollection()->transform(function ($lesson) {
+            return $lesson->makeVisible(['is_active']);
+        });
 
         return apiSuccessResponse(__('messages.data_retrieved_successfully'), $lessons);
     }
@@ -78,7 +83,7 @@ class LessonController extends Controller
      */
     public function show($id)
     {
-        $lesson = Lesson::with('staff', 'subscriber', 'course', 'availabilities')
+        $lesson = Lesson::with('staff', 'staff.details:id,age,gender,staff_id', 'subscriber', 'course', 'availabilities')
             ->where('id', $id)
             ->first();
 
@@ -89,14 +94,24 @@ class LessonController extends Controller
         $timezone = request('timezone_offset');
         $availabilities = $this->getAvailabilities($lesson->availabilities, $timezone);
 
-        return apiSuccessResponse(__('messages.data_retrieved_successfully'), [
+        return apiSuccessResponse(
+            __('messages.data_retrieved_successfully'),
             array_merge(
                 $lesson->toArray(),
                 [
+                    'staff' => [
+                        'id' => $lesson->staff->id,
+                        'name' => $lesson->staff->name,
+                        'email' => $lesson->staff->email,
+                        'phone' => $lesson->staff->phone,
+                        'qualifications' => $lesson->staff->qualifications,
+                        'age' => $lesson->staff->details?->age,
+                        'gender' => $lesson->staff->details?->gender,
+                    ],
                     'availabilities' => $availabilities,
                 ]
             )
-        ]);
+        );
     }
 
     /**

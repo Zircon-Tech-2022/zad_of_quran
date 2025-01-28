@@ -30,7 +30,7 @@ const TeacherLanding = () => {
     let defaultTimezone = "GMT+2";
     const isTeacher = localStorage.getItem('user-type') === "teacher";
 
-    if (!isLoading && !isUpdateTimezoneLoading && user?.data?.user?.availabilities) {
+    if (!isLoading && !isUpdateTimezoneLoading && user?.data?.user?.availabilities[0]) {
         defaultTimezone = calculateTimezone(user.data.user.availabilities[0].start_times['local'],
             user.data.user.availabilities[0].start_times['gmt']);
     }

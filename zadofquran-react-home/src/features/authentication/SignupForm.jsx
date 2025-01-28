@@ -88,7 +88,7 @@ const SignupForm = () => {
     useEffect(() => {
         const fetchCourses = async () => {
             if (containsTeacher) {
-                const res = await fetch(`${API_URL}courses`, {
+                const res = await fetch(`${API_URL}courses?all=1`, {
                     headers: {
                         "accept-language": "ar",
                         Accept: "application/json",
@@ -206,7 +206,7 @@ const SignupForm = () => {
                         type="file"
                         label=""
                     />
-                    <FormControl sx={{}}>
+                    <FormControl>
                         <InputLabel id="gender-select-label" style={{
                             color: "var(--color-grey-0)",
                             fontSize: "1.6rem",
@@ -237,7 +237,7 @@ const SignupForm = () => {
                         }}>{errors?.gender?.message}</FormHelperText>
                     </FormControl>
                     <AvailabilityInput control={control} register={register} error={errors?.availability} />
-                    <FormControl sx={{}}>
+                    <FormControl>
                         <InputLabel id="courses-select-label" style={{
                             color: "var(--color-grey-0)",
                             fontSize: "1.6rem",

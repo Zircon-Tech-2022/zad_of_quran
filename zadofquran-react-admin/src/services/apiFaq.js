@@ -1,6 +1,5 @@
 import { API_URL } from "../../Constants";
 
-// import { API_URL } from "../Constants";
 export async function getFaqData({ search, page }, token) {
     const res = await fetch(
         `${API_URL}admin/FAQs?q=${search}&page=${page}&limit=15`,

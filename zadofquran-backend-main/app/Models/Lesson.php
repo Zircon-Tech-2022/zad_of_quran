@@ -25,6 +25,30 @@ class Lesson extends Model
         return parent::makeVisible($attributes);
     }
 
+    public function scopeSearch($query, $q)
+    {
+        return $query->where('id', 'LIKE', "%$q%")
+            ->orWhereHas('staff', function ($staffQuery) use ($q) {
+                $staffQuery->where('name', 'like', "%$q%")
+                    ->orWhere('email', 'like', "%$q%")
+                    ->orWhere('phone', 'like', "%$q%");
+            })
+            ->orWhereHas('subscriber', function ($subscriberQuery) use ($q) {
+                $subscriberQuery->where('name', 'like', "%$q%")
+                    ->orWhere('email', 'like', "%$q%")
+                    ->orWhere('phone', 'like', "%$q%")
+                    ->orWhereHas('user', function ($userQuery) use ($q) {
+                        $userQuery->where('name', 'like', "%$q%")
+                            ->orWhere('email', 'like', "%$q%")
+                            ->orWhere('phone', 'like', "%$q%");
+                    });
+            })
+            ->orWhereHas('course', function ($courseQuery) use ($q) {
+                $courseQuery->where('name', 'like', "%$q%")
+                    ->orWhere('description', 'like', "%$q%");
+            });
+    }
+
     public function staff()
     {
         return $this->belongsTo(Staff::class);

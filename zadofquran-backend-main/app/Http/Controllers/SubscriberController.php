@@ -29,8 +29,10 @@ class SubscriberController extends Controller
         $subscribers = Subscriber::when(request('q'), fn($query, $q) => $query->search($q))
             ->leftJoin('plans', 'plans.id', '=', 'subscribers.plan_id')
             ->select(['subscribers.id', 'subscribers.name', 'subscribers.email', 'subscribers.phone', 'plans.name as plan'])
-            ->orderBy(request('orderBy', 'id'), request('orderDir', 'asc'))
-            ->paginate(request('limit', 25));
+            ->orderBy(request('orderBy', 'id'), request('orderDir', 'asc'));
+
+        $subscribers = !request('all') ? $subscribers->paginate(request('limit', 25)) :
+            $subscribers->get();
 
         return apiSuccessResponse(__('messages.users_found'), $subscribers);
     }

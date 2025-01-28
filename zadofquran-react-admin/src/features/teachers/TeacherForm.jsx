@@ -69,7 +69,7 @@ const TeacherForm = ({ teacherToEdit = {} }) => {
 
     useEffect(() => {
         const fetchCourses = async () => {
-            const res = await fetch(`${API_URL}courses`, {
+            const res = await fetch(`${API_URL}courses?all=1`, {
                 headers: {
                     "accept-language": "ar",
                     Accept: "application/json",
@@ -237,7 +237,7 @@ const TeacherForm = ({ teacherToEdit = {} }) => {
                     { value: "female", title: "أنثى" },
                 ]}
             />
-            <FormControl sx={{}}>
+            <FormControl>
                 <InputLabel id="courses-select-label" style={{
                     fontSize: "1.6rem",
                 }}>
