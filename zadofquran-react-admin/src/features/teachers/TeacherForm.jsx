@@ -9,7 +9,7 @@ import styled from "styled-components";
 import FileInput from "../../ui/form/FileInput";
 import Editor from "../../ui/form/Editor";
 import { useEditTeacher } from "./useEditTeacher";
-import AvailabilityInput from "./AvailabilityInput";
+import AvailabilityInput from "../../ui/form/AvailabilityInput";
 import { BiLock } from "react-icons/bi";
 import { Avatar, FormControl, FormHelperText, InputLabel, MenuItem, Select } from "@mui/material";
 import { API_URL } from "../../../Constants";

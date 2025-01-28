@@ -16,7 +16,7 @@ import { PinkCell } from "../../ui/table/PinkCell";
 import { OrangeCell } from "../../ui/table/OrangeCell";
 
 const TestimoinalRow = ({ testimoinal, num }) => {
-    const [searchParams, setSearchParams] = useSearchParams();
+    const [searchParams] = useSearchParams();
     const page = +searchParams.get("page") || 1;
     const tableNum = (page - 1) * LIMIT + num;
     const { id, name, content, locale } = testimoinal;

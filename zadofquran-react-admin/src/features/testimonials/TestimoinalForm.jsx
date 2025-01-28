@@ -25,7 +25,6 @@ const TestimoinalForm = (testimoinalToEdit = {}) => {
         reset,
         formState,
         control,
-        getValues,
         setError,
         setValue,
     } = useForm({
@@ -37,7 +36,7 @@ const TestimoinalForm = (testimoinalToEdit = {}) => {
 
     const isWorking = isCreating || isEditing;
 
-    const { errors, isSubmitted } = formState;
+    const { errors } = formState;
 
     const { close } = useContext(ModalContext);
 

@@ -7,7 +7,6 @@ import React, {
 } from "react";
 import { FaXmark } from "react-icons/fa6";
 import styled from "styled-components";
-import Button from "./Button";
 //// modal style
 const style = {
     position: "absolute",

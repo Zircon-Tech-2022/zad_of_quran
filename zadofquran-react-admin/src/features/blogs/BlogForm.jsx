@@ -9,7 +9,6 @@ import styled from "styled-components";
 import FileInput from "../../ui/form/FileInput";
 import Editor from "../../ui/form/Editor";
 import { useEditBlog } from "./useEditBlog";
-import { Textarea } from "../../ui/form/Textarea";
 
 const FormStyle = styled.form`
     display: flex;
@@ -79,7 +78,7 @@ const BlogForm = (blogToEdit = {}) => {
                     }),
                 }}
                 error={errors?.title}
-                disabled={isCreating}
+                disabled={isWorking}
             />
             <MyInput
                 label="الوصف"
@@ -90,7 +89,7 @@ const BlogForm = (blogToEdit = {}) => {
                     }),
                 }}
                 error={errors?.description}
-                disabled={isCreating}
+                disabled={isWorking}
             />
             <MultiSelect
                 fieldName="حالة المدونة"
@@ -147,9 +146,9 @@ const BlogForm = (blogToEdit = {}) => {
             </div>
             <MyModal.Footer>
                 <Button
-                    disabled={isCreating}
+                    disabled={isWorking}
                     style={{
-                        background: isCreating ? "var(--color-grey-300)" : "",
+                        background: isWorking ? "var(--color-grey-300)" : "",
                     }}
                     type="submit"
                 >

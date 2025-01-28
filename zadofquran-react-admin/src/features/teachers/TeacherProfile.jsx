@@ -6,7 +6,7 @@ import { useTeacherShow } from "./useTeacherShow";
 import Spinner from "../../ui/Spinner";
 import { calculateTimezone } from "../../utils/helpers";
 import ProfileInfo from "./ProfileInfo";
-import TimezoneButton from "./TimezoneButton";
+import TimezoneButton from "../../ui/TimezoneButton";
 import CoursesList from "./CoursesList";
 import AvailabilityTable from "./AvailabilityTable";
 import LessonsTable from "./LessonsTable";

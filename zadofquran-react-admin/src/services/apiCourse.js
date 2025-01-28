@@ -22,7 +22,7 @@ export async function updateCourseApi(courseData, id, token, setError) {
     try {
         const formData = new FormData();
         for (const [key, value] of Object.entries(courseData)) {
-            if (key == "image" && value == null) {
+            if (key === "image" && value == null) {
                 continue;
             }
             formData.append(key, value);

@@ -97,9 +97,8 @@ export async function createLessonApi(teacherData, token, setError) {
 export async function updateLessonApi(teacherData, id, token, setError) {
     try {
         const formData = new FormData();
-        //
         for (const [key, value] of Object.entries(teacherData)) {
-            if (key == "image" && value == null) {
+            if (key === "image" && value == null) {
                 continue;
             }
             formData.append(key, value);

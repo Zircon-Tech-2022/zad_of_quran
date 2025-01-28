@@ -1,15 +1,13 @@
 import React from "react";
 import Table from "../../ui/table/Table";
 import { Cell } from "../../ui/table/Cell";
-
-import { Button, Menu, MenuItem, Modal } from "@mui/material";
-import { BsThreeDots, BsTrash3Fill } from "react-icons/bs";
+import { Menu, MenuItem } from "@mui/material";
+import { BsTrash3Fill } from "react-icons/bs";
 import { BiPencil } from "react-icons/bi";
 import MyModal from "../../ui/MyModal";
 import FaqForm from "./FaqForm";
 import ConfirmDelete from "../../ui/ConfirmDelete";
 import { useDeleteFaq } from "./useDeleteFaq";
-import { deleteFaq } from "../../services/apiFaq";
 import Actions from "../../ui/table/Actions";
 import { useSearchParams } from "react-router-dom";
 import { LIMIT } from "../../../Constants";
@@ -17,7 +15,7 @@ import { PinkCell } from "../../ui/table/PinkCell";
 import { OrangeCell } from "../../ui/table/OrangeCell";
 
 const FaqRow = ({ faq, num }) => {
-    const [searchParams, setSearchParams] = useSearchParams();
+    const [searchParams] = useSearchParams();
     const page = +searchParams.get("page") || 1;
     const tableNum = (page - 1) * LIMIT + num;
     const { id, answer, question, locale } = faq;
