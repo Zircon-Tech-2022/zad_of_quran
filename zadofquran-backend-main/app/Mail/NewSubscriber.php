@@ -18,9 +18,7 @@ class NewSubscriber extends Mailable implements ShouldQueue
     /**
      * Create a new message instance.
      */
-    public function __construct(private $data)
-    {
-    }
+    public function __construct(private $data) {}
 
     /**
      * Get the message envelope.
@@ -29,10 +27,6 @@ class NewSubscriber extends Mailable implements ShouldQueue
     {
         return new Envelope(
             subject: 'New Subscriber',
-            from: new Address(
-                $this->data['email'],
-                $this->data['name'],
-            ),
             to: User::query()
                 ->whereHas('roles.permissions', fn($q) => $q->where('name', 'mails.system.subscribe.recieve'))
                 ->orWhereHas('permissions', fn($q) => $q->where('name', 'mails.system.subscribe.recieve'))
@@ -53,7 +47,7 @@ class NewSubscriber extends Mailable implements ShouldQueue
             //             htmlString: <<<HTML
 
             // <h1>hello</h1>
-// <p>New Subscriber named: {$this->data['name']}</p>
+            // <p>New Subscriber named: {$this->data['name']}</p>
 
             // HTML,
         );
