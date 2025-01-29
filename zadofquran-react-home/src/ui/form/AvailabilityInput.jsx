@@ -106,113 +106,114 @@ const AvailabilityInput = ({ control, register, error }) => {
         {t("availability")}
       </InputLabel>
       {fields.map((field, index) => (
-        <Entry key={field.id}>
-          <FormControl>
-            <InputLabel
-              id={`day-label-${field.id}`}
-              style={{
-                color: "var(--color-grey-0)",
-                fontSize: "1.6rem",
+        <>
+          <Entry key={field.id}>
+            <FormControl>
+              <InputLabel
+                id={`day-label-${field.id}`}
+                style={{
+                  color: "var(--color-grey-0)",
+                  fontSize: "1.6rem",
+                }}
+              >
+                {t("day")}
+              </InputLabel>
+              <Controller
+                name={`availability.${index}.day`}
+                control={control}
+                rules={{ required: t("required") }}
+                render={({ field: controllerField, fieldState: { error } }) => (
+                  <>
+                    <StyleSelect
+                      {...controllerField}
+                      labelId={`day-label-${field.id}`}
+                      error={!!error}
+                      label={t("day")}
+                      id="outlined-required"
+                      InputAdornment={<BiCalendar />}
+                    >
+                      {daysOfWeek.map((day) => (
+                        <MenuItem key={day} value={day}>
+                          {t(day)}
+                        </MenuItem>)
+                      )}
+                    </StyleSelect>
+                    <FormHelperText
+                      style={{
+                        color: "#d32f2f",
+                        fontSize: "1.6rem",
+                      }}
+                    >
+                      {error?.message}
+                    </FormHelperText>
+                  </>
+                )}
+              />
+            </FormControl>
+
+            <FormControl>
+              <InputLabel
+                id={`timezone-label-${field.id}`}
+                style={{
+                  color: "var(--color-grey-0)",
+                  fontSize: "1.6rem",
+                }}
+              >
+                {t("timezone")}
+              </InputLabel>
+              <Controller
+                name={`availability.${index}.timezone`}
+                control={control}
+                rules={{ required: t("required") }}
+                render={({ field: controllerField, fieldState: { error } }) => (
+                  <>
+                    <StyleSelect
+                      {...controllerField}
+                      labelId={`timezone-label-${field.id}`}
+                      error={!!error}
+                      label={t("timezone")}
+                      id="timezone-select"
+                    >
+                      {timezoneOffsets.map((offset) => (
+                        <MenuItem key={offset} value={offset}>
+                          {offset}
+                        </MenuItem>
+                      ))}
+                    </StyleSelect>
+                    <FormHelperText
+                      style={{
+                        color: "#d32f2f",
+                        fontSize: "1.6rem",
+                      }}
+                    >
+                      {error?.message}
+                    </FormHelperText>
+                  </>
+                )}
+              />
+            </FormControl>
+
+            <StyleInput
+              reg={{
+                ...register(`availability.${index}.start_time`, {
+                  required: t("required"),
+                }),
               }}
-            >
-              {t("day")}
-            </InputLabel>
-            <Controller
-              name={`availability.${index}.day`}
-              control={control}
-              rules={{ required: t("required") }}
-              render={({ field: controllerField, fieldState: { error } }) => (
-                <>
-                  <StyleSelect
-                    {...controllerField}
-                    labelId={`day-label-${field.id}`}
-                    error={!!error}
-                    label={t("day")}
-                    id="outlined-required"
-                    InputAdornment={<BiCalendar />}
-                  >
-                    {daysOfWeek.map((day) => (
-                      <MenuItem key={day} value={day}>
-                        {t(day)}
-                      </MenuItem>)
-                    )}
-                  </StyleSelect>
-                  <FormHelperText
-                    style={{
-                      color: "#d32f2f",
-                      fontSize: "1.6rem",
-                    }}
-                  >
-                    {error?.message}
-                  </FormHelperText>
-                </>
-              )}
+              error={error?.[index]?.start_time}
+              type="time"
+              label={t("startTime")}
             />
-          </FormControl>
-
-          <FormControl>
-            <InputLabel
-              id={`timezone-label-${field.id}`}
-              style={{
-                color: "var(--color-grey-0)",
-                fontSize: "1.6rem",
+            <StyleInput
+              reg={{
+                ...register(`availability.${index}.end_time`, {
+                  required: t("required"),
+                }),
               }}
-            >
-              {t("timezone")}
-            </InputLabel>
-            <Controller
-              name={`availability.${index}.timezone`}
-              control={control}
-              rules={{ required: t("required") }}
-              render={({ field: controllerField, fieldState: { error } }) => (
-                <>
-                  <StyleSelect
-                    {...controllerField}
-                    labelId={`timezone-label-${field.id}`}
-                    error={!!error}
-                    label={t("timezone")}
-                    id="timezone-select"
-                  >
-                    {timezoneOffsets.map((offset) => (
-                      <MenuItem key={offset} value={offset}>
-                        {offset}
-                      </MenuItem>
-                    ))}
-                  </StyleSelect>
-                  <FormHelperText
-                    style={{
-                      color: "#d32f2f",
-                      fontSize: "1.6rem",
-                    }}
-                  >
-                    {error?.message}
-                  </FormHelperText>
-                </>
-              )}
+              error={error?.[index]?.end_time}
+              type="time"
+              label={t("endTime")}
             />
-          </FormControl>
-
-          <StyleInput
-            reg={{
-              ...register(`availability.${index}.start_time`, {
-                required: t("required"),
-              }),
-            }}
-            error={error?.[index]?.start_time}
-            type="time"
-            label={t("startTime")}
-          />
-          <StyleInput
-            reg={{
-              ...register(`availability.${index}.end_time`, {
-                required: t("required"),
-              }),
-            }}
-            error={error?.[index]?.end_time}
-            type="time"
-            label={t("endTime")}
-          />
-
+          </Entry>
           <Button
             type="button"
             onClick={() => remove(index)}
@@ -220,7 +221,7 @@ const AvailabilityInput = ({ control, register, error }) => {
           >
             {t("removeEntry")}
           </Button>
-        </Entry>
+        </>
       ))}
 
       <Button type="button" onClick={() => append({ day: "", start_time: "", end_time: "", timezone: "" })}>

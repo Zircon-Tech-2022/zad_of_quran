@@ -22,6 +22,8 @@ const LessonsTable = ({ lessons }) => {
                     lessonId: lesson.id,
                     courseName: lesson.course.name,
                     staffName: lesson.staff.name,
+                    studentName: lesson.subscriber.name,
+                    studentEmail: lesson.subscriber.email,
                     startTime: slot.start_times.local,
                     endTime: slot.end_times.local,
                 }))
@@ -29,7 +31,7 @@ const LessonsTable = ({ lessons }) => {
     }));
 
     return (
-        <Card>
+        <Card sx={{ overflowX: "scroll" }}>
             <CardContent>
                 <Typography variant="h5" gutterBottom>
                     الحلقات
@@ -69,7 +71,7 @@ const LessonsTable = ({ lessons }) => {
                                                     <Chip sx={{
                                                         color: (theme) => theme.palette.common.white,
                                                         backgroundColor: (theme) => theme.palette.primary.main,
-                                                    }} variant="outlined" label={`حلقة #${slot.lessonId} | ${slot.startTime} - ${slot.endTime} | ${slot.staffName} | ${slot.courseName}`} />
+                                                    }} variant="outlined" label={`حلقة #${slot.lessonId} | ${slot.startTime} - ${slot.endTime} | ${slot.staffName} | ${slot.courseName} | ${slot.studentName} - ${slot.studentEmail}`} />
                                                 </li>
                                             ))}
                                         </ul>

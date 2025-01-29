@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import JoditEditor from "jodit-react";
 import { Controller, useForm } from "react-hook-form";
 
-const Editorr = ({
+const Editor = ({
     reg,
     editValue,
     isEditSession,
@@ -49,4 +49,4 @@ const Editorr = ({
     );
 };
 
-export default Editorr;
+export default Editor;

@@ -133,7 +133,7 @@ const TeacherLanding = () => {
                         </>
                     )}
                 </div>
-                {!isLoading && !isUpdateTimezoneLoading && user && (
+                {!isLoading && !isUpdateTimezoneLoading && user?.data?.user && (
                     <div className={styles.profileContainer}>
                         <ProfileInfo user={user?.data?.user} />
                         <TimezoneButton defaultValue={defaultTimezone} handleChange={handleTimezoneChange} />

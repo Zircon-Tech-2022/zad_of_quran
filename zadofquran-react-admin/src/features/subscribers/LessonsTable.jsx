@@ -29,7 +29,7 @@ const LessonsTable = ({ lessons }) => {
     }));
 
     return (
-        <Card>
+        <Card sx={{ overflowX: "scroll" }}>
             <CardContent>
                 <Typography variant="h5" gutterBottom>
                     الحلقات
@@ -69,7 +69,7 @@ const LessonsTable = ({ lessons }) => {
                                                     <Chip sx={{
                                                         color: (theme) => theme.palette.common.white,
                                                         backgroundColor: (theme) => theme.palette.primary.main,
-                                                    }} variant="outlined" label={`حلقة #${slot.lessonId} | ${slot.startTime} - ${slot.endTime} | ${slot.staffName} | ${slot.courseName} `} />
+                                                    }} variant="outlined" label={`حلقة #${slot.lessonId} | ${slot.startTime} - ${slot.endTime} | ${slot.staffName} | ${slot.courseName}`} />
                                                 </li>
                                             ))}
                                         </ul>

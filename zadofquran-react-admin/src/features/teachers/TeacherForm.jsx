@@ -117,9 +117,6 @@ const TeacherForm = ({ teacherToEdit = {} }) => {
             courses[`courses[${index}]`] = item.id ?? item;
         });
 
-        data.qualifications = data.qualifications.replace("<p>", "");
-        data.qualifications = data.qualifications.replace("</p>", "");
-
         if (isEditSession) {
             editTeacher(
                 {

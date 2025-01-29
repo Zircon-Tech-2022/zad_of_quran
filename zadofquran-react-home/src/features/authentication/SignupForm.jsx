@@ -11,6 +11,7 @@ import { FormControl, FormHelperText, InputLabel, MenuItem, Select } from "@mui/
 import AvailabilityInput from "../../ui/form/AvailabilityInput";
 import { useLocation } from "react-router-dom";
 import { API_URL } from "../../Constants";
+import Editor from "../../ui/form/Editor";
 
 
 const StyleForm = styled.form`
@@ -114,6 +115,7 @@ const SignupForm = () => {
         formState: { errors },
         setError,
         control,
+        setValue,
     } = useForm({
         defaultValues: {
             "availability": [
@@ -178,7 +180,7 @@ const SignupForm = () => {
                         type="number"
                         label={t("age")}
                     />
-                    <StyleInput
+                    {/* <StyleInput
                         reg={{
                             ...register("qualifications", {
                                 required: t("required"),
@@ -187,7 +189,34 @@ const SignupForm = () => {
                         error={errors?.qualifications}
                         type="text"
                         label={t("qualifications")}
-                    />
+                    /> */}
+                    <InputLabel
+                        style={{
+                            color: "var(--color-grey-0)",
+                            fontSize: "1.6rem",
+                            marginBottom: "-1rem",
+                        }}
+                    >
+                        المؤهلات
+                    </InputLabel>
+                    <div style={{
+                        marginBottom: "3rem",
+                        color: "var(--color-grey-700)",
+                    }}>
+                        <Editor
+                            control={control}
+                            name="qualifications"
+                            setValue={setValue}
+                            reg={{
+                                ...register("qualifications", {
+                                    required: "يجب ادخال هذا الحقل",
+                                }),
+                            }}
+                        />
+                        <span style={{ color: "#d32f2f" }}>
+                            {errors?.qualifications?.message}
+                        </span>
+                    </div>
                     <InputLabel style={{
                         color: "var(--color-grey-0)",
                         fontSize: "1.6rem",

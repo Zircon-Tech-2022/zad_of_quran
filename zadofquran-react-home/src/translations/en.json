@@ -120,5 +120,6 @@
     "removeEntry": "Remove entry",
     "noLessons": "No lessons",
     "noCourses": "No courses",
-    "noAvailabilitySolts": "No availability slots"
+    "noAvailabilitySolts": "No availability slots",
+    "leave-password-empty-to-keep-the-same": "Leave password empty to keep the same"
 }

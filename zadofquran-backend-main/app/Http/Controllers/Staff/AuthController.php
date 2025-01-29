@@ -121,7 +121,7 @@ class AuthController extends Controller
     {
         $staffDetails = $request->user(); // token is valid
         $staffDetails = StaffDetails::where('email', $staffDetails['email']) // is staff
-            ->with('staff', 'staff.availabilities', 'staff.courses')->first();
+            ->with('staff', 'staff.availabilities', 'staff.courses', 'staff.lessons', 'staff.lessons.subscriber', 'staff.lessons.course', 'staff.lessons.availabilities')->first();
 
         abort_if(!$staffDetails, 401);
 

@@ -9,6 +9,7 @@ import Button from "../../ui/Button";
 import { t } from "i18next";
 import { Avatar, FormControl, FormHelperText, InputLabel, MenuItem, Select } from "@mui/material";
 import AvailabilityInput from "../../ui/form/AvailabilityInput";
+import Editor from "../../ui/form/Editor";
 
 const StyleForm = styled.form`
     display: flex;
@@ -83,6 +84,7 @@ const UpdateTeacherForm = ({ values }) => {
         formState: { errors },
         setError,
         control,
+        setValue,
     } = useForm({
         defaultValues: values,
     });
@@ -133,14 +135,35 @@ const UpdateTeacherForm = ({ values }) => {
                 type="number"
                 label={t("age")}
             />
-            <StyleInput
-                reg={{
-                    ...register("qualifications"),
+            <InputLabel
+                style={{
+                    color: "var(--color-grey-0)",
+                    fontSize: "1.6rem",
+                    marginBottom: "-1rem",
                 }}
-                error={errors?.qualifications}
-                type="text"
-                label={t("qualifications")}
-            />
+            >
+                المؤهلات
+            </InputLabel>
+            <div style={{
+                marginBottom: "3rem",
+                color: "var(--color-grey-700)",
+            }}>
+                <Editor
+                    control={control}
+                    name="qualifications"
+                    setValue={setValue}
+                    isEditSession={true}
+                    editValue={values?.qualifications}
+                    reg={{
+                        ...register("qualifications", {
+                            required: "يجب ادخال هذا الحقل",
+                        }),
+                    }}
+                />
+                <span style={{ color: "#d32f2f" }}>
+                    {errors?.qualifications?.message}
+                </span>
+            </div>
             <InputLabel style={{
                 color: "var(--color-grey-0)",
                 fontSize: "1.6rem",

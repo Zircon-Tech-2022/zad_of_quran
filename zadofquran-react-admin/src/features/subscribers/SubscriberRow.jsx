@@ -65,7 +65,7 @@ const SubscriberRow = ({ user, num }) => {
                     </MyModal.Open>
                 </Menu>
 
-                <MyModal.Window name="view" title="بيانات المدرس">
+                <MyModal.Window name="view" title="بيانات الطالب">
                     <SubscriberProfile subscriberToView={user} />
                 </MyModal.Window>
                 <MyModal.Window name="delete" title="مسح الطالب">

@@ -1,13 +1,13 @@
 import React from "react";
+import DOMPurify from 'dompurify';
 import { Avatar, Card, CardContent, Grid, Typography } from "@mui/material";
 
 const ProfileInfo = ({ user }) => {
     const gender = !user.gender && "غير متوفر" || user.gender && user.gender == "male" && "ذكر" || "أنثى"
+    const sanitizedHTML = DOMPurify.sanitize(user.qualifications);
 
     return (
-        <Card sx={{
-            marginBottom: "20px",
-        }}>
+        <Card sx={{ marginBottom: "20px" }}>
             <CardContent>
                 <Grid container spacing={2} alignItems="center">
                     <Grid item>
@@ -23,7 +23,10 @@ const ProfileInfo = ({ user }) => {
                         <Typography variant="body2">{"رقم الهاتف"}: {user.phone}</Typography>
                         <Typography variant="body2">{"السن"}: {user.age ?? "غير متوفر"}</Typography>
                         <Typography variant="body2">{"النوع"}: {gender}</Typography>
-                        <Typography variant="body2">{"المؤهلات"}: {user.qualifications}</Typography>
+                        <Typography style={{marginTop: "5px"}} variant="h6">
+                            المؤهلات
+                        </Typography>
+                        <div dangerouslySetInnerHTML={{ __html: sanitizedHTML }} />
                     </Grid>
                 </Grid>
             </CardContent>

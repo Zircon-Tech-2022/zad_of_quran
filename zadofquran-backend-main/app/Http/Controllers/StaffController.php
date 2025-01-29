@@ -107,7 +107,7 @@ class StaffController extends Controller
      */
     public function show($id)
     {
-        $staff = Staff::with('details', 'availabilities', 'courses', 'lessons')
+        $staff = Staff::with('details', 'availabilities', 'courses', 'lessons', 'lessons.subscriber', 'lessons.course', 'lessons.availabilities')
             ->where('id', $id)
             ->first();
 
