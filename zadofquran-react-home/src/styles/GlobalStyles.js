@@ -187,7 +187,7 @@ const GlobalStyle = createGlobalStyle`
 
   /* time inputs */
   input[type="time"]::-webkit-calendar-picker-indicator{
-  display: none;
+    display: none;
   }
 
   

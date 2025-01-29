@@ -48,8 +48,8 @@ const AvailabilityInput = ({ control, register, error }) => {
         الإتاحة
       </InputLabel>
       {fields.map((field, index) => (
-        <>
-          <Entry key={field.id}>
+        <React.Fragment key={field.id}>
+          <Entry>
             <FormControl>
               <InputLabel
                 id={`day-label-${field.id}`}
@@ -170,7 +170,7 @@ const AvailabilityInput = ({ control, register, error }) => {
           >
             حذف حقل الإدخال
           </Button>
-        </>
+        </React.Fragment>
       ))}
 
       <Button

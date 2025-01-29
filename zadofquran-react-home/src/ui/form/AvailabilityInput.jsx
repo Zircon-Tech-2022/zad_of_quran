@@ -11,6 +11,11 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 2rem;
+
+  /* time inputs */
+  input[type="time"]::-webkit-calendar-picker-indicator {
+    display: none;
+  }
 `;
 
 const Entry = styled.div`
@@ -106,8 +111,8 @@ const AvailabilityInput = ({ control, register, error }) => {
         {t("availability")}
       </InputLabel>
       {fields.map((field, index) => (
-        <>
-          <Entry key={field.id}>
+        <React.Fragment key={field.id}>
+          <Entry>
             <FormControl>
               <InputLabel
                 id={`day-label-${field.id}`}
@@ -221,7 +226,7 @@ const AvailabilityInput = ({ control, register, error }) => {
           >
             {t("removeEntry")}
           </Button>
-        </>
+        </React.Fragment>
       ))}
 
       <Button type="button" onClick={() => append({ day: "", start_time: "", end_time: "", timezone: "" })}>
