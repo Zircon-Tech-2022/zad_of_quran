@@ -81,4 +81,10 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Plan::class, 'subscribers');
     }
+
+    // As a Supervisor
+    public function lessons()
+    {
+        return $this->hasMany(Lesson::class, 'supervisor_id', 'id');
+    }
 }

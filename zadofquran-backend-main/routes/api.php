@@ -26,7 +26,6 @@ Route::group(['prefix' => 'auth', 'namespace' => 'App\Http\Controllers', 'as' =>
 });
 
 Route::group(['prefix' => 'auth/staff', 'namespace' => 'App\Http\Controllers\Staff', 'as' => 'auth.staff.'], function () {
-    Route::post('register', 'AuthController@register')->middleware('guest')->name('register');
     Route::post('login', 'AuthController@login')->middleware('guest')->name('login');
     Route::post('logout', 'AuthController@logout')->middleware('auth')->name('logout');
     Route::post('update', 'AuthController@updateUserInfo')->middleware('auth')->name('update');
@@ -40,6 +39,7 @@ Route::apiResource('admin/users', App\Http\Controllers\UserController::class, ['
 
 // ToDo: admin will update profile here
 Route::apiResource('admin/lessons', App\Http\Controllers\LessonController::class, ['as' => 'admin'])->middleware('auth');
+Route::apiResource('admin/supervisors', App\Http\Controllers\SupervisorController::class, ['as' => 'admin'])->middleware('auth');
 Route::apiResource('admin/staff', App\Http\Controllers\StaffController::class, ['as' => 'admin'])->middleware('auth');
 Route::get('staff', [App\Http\Controllers\StaffController::class, 'staff']);
 Route::post('staff/match', [App\Http\Controllers\StaffController::class, 'match']);
@@ -51,6 +51,7 @@ Route::apiResource('admin/testimonials', App\Http\Controllers\TestimonialControl
 Route::get('testimonials', [App\Http\Controllers\TestimonialController::class, 'testimonials']);
 
 Route::apiResource('admin/courses', App\Http\Controllers\CourseController::class, ['as' => 'admin'])->middleware('auth');
+Route::get('availableCourses', [App\Http\Controllers\CourseController::class, 'availableCourses']);
 Route::get('courses', [App\Http\Controllers\CourseController::class, 'courses']);
 
 Route::apiResource('admin/plans', App\Http\Controllers\PlanController::class, ['as' => 'admin'])->middleware('auth');

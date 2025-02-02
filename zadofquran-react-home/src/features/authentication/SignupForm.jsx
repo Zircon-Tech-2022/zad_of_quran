@@ -11,7 +11,6 @@ import { FormControl, FormHelperText, InputLabel, MenuItem, Select } from "@mui/
 import AvailabilityInput from "../../ui/form/AvailabilityInput";
 import { useLocation } from "react-router-dom";
 import { API_URL } from "../../Constants";
-import Editor from "../../ui/form/Editor";
 
 
 const StyleForm = styled.form`
@@ -89,7 +88,7 @@ const SignupForm = () => {
     useEffect(() => {
         const fetchCourses = async () => {
             if (containsTeacher) {
-                const res = await fetch(`${API_URL}courses?all=1`, {
+                const res = await fetch(`${API_URL}availableCourses`, {
                     headers: {
                         "accept-language": "ar",
                         Accept: "application/json",
@@ -116,11 +115,10 @@ const SignupForm = () => {
         setError,
         control,
         setValue,
+        watch,
     } = useForm({
         defaultValues: {
-            "availability": [
-                { day: "", start_time: "", end_time: "", timezone: "" }
-            ]
+            "availability": [],
         }
     });
 
@@ -180,61 +178,6 @@ const SignupForm = () => {
                         type="number"
                         label={t("age")}
                     />
-                    {/* <StyleInput
-                        reg={{
-                            ...register("qualifications", {
-                                required: t("required"),
-                            }),
-                        }}
-                        error={errors?.qualifications}
-                        type="text"
-                        label={t("qualifications")}
-                    /> */}
-                    <InputLabel
-                        style={{
-                            color: "var(--color-grey-0)",
-                            fontSize: "1.6rem",
-                            marginBottom: "-1rem",
-                        }}
-                    >
-                        المؤهلات
-                    </InputLabel>
-                    <div style={{
-                        marginBottom: "3rem",
-                        color: "var(--color-grey-700)",
-                    }}>
-                        <Editor
-                            control={control}
-                            name="qualifications"
-                            setValue={setValue}
-                            reg={{
-                                ...register("qualifications", {
-                                    required: "يجب ادخال هذا الحقل",
-                                }),
-                            }}
-                        />
-                        <span style={{ color: "#d32f2f" }}>
-                            {errors?.qualifications?.message}
-                        </span>
-                    </div>
-                    <InputLabel style={{
-                        color: "var(--color-grey-0)",
-                        fontSize: "1.6rem",
-                        marginBottom: "-1rem",
-                    }}>
-                        {t("image")}
-                    </InputLabel>
-                    < StyleInput
-                        reg={{
-                            ...register(`image`, {
-                                required: t("required"),
-                                onChange: (e) => handleImageChange(e),
-                            }),
-                        }}
-                        error={errors?.image}
-                        type="file"
-                        label=""
-                    />
                     <FormControl>
                         <InputLabel id="gender-select-label" style={{
                             color: "var(--color-grey-0)",
@@ -265,7 +208,7 @@ const SignupForm = () => {
                             fontSize: "1.6rem",
                         }}>{errors?.gender?.message}</FormHelperText>
                     </FormControl>
-                    <AvailabilityInput control={control} register={register} error={errors?.availability} />
+                    <AvailabilityInput control={control} register={register} error={errors?.availability} watch={watch} setValue={setValue} />
                     <FormControl>
                         <InputLabel id="courses-select-label" style={{
                             color: "var(--color-grey-0)",
@@ -309,41 +252,44 @@ const SignupForm = () => {
                 label={t("phone")}
                 icon={<BiPhone />}
             />
-            <StyleInput
-                reg={{
-                    ...register("email", {
-                        required: t("required"),
-                    }),
-                }}
-                error={errors?.email}
-                type="text"
-                label={t("email")}
-                icon={<BiMailSend />}
-            />
-            <StyleInput
-                error={errors?.password}
-                reg={{
-                    ...register("password", {
-                        required: t("required"),
-                    }),
-                }}
-                type="password"
-                label={t("password")}
-                icon={<BiLock />}
-            />
-            <StyleInput
-                error={errors?.password}
-                reg={{
-                    ...register("password_confirmation", {
-                        required: t("required"),
-                    }),
-                }}
-                name="password_confirmation"
-                type="password"
-                label={t("confirmPassword")}
-                icon={<BiLock />}
-            />
-
+            {!containsTeacher && (
+                <>
+                    <StyleInput
+                        reg={{
+                            ...register("email", {
+                                required: t("required"),
+                            }),
+                        }}
+                        error={errors?.email}
+                        type="text"
+                        label={t("email")}
+                        icon={<BiMailSend />}
+                    />
+                    <StyleInput
+                        error={errors?.password}
+                        reg={{
+                            ...register("password", {
+                                required: t("required"),
+                            }),
+                        }}
+                        type="password"
+                        label={t("password")}
+                        icon={<BiLock />}
+                    />
+                    <StyleInput
+                        error={errors?.password}
+                        reg={{
+                            ...register("password_confirmation", {
+                                required: t("required"),
+                            }),
+                        }}
+                        name="password_confirmation"
+                        type="password"
+                        label={t("confirmPassword")}
+                        icon={<BiLock />}
+                    />
+                </>
+            )}
             {isLoading && <Spinner />}
             <Button disabled={isLoading} type="submit">
                 {t("send")}

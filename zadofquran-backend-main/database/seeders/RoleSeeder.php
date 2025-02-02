@@ -68,9 +68,11 @@ class RoleSeeder extends Seeder
             // staff permissions
             ...['staff.create', 'staff.list', 'staff.view', 'staff.update', 'staff.softDelete', 'staff.trash.list', 'staff.delete', 'staff.restore', 'staff.forceDelete'],
 
+            // supervisors permissions
+            ...['supervisors.create', 'supervisors.list', 'supervisors.view', 'supervisors.update', 'supervisors.softDelete', 'supervisors.trash.list', 'supervisors.delete', 'supervisors.restore', 'supervisors.forceDelete'],
+
             // role permissions
             ...['role.create', 'role.list', 'role.view', 'role.update', 'role.softDelete', 'role.restore', 'role.forceDelete', 'role.assignPermission', 'role.removePermission'],
-
 
             // Testimonials permission
             ...['testimonials.create', 'testimonials.list', 'testimonials.update', 'testimonials.softDelete', 'testimonials.restore', 'testimonials.delete', 'testimonials.forceDelete', 'testimonials.view'],
@@ -109,6 +111,29 @@ class RoleSeeder extends Seeder
 
             // Blog permissions
             ...['blogs.create', 'blogs.list', 'blogs.update', 'blogs.softDelete', 'blogs.restore', 'blogs.forceDelete', 'blogs.view'],
+        ]);
+
+        // Supervisor Role
+        Role::firstOrCreate([
+            'name' => 'supervisor',
+            'guard_name' => 'web',
+        ], [
+            'display_name' => 'Supervisor',
+            'description' => 'Supervisor Role',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ])->givePermissionTo([
+            // user permissions
+            ...['users.create', 'users.list', 'users.view', 'users.update', 'users.softDelete', 'users.trash.list', 'users.trash.delete', 'users.restore', 'users.forceDelete'],
+
+            // staff permissions
+            ...['staff.create', 'staff.list', 'staff.view', 'staff.update', 'staff.softDelete', 'staff.trash.list', 'staff.delete', 'staff.restore', 'staff.forceDelete'],
+
+            // Course permissions
+            ...['courses.list', 'courses.view'],
+
+            // Lesson permissions
+            ...['lesson.create', 'lesson.list', 'lesson.update', 'lesson.softDelete', 'lesson.restore', 'lesson.forceDelete', 'lesson.view'],
         ]);
     }
 }

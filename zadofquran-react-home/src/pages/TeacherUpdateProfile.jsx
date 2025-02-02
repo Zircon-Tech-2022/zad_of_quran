@@ -147,7 +147,7 @@ const TeacherUpdateProfile = () => {
         <StyleLogin>
             <Container maxWidth="xl">
                 <StyleGrid container alignItems={"center"} width="70%">
-                    <Grid item md={6} xs={12}>
+                    <Grid item md={4} xs={12}>
                         <Right>
                             <Logo>
                                 <img
@@ -167,7 +167,7 @@ const TeacherUpdateProfile = () => {
                             </Heading>
                         </Right>
                     </Grid>
-                    <Grid item md={6} xs={12}>
+                    <Grid item md={8} xs={12}>
                         <Left>
                             <LeftLogo>
                                 <Logo>

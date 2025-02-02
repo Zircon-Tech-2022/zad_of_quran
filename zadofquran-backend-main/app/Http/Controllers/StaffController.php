@@ -226,9 +226,11 @@ class StaffController extends Controller
     public function staff()
     {
         $staff = Staff::select(['name', 'image', 'phone', 'email', 'qualifications', 'locale'])
+            ->where('display_at_home', true)
             ->orderBy('id')
             ->where('locale', app()->getLocale())
             ->get();
+
         return apiSuccessResponse(__('messages.data_retrieved_successfully'), $staff);
     }
 

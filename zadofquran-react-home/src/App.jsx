@@ -8,6 +8,9 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import { I18nextProvider } from "react-i18next";
 import AOS from "aos";
 
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+
 import i18n from "./i18n";
 import AppLayout from "./ui/AppLayout";
 import NotFound from "./pages/NotFound";
@@ -98,8 +101,20 @@ function App() {
                                     element={<TeacherLanding />}
                                 />
                                 <Route
+                                    path="/:langParam/teacher/signup"
+                                    element={
+                                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                            <TeacherSignup />
+                                        </LocalizationProvider>
+                                    }
+                                />
+                                <Route
                                     path="/:langParam/teacher/update-profile"
-                                    element={<TeacherUpdateProfile />}
+                                    element={
+                                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                            <TeacherUpdateProfile />
+                                        </LocalizationProvider>
+                                    }
                                 />
                             </Route>
                             <Route
@@ -128,10 +143,6 @@ function App() {
                                 <Route
                                     path="/:langParam/teacher/login"
                                     element={<TeacherLogin />}
-                                />
-                                <Route
-                                    path="/:langParam/teacher/signup"
-                                    element={<TeacherSignup />}
                                 />
                             </Route>
                             <Route path="*" element={<NotFound />} />

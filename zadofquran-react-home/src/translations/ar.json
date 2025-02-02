@@ -58,6 +58,7 @@
     "minutes": "دقيقة",
     "name": "الاسم",
     "email": "البريد الالكتروني",
+    "emailOrUsername": "البريد الالكتروني او اسم المستخدم",
     "phone": "رقم الهاتف(201111111111+)",
     "phoneWord": "رقم الهاتف",
     "password": "كلمة المرور",
@@ -113,13 +114,14 @@
     "image": "الصورة",
     "availability": "الإتاحة",
     "day": "اليوم",
-    "startTime": "وقت البدء (من)",
-    "endTime": "وقت النهاية (إلى)",
+    "startTime": "من",
+    "endTime": "إلى",
     "timezone": "المنطقة الزمنية",
     "addNewEntry": "إضافة حقل إدخال جديد",
     "removeEntry": "حذف حقل الإدخال",
     "noLessons": "لا يوجد حلقات",
     "noCourses": "لا يوجد دورات",
-    "noAvailabilitySolts": "لا توجد فترات متاحة", 
-    "leave-password-empty-to-keep-the-same": "اترك كلمة المرور فارغة لجعلها كما هي"
+    "noAvailabilitySolts": "لا توجد فترات متاحة",
+    "leave-password-empty-to-keep-the-same": "اترك كلمة المرور فارغة لجعلها كما هي",
+    "not-available": "غير متوفر"
 }

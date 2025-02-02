@@ -4,7 +4,10 @@ import DOMPurify from 'dompurify';
 import { t } from "i18next";
 
 const ProfileInfo = ({ user }) => {
-    const sanitizedHTML = DOMPurify.sanitize(user.qualifications);
+    const gender = !user.gender && t('not-available') || user.gender && user.gender == "male" && "ذكر" || "أنثى"
+    const age = !user.age && t('not-available') || user.age && parseInt(user.age)
+
+    const sanitizedHTML = DOMPurify.sanitize(!user.qualifications && t('not-available') || user.qualifications);
 
     return (
         <Card>
@@ -21,8 +24,9 @@ const ProfileInfo = ({ user }) => {
                         <Typography variant="h5">{user.name}</Typography>
                         <Typography variant="body1">{user.email}</Typography>
                         <Typography variant="body2">{t('phoneWord')}: {user.phone}</Typography>
-                        <Typography variant="body2">{t('age')}: {user.age}</Typography>
-                        <Typography style={{marginTop: "5px"}} variant="h6">
+                        <Typography variant="body2">{t('gender')}: {gender}</Typography>
+                        <Typography variant="body2">{t('age')}: "{age}"</Typography>
+                        <Typography style={{ marginTop: "5px" }} variant="h6">
                             {t('qualifications')}
                         </Typography>
                         <div dangerouslySetInnerHTML={{ __html: sanitizedHTML }} />

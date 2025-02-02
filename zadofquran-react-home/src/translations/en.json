@@ -58,6 +58,7 @@
     "minutes": "minutes",
     "name": "Name",
     "email": "Email",
+    "emailOrUsername": "Email or Username",
     "phone": "Phone(+201111111111)",
     "phoneWord": "Phone",
     "password": "Password",
@@ -113,13 +114,14 @@
     "image": "Image",
     "availability": "Availability",
     "day": "Day",
-    "startTime": "Start time",
-    "endTime": "End time",
+    "startTime": "From",
+    "endTime": "To",
     "timezone": "timezone",
     "addNewEntry": "Add new entry",
     "removeEntry": "Remove entry",
     "noLessons": "No lessons",
     "noCourses": "No courses",
     "noAvailabilitySolts": "No availability slots",
-    "leave-password-empty-to-keep-the-same": "Leave password empty to keep the same"
+    "leave-password-empty-to-keep-the-same": "Leave password empty to keep the same",
+    "not-available": "Not available"
 }

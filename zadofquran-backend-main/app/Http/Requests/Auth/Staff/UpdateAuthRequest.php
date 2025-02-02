@@ -27,16 +27,13 @@ class UpdateAuthRequest extends FormRequest
     {
         return [
             'name' => ['nullable', 'string', 'min:2', 'max:255', new NumOfWords(2)],
-            'password' => 'nullable|string|confirmed|min:8',
             'phone' => 'nullable|string|min:13|max:13|phone_number|unique:staff,phone,' . $this->user()->staff->id . ',id,deleted_at,NULL',
             'age' => 'nullable|integer|min:18',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:10240',
             'availability' => 'nullable|array|min:1',
             'availability.*.day' => ['required', Rule::in(['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'])],
             'availability.*.start_time' => 'required|date_format:H:i',
             'availability.*.end_time' => 'required|date_format:H:i',
             'availability.*.timezone' => 'required|string',
-            'qualifications' => 'nullable|string',
         ];
     }
 

@@ -9,7 +9,6 @@ use App\Http\Requests\Auth\Staff\UpdateAuthRequest;
 use App\Models\StaffDetails;
 use App\Models\Staff;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 
@@ -28,22 +27,19 @@ class AuthController extends Controller
     public function register(RegisterRequest $request)
     {
         $data = $request->validated();
+        $staffDetails = $request->user();
+        $staffDetails = StaffDetails::where('email', $staffDetails['email'])->first();
 
-        if ($request->hasFile('image')) {
-            $data['image'] = $this->storeImage($request);
-        }
+        abort_if(!$staffDetails, 401);
 
-        $staff = Staff::create([
+        $staffDetails->staff->update([
             'name' => $data['name'],
-            'image' => $data['image'] ?? null,
             'phone' => $data['phone'],
-            'email' => $data['email'],
-            'qualifications' => $data['qualifications'],
         ]);
 
-        $staff->details()->create([
-            'email' => $data['email'],
-            'password' => Hash::make($data['password']),
+        $staff = $staffDetails->staff;
+
+        $staffDetails->update([
             'age' => $data['age'],
             'gender' => $data['gender'],
         ]);
@@ -52,7 +48,7 @@ class AuthController extends Controller
             $this->storeAvailabilities($this->reformAvailabilities($data['availability']), $staff);
         }
 
-        $courses = $data['courses'] ?? [];
+        $courses = $data['courses'];
         $staff->courses()->sync($courses);
 
         $token = $staff->details->createToken('auth_token')->plainTextToken;
@@ -70,7 +66,6 @@ class AuthController extends Controller
                     "email",
                     "qualifications",
                     "locale",
-                    "deleted_at",
                     "created_at",
                     "updated_at",
                 ]),
@@ -168,29 +163,14 @@ class AuthController extends Controller
 
         abort_if(!$staffDetails, 401);
 
-        if ($request->hasFile('image')) {
-            if ($staffDetails->staff->image) {
-                Storage::disk('public')->delete($staffDetails->staff->image);
-            }
-            $data['image'] = $this->storeImage($request);
-        }
-
         $staffDetails->staff->update([
             'name' => $data['name'] ?? $staffDetails->staff->name,
-            'image' => $data['image'] ?? $staffDetails->staff->image,
             'phone' => $data['phone'] ?? $staffDetails->staff->phone,
-            'qualifications' => $data['qualifications'] ?? $staffDetails->staff->qualifications,
         ]);
 
         $staff = $staffDetails->staff;
 
-        if ($data['password']) {
-            $currentTokenId = auth()->user()->currentAccessToken()->id;
-            $staffDetails->tokens()->where('id', '!=', $currentTokenId)->delete();
-        }
-
         $staffDetails->update([
-            'password' => isset($data['password']) && !empty($data['password']) ? Hash::make($data['password']) : $staffDetails->password,
             'age' => $data['age'] ?? $staffDetails->age,
         ]);
 
@@ -210,7 +190,6 @@ class AuthController extends Controller
                     "email",
                     "qualifications",
                     "locale",
-                    "deleted_at",
                     "created_at",
                     "updated_at",
                 ]),

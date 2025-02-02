@@ -135,57 +135,6 @@ const UpdateTeacherForm = ({ values }) => {
                 type="number"
                 label={t("age")}
             />
-            <InputLabel
-                style={{
-                    color: "var(--color-grey-0)",
-                    fontSize: "1.6rem",
-                    marginBottom: "-1rem",
-                }}
-            >
-                المؤهلات
-            </InputLabel>
-            <div style={{
-                marginBottom: "3rem",
-                color: "var(--color-grey-700)",
-            }}>
-                <Editor
-                    control={control}
-                    name="qualifications"
-                    setValue={setValue}
-                    isEditSession={true}
-                    editValue={values?.qualifications}
-                    reg={{
-                        ...register("qualifications", {
-                            required: "يجب ادخال هذا الحقل",
-                        }),
-                    }}
-                />
-                <span style={{ color: "#d32f2f" }}>
-                    {errors?.qualifications?.message}
-                </span>
-            </div>
-            <InputLabel style={{
-                color: "var(--color-grey-0)",
-                fontSize: "1.6rem",
-                marginBottom: "-1rem",
-            }}>
-                {t("image")}
-            </InputLabel>
-            <div style={{ display: "flex", justifyContent: "center" }}>
-                <Avatar alt={values.name} src={values.image}
-                    sx={{ width: 100, height: 100 }}
-                />
-            </div>
-            < StyleInput
-                reg={{
-                    ...register(`image`, {
-                        onChange: (e) => handleImageChange(e),
-                    }),
-                }}
-                error={errors?.image}
-                type="file"
-                label=""
-            />
             <FormControl>
                 <InputLabel
                     id="gender-select-label"
@@ -236,34 +185,6 @@ const UpdateTeacherForm = ({ values }) => {
                 type="text"
                 label={t("phone")}
                 icon={<BiPhone />}
-            />
-            <StyleInput
-                error={errors?.password}
-                reg={{
-                    ...register("password"),
-                }}
-                type="password"
-                label={t("password")}
-                icon={<BiLock />}
-            />
-            {!errors?.password && (<FormHelperText
-                style={{
-                    color: "#fff",
-                    fontSize: "1.6rem",
-                    marginTop: "-1.7rem",
-                }}
-            >
-                {t("leave-password-empty-to-keep-the-same")}
-            </FormHelperText>)}
-            <StyleInput
-                error={errors?.password}
-                reg={{
-                    ...register("password_confirmation"),
-                }}
-                name="password_confirmation"
-                type="password"
-                label={t("confirmPassword")}
-                icon={<BiLock />}
             />
 
             {isLoading && <Spinner />}

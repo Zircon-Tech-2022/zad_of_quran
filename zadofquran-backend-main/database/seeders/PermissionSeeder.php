@@ -327,6 +327,90 @@ class PermissionSeeder extends Seeder
             ],
         ]);
 
+        // Supervisors Permissions
+        array_push($permissions, ...[
+            [
+                'name' => 'supervisors.list',
+                'display_name' => 'supervisors All List',
+                'description' => 'show List of supervisors',
+                'guard_name' => 'web',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+
+            [
+                'name' => 'supervisors.create',
+                'display_name' => 'Create supervisors',
+                'description' => 'Create New supervisors',
+                'guard_name' => 'web',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+
+            [
+                'name' => 'supervisors.update',
+                'display_name' => 'Update All supervisors',
+                'description' => 'Update All supervisors',
+                'guard_name' => 'web',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+
+            [
+                'name' => 'supervisors.view',
+                'display_name' => 'View supervisors',
+                'description' => 'View supervisors Information',
+                'guard_name' => 'web',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+
+            [
+                'name' => 'supervisors.softDelete',
+                'display_name' => 'Trash All supervisors',
+                'description' => 'move All supervisors to Trash',
+                'guard_name' => 'web',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+
+            [
+                'name' => 'supervisors.trash.list',
+                'display_name' => 'supervisors All Trash List',
+                'description' => 'show List of supervisors in Trash',
+                'guard_name' => 'web',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+
+            [
+                'name' => 'supervisors.restore',
+                'display_name' => 'Restore All supervisors',
+                'description' => 'Restore All supervisors from Trash',
+                'guard_name' => 'web',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+
+            [
+                'name' => 'supervisors.delete',
+                'display_name' => 'Delete All supervisors',
+                'description' => 'Delete All supervisors from Trash',
+                'guard_name' => 'web',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+
+            [
+                'name' => 'supervisors.forceDelete',
+                'display_name' => 'Force Delete All supervisors',
+                'description' => 'Force Delete All supervisors Permanently',
+                'guard_name' => 'web',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+        ]);
+
         // Role Permissions
         array_push($permissions, ...[
             [

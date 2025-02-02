@@ -28,11 +28,13 @@ const TeacherLanding = () => {
     const open = Boolean(anchorEl);
 
     let defaultTimezone = "GMT+2";
+    let isProfileCompleted = null;
     const isTeacher = localStorage.getItem('user-type') === "teacher";
 
     if (!isLoading && !isUpdateTimezoneLoading && user?.data?.user?.availabilities[0]) {
         defaultTimezone = calculateTimezone(user.data.user.availabilities[0].start_times['local'],
             user.data.user.availabilities[0].start_times['gmt']);
+        isProfileCompleted = user?.data?.user?.courses?.length && user?.data?.user?.lessons?.length && user?.data?.user?.availabilities?.length;
     }
 
     const handleClick = (event) => {
@@ -70,77 +72,82 @@ const TeacherLanding = () => {
                                     </span>
                                     {t("teacher-login-title")}
                                 </Link>
-                                <Link
-                                    to={`/${language}/teacher/signup`}
-                                    className={`${styles.solid} ${styles.mainAction} ${styles.link}`}
-                                >
-                                    <span className={styles.icon}>
-                                        <FaGraduationCap />
-                                    </span>
-                                    {t("teacher-signup-title")}
-                                </Link>
                             </>
                         )}
 
                     {!isLoading && !isUpdateTimezoneLoading && isTeacher && isAuth && localStorage.getItem("token") && (
-                        <>
-                            <button
-                                className={`${styles.nonSolid} ${styles.mainAction} ${styles.btn} animated fade`}
-                                open={open}
-                                onClick={handleClick}
-                            >
-                                <span >
-                                    <Avatar alt={user?.data?.user?.name} src={user?.data?.user?.image} />
-                                </span>
-                                {user?.data?.user?.name}
-                            </button>
-                            <Menu
-                                id="basic-menu"
-                                anchorEl={anchorEl}
-                                open={open}
-                                onClose={handleClose}
-                                MenuListProps={{
-                                    "aria-labelledby": "basic-button",
-                                }}
-                            >
-                                <Link
-                                    to={`/${language}/teacher/update-profile`}
-                                >
-                                    <MenuItem
-                                        sx={{ gap: "1.5rem", fontSize: "1.6rem" }}
-                                    >
-                                        {t("update-profile")}
-                                    </MenuItem>
-                                </Link>
+                        (isProfileCompleted) ? (
+                            <>
                                 <button
-                                    onClick={() => {
-                                        handleClose();
-                                        logout();
-                                    }}
-                                    disabled={isLogout}
+                                    className={`${styles.nonSolid} ${styles.mainAction} ${styles.btn} animated fade`}
+                                    open={open}
+                                    onClick={handleClick}
                                 >
-                                    <MenuItem
-                                        sx={{ gap: "1.5rem", fontSize: "1.6rem" }}
-                                    >
-                                        {t("logout")}
-                                        <span className={styles.icon}>
-                                            <BiLogOut />
-                                        </span>
-                                    </MenuItem>
+                                    <span >
+                                        <Avatar alt={user?.data?.user?.name} src={user?.data?.user?.image} />
+                                    </span>
+                                    {user?.data?.user?.name}
                                 </button>
-                                {isLogout && <Spinner />}
-                            </Menu>
-                        </>
+                                <Menu
+                                    id="basic-menu"
+                                    anchorEl={anchorEl}
+                                    open={open}
+                                    onClose={handleClose}
+                                    MenuListProps={{
+                                        "aria-labelledby": "basic-button",
+                                    }}
+                                >
+                                    <Link
+                                        to={`/${language}/teacher/update-profile`}
+                                    >
+                                        <MenuItem
+                                            sx={{ gap: "1.5rem", fontSize: "1.6rem" }}
+                                        >
+                                            {t("update-profile")}
+                                        </MenuItem>
+                                    </Link>
+                                    <button
+                                        onClick={() => {
+                                            handleClose();
+                                            logout();
+                                        }}
+                                        disabled={isLogout}
+                                    >
+                                        <MenuItem
+                                            sx={{ gap: "1.5rem", fontSize: "1.6rem" }}
+                                        >
+                                            {t("logout")}
+                                            <span className={styles.icon}>
+                                                <BiLogOut />
+                                            </span>
+                                        </MenuItem>
+                                    </button>
+                                    {isLogout && <Spinner />}
+                                </Menu>
+                            </>
+                        ) : (
+                            <Link
+                                to={`/${language}/teacher/signup`}
+                                className={`${styles.solid} ${styles.mainAction} ${styles.link}`}
+                            >
+                                <span className={styles.icon}>
+                                    <FaGraduationCap />
+                                </span>
+                                {t("teacher-signup-title")}
+                            </Link>
+                        )
                     )}
                 </div>
                 {!isLoading && !isUpdateTimezoneLoading && user?.data?.user && (
-                    <div className={styles.profileContainer}>
-                        <ProfileInfo user={user?.data?.user} />
-                        <TimezoneButton defaultValue={defaultTimezone} handleChange={handleTimezoneChange} />
-                        <CoursesList courses={user?.data?.user.courses} />
-                        <AvailabilityTable availabilities={user?.data?.user.availabilities} />
-                        <LessonsTable lessons={user?.data?.user.lessons} />
-                    </div>
+                    (isProfileCompleted) && (
+                        <div className={styles.profileContainer}>
+                            <ProfileInfo user={user?.data?.user} />
+                            <TimezoneButton defaultValue={defaultTimezone} handleChange={handleTimezoneChange} />
+                            <CoursesList courses={user?.data?.user.courses} />
+                            <AvailabilityTable availabilities={user?.data?.user.availabilities} />
+                            <LessonsTable lessons={user?.data?.user.lessons} />
+                        </div>
+                    )
                 )}
             </Body>
         </PageLayout >

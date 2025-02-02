@@ -7,15 +7,15 @@ use App\Http\Requests\Course\UpdateCourseRequest;
 use App\Models\Course;
 use Illuminate\Support\Facades\Storage;
 
-class CourseController extends Controller
+class SupervisorController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('permission:courses.list')->only('index');
-        $this->middleware('permission:courses.create')->only('store');
-        $this->middleware('permission:courses.view')->only('show');
-        $this->middleware('permission:courses.update')->only('update');
-        $this->middleware('permission:courses.softDelete')->only('destroy');
+        $this->middleware('permission:supervisors.list')->only('index');
+        $this->middleware('permission:supervisors.create')->only('store');
+        $this->middleware('permission:supervisors.view')->only('show');
+        $this->middleware('permission:supervisors.update')->only('update');
+        $this->middleware('permission:supervisors.softDelete')->only('destroy');
     }
 
     /**
@@ -51,24 +51,15 @@ class CourseController extends Controller
         return apiSuccessResponse(__('messages.data_retrieved_successfully'), $course);
     }
 
-    public function availableCourses()
-    {
-        $courses = Course::select(['id', 'name', 'image', 'locale', 'description'])
-            ->orderBy('id')
-            ->get();
-
-        return apiSuccessResponse(__('messages.data_retrieved_successfully'), $courses);
-    }
-
     /**
-     * Display courses for home page.
+     * Display a courses.
      */
     public function courses()
     {
         $courses = Course::select(['id', 'name', 'image', 'locale', 'description'])
-            ->where('locale', app()->getLocale())
-            ->where('display_at_home', true)
-            ->orderBy('id')
+            ->orderBy('id');
+
+        $courses =  request('all') ? $courses->get() : $courses->where('locale', app()->getLocale())
             ->get();
 
         return apiSuccessResponse(__('messages.data_retrieved_successfully'), $courses);

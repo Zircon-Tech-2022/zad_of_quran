@@ -59,6 +59,11 @@ class Lesson extends Model
         return $this->belongsTo(Subscriber::class);
     }
 
+    public function supervisor()
+    {
+        return $this->belongsTo(User::class, 'supervisor_id', 'id');
+    }
+
     public function course()
     {
         return $this->belongsTo(Course::class);

@@ -66,7 +66,7 @@ const LoginForm = () => {
                 }}
                 error={errors?.email}
                 type="text"
-                label={t("email")}
+                label={containsTeacher ? t("emailOrUsername") : t("email")}
                 icon={<BiMailSend />}
             />
             <StyleInput
