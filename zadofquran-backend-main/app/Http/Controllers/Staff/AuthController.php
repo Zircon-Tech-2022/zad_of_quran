@@ -20,8 +20,8 @@ class AuthController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth')->except(['login', 'register']);
-        $this->middleware('guest')->only(['login', 'register']);
+        $this->middleware('auth')->except(['login']);
+        $this->middleware('guest')->only(['login']);
     }
 
     public function register(RegisterRequest $request)

@@ -26,6 +26,7 @@ Route::group(['prefix' => 'auth', 'namespace' => 'App\Http\Controllers', 'as' =>
 });
 
 Route::group(['prefix' => 'auth/staff', 'namespace' => 'App\Http\Controllers\Staff', 'as' => 'auth.staff.'], function () {
+    Route::post('register', 'AuthController@register')->middleware('auth')->name('register');
     Route::post('login', 'AuthController@login')->middleware('guest')->name('login');
     Route::post('logout', 'AuthController@logout')->middleware('auth')->name('logout');
     Route::post('update', 'AuthController@updateUserInfo')->middleware('auth')->name('update');

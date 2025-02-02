@@ -2,10 +2,10 @@ import { API_URL } from "../Constants";
 
 export async function getCurrentUser(token, timezone = null) {
     try {
-        let endpoint = localStorage.getItem('user-type') == 'teacher' ? `${API_URL}auth/staff`:`${API_URL}auth`;
+        let endpoint = localStorage.getItem('user-type') == 'teacher' ? `${API_URL}auth/staff` : `${API_URL}auth`;
         if (timezone) {
-            const query = timezone.replace('+',"%2B"); // replace + with %2B to avoid encoding issue
-            endpoint+=`?timezone_offset=${query}`;
+            const query = timezone.replace('+', "%2B"); // replace + with %2B to avoid encoding issue
+            endpoint += `?timezone_offset=${query}`;
         }
 
         const res = await fetch(endpoint, {
@@ -57,7 +57,7 @@ export async function logout(token) {
 // }
 export async function login({ email, password, type }, setError, token) {
     try {
-        const endpoint = type == 'teacher' ? `${API_URL}auth/staff/login`:`${API_URL}auth/login`;
+        const endpoint = type == 'teacher' ? `${API_URL}auth/staff/login` : `${API_URL}auth/login`;
         const res = await fetch(endpoint, {
             method: "POST",
             headers: {
@@ -91,12 +91,13 @@ export async function login({ email, password, type }, setError, token) {
 export async function signup(userData, setError) {
     try {
         // formData
-        const endpoint = userData.get('type') == 'teacher' ? `${API_URL}auth/staff/register`:`${API_URL}auth/register`;
+        const endpoint = userData.get('type') == 'teacher' ? `${API_URL}auth/staff/register` : `${API_URL}auth/register`;
         const res = await fetch(endpoint, {
             method: "POST",
             headers: {
                 "accept-language": "ar",
                 Accept: "application/json",
+                Authorization: `Bearer ${localStorage.getItem('token')}`,
             },
             body: userData,
         });

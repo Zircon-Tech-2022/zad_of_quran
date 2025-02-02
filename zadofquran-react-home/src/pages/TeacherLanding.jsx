@@ -34,7 +34,7 @@ const TeacherLanding = () => {
     if (!isLoading && !isUpdateTimezoneLoading && user?.data?.user?.availabilities[0]) {
         defaultTimezone = calculateTimezone(user.data.user.availabilities[0].start_times['local'],
             user.data.user.availabilities[0].start_times['gmt']);
-        isProfileCompleted = user?.data?.user?.courses?.length && user?.data?.user?.lessons?.length && user?.data?.user?.availabilities?.length;
+        isProfileCompleted = user?.data?.user?.courses?.length && user?.data?.user?.availabilities?.length;
     }
 
     const handleClick = (event) => {
