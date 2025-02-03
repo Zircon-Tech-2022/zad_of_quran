@@ -16,7 +16,6 @@ return new class extends Migration
             $table->foreignId('staff_id')->constrained()->cascadeOnDelete();
             $table->foreignId('course_id')->constrained()->cascadeOnDelete();
             $table->foreignId('subscriber_id')->constrained()->cascadeOnDelete(); // student id
-            $table->foreignId('supervisor_id')->constrained()->cascadeOnDelete(); // supervisor id
             $table->boolean('is_active')->default(true);
             $table->softDeletes();
             $table->timestamps();

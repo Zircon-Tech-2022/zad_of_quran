@@ -124,16 +124,16 @@ class RoleSeeder extends Seeder
             'updated_at' => now(),
         ])->givePermissionTo([
             // user permissions
-            ...['users.create', 'users.list', 'users.view', 'users.update', 'users.softDelete', 'users.trash.list', 'users.trash.delete', 'users.restore', 'users.forceDelete'],
+            ...['users.create', 'users.list', 'users.view', 'users.update', 'users.softDelete', 'users.trash.list', 'users.trash.delete'],
 
             // staff permissions
-            ...['staff.create', 'staff.list', 'staff.view', 'staff.update', 'staff.softDelete', 'staff.trash.list', 'staff.delete', 'staff.restore', 'staff.forceDelete'],
+            ...['staff.create', 'staff.list', 'staff.view', 'staff.update', 'staff.softDelete', 'staff.trash.list', 'staff.delete'],
 
             // Course permissions
             ...['courses.list', 'courses.view'],
 
-            // Lesson permissions
-            ...['lesson.create', 'lesson.list', 'lesson.update', 'lesson.softDelete', 'lesson.restore', 'lesson.forceDelete', 'lesson.view'],
+            // Lesson permadmin/auth/loginissions
+            ...['lesson.create', 'lesson.list', 'lesson.update', 'lesson.softDelete', 'lesson.view'],
         ]);
     }
 }

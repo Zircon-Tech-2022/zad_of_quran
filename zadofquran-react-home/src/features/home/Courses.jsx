@@ -41,12 +41,11 @@ const breakpoints = {
     },
 };
 async function getCourses(lang) {
-    const res = await fetch(`${API_URL}courses?all=1`, {
+    const res = await fetch(`${API_URL}availableCourses`, {
         headers: {
             "accept-language": lang || "ar",
             Accept: "application/json",
             "Content-Type": "application/json",
-            Authorization: `Bearer `,
         },
     });
     // if (!res.ok) throw new Error("lol");

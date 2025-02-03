@@ -11,6 +11,7 @@ import { BiSolidNetworkChart } from "react-icons/bi";
 import SideItem, { NavHead, NavIcon } from "./SideItem";
 import SideBarBrand, { Brand, BrandImg, Type, Zircon } from "./SideBarBrand";
 import { useLogout } from "../../features/authentication/useLogout";
+import { MdAdminPanelSettings } from "react-icons/md";
 
 const Items = styled.div`
     display: flex;
@@ -83,7 +84,7 @@ const StyleSidebar = styled.div`
         width: 27rem;
     }
 `;
-const items = [
+let items = [
     {
         name: "كل الطلاب",
         to: "/users",
@@ -98,6 +99,11 @@ const items = [
         name: "كل المدرسين",
         to: "/teachers",
         icon: <FaUsersGear />,
+    },
+    {
+        name: "المشرفين",
+        to: "/supervisors",
+        icon: <MdAdminPanelSettings />,
     },
     {
         name: "الحلقات",
@@ -131,6 +137,19 @@ const items = [
         icon: <FaPersonCircleQuestion />,
     },
 ];
+
+const permissions = JSON.parse(localStorage.getItem('permissions')) || [];
+if (permissions && permissions.length > 0) {
+    const uniqueSet = new Set(permissions.map(item => item.split('.')[0]));
+
+    items = items.filter((item) => {
+        let itemString = (item.to.split("/")[1]);
+        if (itemString === "teachers") {
+            itemString = "staff";
+        }
+        return uniqueSet.has(itemString) || uniqueSet.has(itemString.replace(/s$/, ''));
+    });
+}
 
 const SideBar = (props) => {
     const { sideState, setSideState } = useSideBarContext();

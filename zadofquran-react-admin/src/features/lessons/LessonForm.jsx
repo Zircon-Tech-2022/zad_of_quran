@@ -73,7 +73,7 @@ const LessonForm = ({ lessonToEdit = null }) => {
     useEffect(() => {
         const fetchCourses = async () => {
             setIsLoadingSomething(true);
-            const res = await fetch(`${API_URL}courses?all=1`, {
+            const res = await fetch(`${API_URL}availableCourses`, {
                 headers: {
                     Accept: "application/json",
                     "Content-Type": "application/json",
@@ -229,79 +229,29 @@ const LessonForm = ({ lessonToEdit = null }) => {
                 left: "50%",
                 margin: "-3.7rem auto",
             }} />}
-
-            {!isEditSession && (
-                <DivStyle>
-                    <MyInput style={{ width: "80%" }} getValue={setSearch} label="ابحث عن المشترك" id="subscriberSearch" />
-                    <Button
-                        disabled={isWorking}
-                        variation="secondary"
-                        style={{ minWidth: "fit-content", width: "20%" }}
-                        type="submit"
-                        onClick={(e) => handleSearchSubscribers(e)}
-                    >
-                        ابحث
-                    </Button>
-                </DivStyle>
-            )}
-
-            {!lessonToEdit?.id && subscribers && (
-                <>
-                    <FormControl>
-                        <InputLabel
-                            style={{
-                                fontSize: "1.6rem",
-                            }}
-                            id="Teacher-select-label"
-                        >
-                            اختر المشترك
-                        </InputLabel>
-                        <Controller
-                            name="subscriber_id"
-                            control={control}
-                            rules={{ required: "يجب ادخال هذا الحقل" }}
-                            render={({ field: controllerField, fieldState: { error } }) => (
-                                <>
-                                    <Select
-                                        labelId="subscriber-select-label"
-                                        value={selectedSubscriber}
-                                        onChange={(e) => setSelectedSubscriber(e.target.value)}
-                                        error={errors?.subscriber_id}
-                                        label="اختر المشترك"
-                                        id="outlined-required"
-                                    >
-                                        {subscribers.length > 0 ? (
-                                            subscribers.map((subscriber) => (
-                                                <MenuItem key={subscriber.id} value={subscriber.id}>
-                                                    {subscriber.name} | {subscriber.email} | {subscriber.phone}
-                                                </MenuItem>
-                                            ))
-                                        ) : (
-                                            <MenuItem value="">لا يوجد نتائج</MenuItem>
-                                        )}
-
-                                    </Select>
-                                    <FormHelperText
-                                        style={{
-                                            color: "#d32f2f",
-                                            fontSize: "1.6rem",
-                                        }}
-                                    >
-                                        {error?.message}
-                                    </FormHelperText>
-                                </>
-                            )}
-                        />
-                    </FormControl>
-                </>
-            )}
-
-            {subscriberData.current && (
-                <SubscriberProfileInfo subscriber={subscriberData.current} />
-            )}
-
-            {subscriberData.current && (<AvailabilityInput control={control} register={register} error={errors?.availability} />)}
-
+            <MyInput
+                label="اسم المشترك"
+                id="name"
+                reg={{
+                    ...register("name", {
+                        required: "يجب ادخال هذا الحقل",
+                    }),
+                }}
+                error={errors?.name}
+                disabled={isWorking}
+            />
+            <MyInput
+                label="رقم الهاتف"
+                id="phone"
+                reg={{
+                    ...register("phone", {
+                        required: "يجب ادخال هذا الحقل",
+                    }),
+                }}
+                error={errors?.phone}
+                disabled={isWorking}
+            />
+            <AvailabilityInput control={control} register={register} error={errors?.availability} />
             <Controller
                 name="age"
                 control={control}
@@ -320,7 +270,6 @@ const LessonForm = ({ lessonToEdit = null }) => {
                     />
                 )}
             />
-
             <FormControl>
                 <InputLabel id="gender-select-label" style={{
                     fontSize: "1.6rem",
@@ -348,6 +297,36 @@ const LessonForm = ({ lessonToEdit = null }) => {
                         </Select>
                     )}
                 />
+            </FormControl>
+
+            {/* المشرف */}
+            <FormControl>
+                <InputLabel id="courses-select-label" style={{
+                    fontSize: "1.6rem",
+                }}>
+                    الدورة
+                </InputLabel>
+                <Select
+                    labelId="courses-select-label"
+                    {...register("course", {
+                        required: "يجب ادخال هذا الحقل",
+                    })}
+                    value={selectedCourse}
+                    onChange={(e) => setSelectedCourse(e.target.value)}
+                    error={errors?.course}
+                    label="الدورة"
+                    id="outlined-required"
+                >
+                    {courses.map((course) => (
+                        <MenuItem key={course.id} value={course.id}>
+                            {course.name}
+                        </MenuItem>
+                    ))}
+                </Select>
+                <FormHelperText style={{
+                    color: "#d32f2f",
+                    fontSize: "1.6rem",
+                }}>{errors?.course?.message}</FormHelperText>
             </FormControl>
 
             <FormControl>

@@ -44,8 +44,8 @@ const TeacherLanding = () => {
         setAnchorEl(null);
     };
 
-    const handleTimezoneChange = async (e) => {
-        updateTimezone(e.target.value);
+    const handleTimezoneChange = async (newValue) => {
+        updateTimezone(newValue);
     }
 
     return (

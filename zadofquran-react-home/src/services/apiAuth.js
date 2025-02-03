@@ -97,7 +97,7 @@ export async function signup(userData, setError) {
             headers: {
                 "accept-language": "ar",
                 Accept: "application/json",
-                Authorization: `Bearer ${localStorage.getItem('token')}`,
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
             },
             body: userData,
         });

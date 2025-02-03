@@ -11,6 +11,7 @@ export function useLogin(setError) {
             loginApi({ email, password }, setError),
         onSuccess: (user) => {
             localStorage.setItem("token", user.data.token);
+            localStorage.setItem("permissions", JSON.stringify(user.data.user.permissions));
             queryClient.setQueryData(["user"], user.user);
             navigate("/users", { replace: true });
         },

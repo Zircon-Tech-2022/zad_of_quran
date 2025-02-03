@@ -39,6 +39,11 @@ const AvailabilityInput = ({ control, register, errors }) => {
     append({ day, start_time: "", end_time: "", timezone: "GMT+2" });
   };
 
+  const handleRemoveSlot = (id) => {
+    const index = fields.findIndex((slot) => slot.id === id);
+    remove(index)
+  };
+
   const handleChange = (id, field, value) => {
     const index = fields.findIndex((slot) => slot.id === id);
     update(index, { ...fields[index], [field]: value });
@@ -149,7 +154,7 @@ const AvailabilityInput = ({ control, register, errors }) => {
                   <Button
                     type="button"
                     variant="outlined"
-                    onClick={() => remove(index)}
+                    onClick={() => handleRemoveSlot(slot.id)}
                   >
                     <FaRegTrashAlt />
                   </Button>

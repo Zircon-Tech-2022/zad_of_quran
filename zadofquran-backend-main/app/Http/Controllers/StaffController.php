@@ -21,6 +21,7 @@ class StaffController extends Controller
     public function __construct()
     {
         $this->middleware('permission:staff.list')->only(['index']);
+        $this->middleware('permission:staff.list')->only(['match']);
         $this->middleware('permission:staff.view')->only(['show']);
         $this->middleware('permission:staff.create')->only(['store']);
         $this->middleware('permission:staff.update')->only(['update']);

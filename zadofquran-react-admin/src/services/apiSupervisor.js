@@ -1,8 +1,8 @@
 import { API_URL } from "../Constants";
 
-export async function matchTeachersQuery({ search, page }, token) {
+export async function getSupervisorsData({ search, page }, token) {
     const res = await fetch(
-        `${API_URL}admin/staff?q=${search}&page=${page}&limit=15`,
+        `${API_URL}admin/supervisors?q=${search}&page=${page}&limit=15`,
         {
             headers: {
                 "accept-language": "ar",
@@ -18,9 +18,9 @@ export async function matchTeachersQuery({ search, page }, token) {
     return data;
 }
 
-export async function getTeacherData(id, token, timezone = null) {
+export async function getSupervisorData(id, token, timezone = null) {
     if (!id) return null;
-    let endpoint = `${API_URL}admin/staff/${id}`;
+    let endpoint = `${API_URL}admin/supervisors/${id}`;
 
     if (timezone) {
         const query = timezone.replace('+', "%2B"); // replace + with %2B to avoid encoding issue
@@ -44,36 +44,17 @@ export async function getTeacherData(id, token, timezone = null) {
     return data;
 }
 
-export async function getTeachersQueryData({ search, page }, token) {
-    const res = await fetch(
-        `${API_URL}admin/staff?q=${search}&page=${page}&limit=15`,
-        {
-            headers: {
-                "accept-language": "ar",
-                Accept: "application/json",
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
-            },
-        }
-    );
-
-    if (!res.ok) throw Error("حدث خطأ اثناء جلب البيانات");
-    const data = await res.json();
-    return data;
-}
-
-export async function updateTeacherApi(teacherData, id, token, setError) {
+export async function updateSupervisorApi(supervisorData, id, token, setError) {
     try {
         const formData = new FormData();
-        //
-        for (const [key, value] of Object.entries(teacherData)) {
+        for (const [key, value] of Object.entries(supervisorData)) {
             if (key === "image" && value == null) {
                 continue;
             }
             formData.append(key, value);
         }
         formData.append("_method", "patch");
-        const res = await fetch(`${API_URL}admin/staff/${id}`, {
+        const res = await fetch(`${API_URL}admin/supervisors/${id}`, {
             method: "POST",
             headers: {
                 "accept-language": "ar",
@@ -99,15 +80,13 @@ export async function updateTeacherApi(teacherData, id, token, setError) {
         throw new Error(error.message);
     }
 }
-
-export async function createTeacherApi(teacherData, token, setError) {
+export async function createSupervisorApi(supervisorData, token, setError) {
     try {
         const formData = new FormData();
-        //
-        for (const [key, value] of Object.entries(teacherData)) {
+        for (const [key, value] of Object.entries(supervisorData)) {
             formData.append(key, value);
         }
-        const res = await fetch(`${API_URL}admin/staff`, {
+        const res = await fetch(`${API_URL}admin/supervisors`, {
             method: "POST",
             headers: {
                 "accept-language": "ar",
@@ -134,8 +113,8 @@ export async function createTeacherApi(teacherData, token, setError) {
     }
 }
 
-export async function deleteTeacher(id, token) {
-    const res = await fetch(`${API_URL}admin/staff/${id}`, {
+export async function deleteSupervisor(id, token) {
+    const res = await fetch(`${API_URL}admin/supervisors/${id}`, {
         method: "DELETE",
         headers: {
             "accept-language": "ar",
@@ -143,23 +122,6 @@ export async function deleteTeacher(id, token) {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
         },
-    });
-
-    if (!res.ok) throw Error("حدث خطأ اثناء المسح، ربما المدرس له حلقات نشطة");
-    const data = await res.json();
-    return data;
-}
-
-export async function matchTeachers(matchData) {
-    const res = await fetch(`${API_URL}staff/match`, {
-        method: "POST",
-        headers: {
-            "accept-language": "ar",
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-        body: JSON.stringify(matchData),
     });
 
     if (!res.ok) throw Error("حدث خطأ اثناء المسح ");

@@ -2,12 +2,12 @@ import React, { useContext } from "react";
 import MyModal, { ModalContext } from "../../ui/MyModal";
 import Button from "../../ui/Button";
 import styled from "styled-components";
-import { useSubscriberShow } from "./useSubscriberShow";
+import { useSupervisorShow } from "./useSupervisorShow";
 import Spinner from "../../ui/Spinner";
-import ProfileInfo from "./ProfileInfo";
-import LessonsTable from "./LessonsTable";
-import TimezoneButton from "../../ui/TimezoneButton";
 import { calculateTimezone } from "../../utils/helpers";
+import ProfileInfo from "./ProfileInfo";
+import TimezoneButton from "../../ui/TimezoneButton";
+import LessonsTable from "./LessonsTable";
 
 const DivStyle = styled.div`
     display: flex;
@@ -15,10 +15,9 @@ const DivStyle = styled.div`
     gap: 2rem;
 `;
 
-const SubscriberProfile = ({ subscriberToView }) => {
+const SupervisorProfile = ({ supervisorToView }) => {
     let defaultTimezone = "GMT+2";
-    const { isLoading, user, updateTimezone, isUpdateTimezoneLoading } = useSubscriberShow(subscriberToView?.id, defaultTimezone);
-
+    const { isLoading, user, updateTimezone, isUpdateTimezoneLoading } = useSupervisorShow(supervisorToView?.id, defaultTimezone);
     const { close } = useContext(ModalContext);
 
     if (!isLoading && !isUpdateTimezoneLoading && user?.data?.lessons[0]?.availabilities[0]) {
@@ -27,7 +26,7 @@ const SubscriberProfile = ({ subscriberToView }) => {
     }
 
     const handleTimezoneChange = async (newValue) => {
-        updateTimezone({ id: subscriberToView?.id, timezone: newValue });
+        updateTimezone({ id: supervisorToView?.id, timezone: newValue });
     }
 
     if (isLoading || isUpdateTimezoneLoading) {
@@ -36,9 +35,9 @@ const SubscriberProfile = ({ subscriberToView }) => {
 
     return (
         <>
-            {!isLoading && user && (
+            {!isLoading && !isUpdateTimezoneLoading && user && (
                 <DivStyle>
-                    <ProfileInfo subscriber={user?.data} />
+                    <ProfileInfo user={user?.data} />
                     <TimezoneButton defaultValue={defaultTimezone} handleChange={handleTimezoneChange} />
                     <LessonsTable lessons={user?.data?.lessons} />
                 </DivStyle>
@@ -52,4 +51,4 @@ const SubscriberProfile = ({ subscriberToView }) => {
     );
 };
 
-export default SubscriberProfile;
+export default SupervisorProfile;

@@ -69,7 +69,7 @@ const TeacherForm = ({ teacherToEdit = {} }) => {
 
     useEffect(() => {
         const fetchCourses = async () => {
-            const res = await fetch(`${API_URL}courses?all=1`, {
+            const res = await fetch(`${API_URL}availableCourses`, {
                 headers: {
                     "accept-language": "ar",
                     Accept: "application/json",

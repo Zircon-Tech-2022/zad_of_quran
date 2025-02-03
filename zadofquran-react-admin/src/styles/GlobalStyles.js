@@ -223,9 +223,9 @@ const GlobalStyle = createGlobalStyle`
   }
   
   /* time inputs */
-  input[type="time"]::-webkit-calendar-picker-indicator{
+  /* input[type="time"]::-webkit-calendar-picker-indicator{
     display: none;
-  }
+  } */
 
   /*
   FOR DARK MODE

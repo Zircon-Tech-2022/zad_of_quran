@@ -25,7 +25,8 @@ class AdminAuthController extends Controller
             ], 401);
         }
 
-        if (!$user->can('admin.show')):
+        // minimum mutual permission required to login
+        if (!$user->can('lesson.list')):
             return apiErrorResponse(__('messages.unauthorized'), [
                 'email' => [
                     'message' => __('messages.unauthorized')
@@ -37,7 +38,12 @@ class AdminAuthController extends Controller
 
         return apiSuccessResponse(__('messages.login_success'), [
             'token' => $token,
-            'user' => $user->only(['id', 'name', 'email', 'phone'])
+            'user' => array_merge(
+                $user->only(['id', 'name', 'email', 'phone']),
+                [
+                    'permissions' => $user->getAllPermissions()->pluck('name')
+                ]
+            )
         ]);
     }
 }

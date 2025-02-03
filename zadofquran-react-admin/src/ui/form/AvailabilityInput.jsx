@@ -1,188 +1,157 @@
-import React from "react";
+import React, { useRef } from "react";
 import styled from "styled-components";
-import { BiCalendar } from "react-icons/bi";
 import { Controller, useFieldArray } from "react-hook-form";
 import Button from "../../ui/Button";
-import MyInput from "../../ui/form/MyInput";
-import { FormControl, FormHelperText, InputLabel, MenuItem, Select } from "@mui/material";
+import { TextField, Box, Typography, Grid, FormControl, InputLabel, Select, MenuItem, FormHelperText } from "@mui/material";
+import { FaRegTrashAlt } from "react-icons/fa";
+import TimezoneButton from './../TimezoneButton';
 
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 2rem;
-`;
 
-const Entry = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1rem;
-  align-items: center;
-
-  @media (max-width: 750px) {
-    grid-template-columns: 1fr;
+  input[type="time"]::-webkit-calendar-picker-indicator {
+    cursor: pointer;
   }
 `;
 
-const timezoneOffsets = [
-  "GMT-12", "GMT-11", "GMT-10", "GMT-9:30", "GMT-9",
-  "GMT-8", "GMT-7", "GMT-6", "GMT-5", "GMT-4:30",
-  "GMT-4", "GMT-3:30", "GMT-3", "GMT-2", "GMT-1",
-  "GMT", "GMT+1", "GMT+2", "GMT+3", "GMT+3:30",
-  "GMT+4", "GMT+4:30", "GMT+5", "GMT+5:30", "GMT+5:45",
-  "GMT+6", "GMT+6:30", "GMT+7", "GMT+8", "GMT+8:45",
-  "GMT+9", "GMT+9:30", "GMT+10", "GMT+10:30", "GMT+11",
-  "GMT+11:30", "GMT+12", "GMT+12:45", "GMT+13", "GMT+14"
+const daysOfWeek = [
+  "السبت",
+  "الأحد",
+  "الإثنين",
+  "الثلاثاء",
+  "الأربعاء",
+  "الخميس",
+  "الجمعة",
 ];
 
-const AvailabilityInput = ({ control, register, error }) => {
-  const { fields, append, remove } = useFieldArray({
+const AvailabilityInput = ({ control, register, errors }) => {
+  const { fields, append, remove, update } = useFieldArray({
     control,
     name: "availability",
   });
 
+  const defaultTimezoneRef = useRef("GMT+2");
+
+  const handleAddSlot = (day) => {
+    append({ day, start_time: "", end_time: "", timezone: defaultTimezoneRef.current });
+  };
+
+  const handleRemoveSlot = (id) => {
+    const index = fields.findIndex((slot) => slot.id === id);
+    remove(index)
+  };
+
+  const handleChange = (id, field, value) => {
+    const index = fields.findIndex((slot) => slot.id === id);
+    update(index, { ...fields[index], [field]: value });
+  };
+
+  const handleTimezoneChange = async (newValue) => {
+    defaultTimezoneRef.current = newValue;
+  }
+
   return (
     <Wrapper>
-      <InputLabel style={{
-        fontSize: "1.6rem",
-      }}>
+      <Typography
+        variant="h6"
+        style={{
+          color: "var(--color-grey-0)",
+          fontSize: "1.6rem",
+        }}
+      >
         الإتاحة
-      </InputLabel>
-      {fields.map((field, index) => (
-        <React.Fragment key={field.id}>
-          <Entry>
-            <FormControl>
-              <InputLabel
-                id={`day-label-${field.id}`}
-                style={{
-                  fontSize: "1.6rem",
-                }}
-              >
-                اليوم
-              </InputLabel>
-              <Controller
-                name={`availability.${index}.day`}
-                control={control}
-                defaultValue="" // Ensure a default value is provided
-                rules={{ required: "يجب ادخال هذا الحقل" }}
-                render={({ field: controllerField, fieldState: { error } }) => (
-                  <>
-                    <Select
-                      {...controllerField}
-                      labelId={`day-label-${field.id}`}
-                      error={!!error}
-                      label="اليوم"
-                      id="outlined-required"
-                      InputAdornment={<BiCalendar />}
-                    >
-                      <MenuItem key="saturday" value="saturday">السبت</MenuItem>
-                      <MenuItem key="sunday" value="sunday">الأحد</MenuItem>
-                      <MenuItem key="monday" value="monday">الإثنين</MenuItem>
-                      <MenuItem key="tuesday" value="tuesday">الثلاثاء</MenuItem>
-                      <MenuItem key="wednesday" value="wednesday">الأربعاء</MenuItem>
-                      <MenuItem key="thursday" value="thursday">الخميس</MenuItem>
-                      <MenuItem key="friday" value="friday">الجمعة</MenuItem>
-                    </Select>
-                    <FormHelperText
-                      style={{
-                        color: "#d32f2f",
-                        fontSize: "1.6rem",
-                      }}
-                    >
-                      {error?.message}
-                    </FormHelperText>
-                  </>
-                )}
-              />
-            </FormControl>
+      </Typography>
 
-            <FormControl>
-              <InputLabel
-                id={`timezone-label-${field.id}`}
-                style={{
-                  fontSize: "1.6rem",
-                }}
+      <TimezoneButton defaultValue={defaultTimezoneRef.current} handleChange={handleTimezoneChange} />
+      {daysOfWeek.map((day) => (
+        <Box
+          key={day}
+          sx={{ mb: 3, p: 2, border: "1px solid #ddd", borderRadius: "8px" }}
+        >
+          <Typography variant="h6" style={{ marginBottom: "5px" }}>
+            {day}
+          </Typography>
+          {fields
+            .filter((slot) => slot.day === day)
+            .map((slot, index) => (
+              <Grid
+                container
+                spacing={2}
+                key={slot.id}
+                style={{ marginBottom: "10px" }}
+                alignItems="center"
               >
-                المنطقة الزمنية
-              </InputLabel>
-              <Controller
-                name={`availability.${index}.timezone`}
-                control={control}
-                defaultValue="" // Ensure a default value is provided
-                rules={{ required: "يجب ادخال هذا الحقل" }}
-                render={({ field: controllerField, fieldState: { error } }) => (
-                  <>
-                    <Select
-                      {...controllerField}
-                      labelId={`timezone-label-${field.id}`}
-                      error={!!error}
-                      label="المنطقة الزمنية"
-                      id="timezone-select"
-                    >
-                      {timezoneOffsets.map((offset) => (
-                        <MenuItem key={offset} value={offset}>
-                          {offset}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                    <FormHelperText
-                      style={{
-                        color: "#d32f2f",
-                        fontSize: "1.6rem",
-                      }}
-                    >
-                      {error?.message}
-                    </FormHelperText>
-                  </>
-                )}
-              />
-            </FormControl>
-
-            <MyInput
-              reg={{
-                ...register(`availability.${index}.start_time`, {
-                  required: "يجب ادخال هذا الحقل",
-                }),
-              }}
-              error={error?.[index]?.start_time}
-              type="time"
-              label="وقت البدء (من)"
-            />
-            <MyInput
-              reg={{
-                ...register(`availability.${index}.end_time`, {
-                  required: "يجب ادخال هذا الحقل",
-                }),
-              }}
-              error={error?.[index]?.end_time}
-              type="time"
-              label="وقت النهاية (إلى)"
-            />
-          </Entry>
+                <Grid item xs={5}>
+                  <Controller
+                    name={`availability.${day}.${index}.start_time`}
+                    control={control}
+                    defaultValue={slot.start_time}
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        type="time"
+                        label="من"
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
+                        inputProps={{
+                          step: 300, // 5 min
+                        }}
+                        onChange={(e) => {
+                          field.onChange(e.target.value);
+                          handleChange(slot.id, "start_time", e.target.value);
+                        }}
+                      />
+                    )}
+                  />
+                </Grid>
+                <Grid item xs={5}>
+                  <Controller
+                    name={`availability.${day}.${index}.end_time`}
+                    control={control}
+                    defaultValue={slot.end_time}
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        type="time"
+                        label="إلى"
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
+                        inputProps={{
+                          step: 300, // 5 min
+                        }}
+                        onChange={(e) => {
+                          field.onChange(e.target.value);
+                          handleChange(slot.id, "end_time", e.target.value);
+                        }}
+                      />
+                    )}
+                  />
+                </Grid>
+                <Grid item xs={2}>
+                  <Button
+                    type="button"
+                    variant="outlined"
+                    onClick={() => handleRemoveSlot(slot.id)}
+                  >
+                    <FaRegTrashAlt />
+                  </Button>
+                </Grid>
+              </Grid>
+            ))}
           <Button
             type="button"
-            onClick={() => remove(index)}
-            style={{
-              marginTop: "10px",
-              marginLeft: "auto",
-              marginRight: "auto",
-            }}
-            variation="third"
+            variant="outlined"
+            sx={{ mt: 1 }}
+            onClick={() => handleAddSlot(day)}
           >
-            حذف حقل الإدخال
+            إضافة فترة
           </Button>
-        </React.Fragment>
+        </Box>
       ))}
-
-      <Button
-        style={{
-          marginTop: "10px",
-          width: "50%",
-          marginLeft: "auto",
-          marginRight: "auto",
-        }}
-        type="button" onClick={() => append({ day: "", start_time: "", end_time: "", timezone: "" })}>
-        إضافة حقل إدخال جديد
-      </Button>
     </Wrapper>
   );
 };

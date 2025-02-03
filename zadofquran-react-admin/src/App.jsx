@@ -23,6 +23,7 @@ import PlansCrud from "./pages/PlansCrud";
 import BlogsCrud from "./pages/BlogsCrud";
 import FaqCrud from "./pages/FaqCrud";
 import CourseCrud from "./pages/CourseCrud";
+import SupervisorCrud from "./pages/SupervisorCrud";
 import TestimoinalsCrud from "./pages/TestimoinalsCrud";
 import UsersCrud from "./pages/UsersCrud";
 import SubscribersCrud from "./pages/SubscribersCrud";
@@ -117,6 +118,10 @@ function App() {
                                         <Route
                                             path="/courses"
                                             element={<CourseCrud />}
+                                        />
+                                        <Route
+                                            path="/supervisors"
+                                            element={<SupervisorCrud />}
                                         />
                                     </Route>
                                     <Route

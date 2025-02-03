@@ -116,7 +116,7 @@
     "day": "Day",
     "startTime": "From",
     "endTime": "To",
-    "timezone": "timezone",
+    "timezone": "Timezone",
     "addNewEntry": "Add new entry",
     "removeEntry": "Remove entry",
     "noLessons": "No lessons",

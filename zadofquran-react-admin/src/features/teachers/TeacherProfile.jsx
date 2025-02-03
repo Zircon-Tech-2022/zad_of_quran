@@ -27,8 +27,8 @@ const TeacherProfile = ({ teacherToView }) => {
             user.data.user.availabilities[0].start_times['gmt']);
     }
 
-    const handleTimezoneChange = async (e) => {
-        updateTimezone({ id: teacherToView?.id, timezone: e.target.value });
+    const handleTimezoneChange = async (newValue) => {
+        updateTimezone({ id: teacherToView?.id, timezone: newValue });
     }
 
     if (isLoading || isUpdateTimezoneLoading) {

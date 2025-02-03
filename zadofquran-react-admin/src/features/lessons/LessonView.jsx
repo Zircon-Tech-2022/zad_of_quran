@@ -31,8 +31,8 @@ const LessonView = ({ lessonToView }) => {
             lesson.data.availabilities[0].start_times['gmt']);
     }
 
-    const handleTimezoneChange = async (e) => {
-        updateTimezone({ id: lessonToView?.id, timezone: e.target.value });
+    const handleTimezoneChange = async (newValue) => {
+        updateTimezone({ id: lessonToView?.id, timezone: newValue });
     }
 
     if (isLoading || isUpdateTimezoneLoading) {
