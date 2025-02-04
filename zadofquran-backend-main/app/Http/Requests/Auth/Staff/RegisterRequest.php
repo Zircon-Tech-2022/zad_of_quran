@@ -27,7 +27,7 @@ class RegisterRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'min:2', 'max:255', new NumOfWords(2)],
-            'phone' => 'required|string|phone_number|unique:staff,phone,NULL,id,deleted_at,NULL|min:13|max:13',
+            'phone' => 'required|string|phone_number|unique:staff,phone,NULL,id,deleted_at,NULL',
             'age' => 'required|integer|min:18',
             'gender' => ['required', Rule::in(['male', 'female'])],
             'courses' => 'required|array|min:1|exists:courses,id',

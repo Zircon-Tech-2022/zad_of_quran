@@ -27,7 +27,7 @@ class UpdateAuthRequest extends FormRequest
     {
         return [
             'name' => ['nullable', 'string', 'min:2', 'max:255', new NumOfWords(2)],
-            'phone' => 'nullable|string|min:13|max:13|phone_number|unique:staff,phone,' . $this->user()->staff->id . ',id,deleted_at,NULL',
+            'phone' => 'nullable|string|phone_number|unique:staff,phone,' . $this->user()->staff->id . ',id,deleted_at,NULL',
             'age' => 'nullable|integer|min:18',
             'availability' => 'nullable|array|min:1',
             'availability.*.day' => ['required', Rule::in(['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'])],

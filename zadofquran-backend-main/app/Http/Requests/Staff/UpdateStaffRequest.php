@@ -27,7 +27,7 @@ class UpdateStaffRequest extends FormRequest
         return [
             'name' => ['nullable', 'string', 'min:2', 'max:255', new NumOfWords(2)],
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:10240',
-            'phone' => ['nullable', 'string', 'max:13', 'min:13', 'phone_number', "unique:staff,phone,{$this->staff->id},id,deleted_at,NULL"],
+            'phone' => ['nullable', 'string', 'phone_number', "unique:staff,phone,{$this->staff->id},id,deleted_at,NULL"],
             'qualifications' => 'nullable|string',
             'gender' => ['nullable', Rule::in(['male', 'female'])],
             'courses' => 'nullable|array|min:1|exists:courses,id',
