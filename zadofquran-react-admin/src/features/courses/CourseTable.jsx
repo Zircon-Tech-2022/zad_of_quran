@@ -68,14 +68,14 @@ const CourseTable = () => {
 
     return (
         <div>
-            <Table columns="0.4fr 1.2fr .6fr 1fr 1.5fr  .5fr" minWidth="150rem">
+            <Table columns="0.4fr 1.2fr .6fr 1fr 1.5fr 1fr .5fr" minWidth="150rem">
                 <Table.Header>
                     <div># </div>
                     <div>الاسم</div>
                     <div>الحالة</div>
                     <div>الصورة</div>
                     <div>الوصف</div>
-
+                    <div>الظهور في الموقع</div>
                     <div>الاجراءات</div>
                 </Table.Header>
                 <Table.Body

@@ -72,12 +72,14 @@ trait TimeParser
         ];
 
         $dayIndex = ($dayIndex + 1) % 7;
-        $updated[] = [
-          "day" => $this->days[$dayIndex],
-          "start_time" => '00:00',
-          "end_time" => $endTime->format('H:i'),
-          "timezone" => $availability['timezone']
-        ];
+        if ($endTime->format('H:i') !== '00:00') {
+          $updated[] = [
+            "day" => $this->days[$dayIndex],
+            "start_time" => '00:00',
+            "end_time" => $endTime->format('H:i'),
+            "timezone" => $availability['timezone']
+          ];
+        }
       }
     }
     return $updated;

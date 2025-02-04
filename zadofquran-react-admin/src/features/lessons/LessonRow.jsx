@@ -23,16 +23,13 @@ const LessonRow = ({ lesson, num }) => {
     const [searchParams] = useSearchParams();
     const page = +searchParams.get("page") || 1;
     const tableNum = (page - 1) * LIMIT + num;
-    const { id, subscriber, staff, course, is_active: isActive } = lesson;
+    const { id, subscriber, staff, course } = lesson;
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
 
-    const { isDeleting, deleteLesson } = useDeleteLesson();
-    const { isToggling, toggleLesson } = useToggleLessonActivation();
+    const isActive = lesson.staff?.id ? true : false;
 
-    const toggleActive = (id, isActive) => {
-        toggleLesson({ id, isActive })
-    }
+    const { isDeleting, deleteLesson } = useDeleteLesson();
 
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
@@ -54,13 +51,17 @@ const LessonRow = ({ lesson, num }) => {
                     {subscriber.name} <br /> {subscriber.email} <br /> {subscriber.phone}
                 </Link>
             </Cell>
-            <Cell title={staff.name}>
-                <Link
-                    to={`/teachers?q=${staff.email}`}
-                    className={styles.link}
-                >
-                    {staff.name} <br /> {staff.email} <br /> {staff.phone}
-                </Link>
+            <Cell title={staff?.name || "لا يوجد معلم"}>
+                {staff ? (
+                    <Link
+                        to={`/teachers?q=${staff.email}`}
+                        className={styles.link}
+                    >
+                        {staff.name} <br /> {staff.email} <br /> {staff.phone}
+                    </Link>
+                ) : (
+                    "لا يوجد معلم"
+                )}
             </Cell>
             <Cell title={course.name}>
                 <BlueCell>
@@ -72,7 +73,7 @@ const LessonRow = ({ lesson, num }) => {
                     </Link>
                 </BlueCell>
             </Cell>
-            <Cell title={isActive ? "نشطة" : "غير نشطة"}>{isActive ? <PinkCell>نشطة</PinkCell> : <OrangeCell>غير نشطة</OrangeCell>}</Cell>
+            <Cell title={isActive ? "تمت الإضافة" : "غير نشطة"}>{isActive ? <OrangeCell>تمت الإضافة</OrangeCell> : <PinkCell>غير نشطة</PinkCell>}</Cell>
             <Actions open={open} onClick={handleClick} />
             <MyModal>
                 <Menu
@@ -90,13 +91,6 @@ const LessonRow = ({ lesson, num }) => {
                             <FaEye />
                         </MenuItem>
                     </MyModal.Open>
-                    <MenuItem sx={{ gap: "1.5rem", fontSize: "1.6rem" }}
-                        onClick={() => toggleActive(id, isActive)}
-                        disabled={isToggling}
-                    >
-                        تنشيط / إلغاء تنشيط
-                        <FaToggleOn />
-                    </MenuItem>
                     <MyModal.Open opens="edit" onClick={handleClose}>
                         <MenuItem sx={{ gap: "1.5rem", fontSize: "1.6rem" }}>
                             تعديل

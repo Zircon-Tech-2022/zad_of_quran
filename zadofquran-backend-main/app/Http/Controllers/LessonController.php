@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Lesson\StoreLessonRequest;
 use App\Http\Requests\Lesson\UpdateLessonRequest;
 use App\Models\Lesson;
+use App\Models\Subscriber;
 
 class LessonController extends Controller
 {
@@ -44,9 +45,27 @@ class LessonController extends Controller
     {
         $data = $request->validated();
 
+        $flattenedArray = [];
+        foreach ($data['availability'] as $index => $slot) {
+            foreach ($slot as $key => $value) {
+                $flattenedArray[] = "$key: $value";
+            }
+        }
+
+        $subscriber = Subscriber::firstOrCreate([
+            'name' => $data['name'],
+            'phone' => $data['phone'],
+        ], [
+            'age' => $data['age'],
+            'gender' => $data['gender'],
+            'persons_count' => 1, // default value
+            'appointments' => implode(', ', $flattenedArray),
+        ]);
+
         $lesson = Lesson::create([
             'staff_id' => $data['staff_id'],
-            'subscriber_id' => $data['subscriber_id'],
+            'supervisor_id' => $data['supervisor_id'],
+            'subscriber_id' => $subscriber->id,
             'course_id' => $data['course_id'],
         ]);
 
@@ -65,8 +84,8 @@ class LessonController extends Controller
                         'name' => $lesson->course->name,
                     ],
                     'staff' => [
-                        'id' => $lesson->staff->id,
-                        'name' => $lesson->staff->name,
+                        'id' => $lesson->staff?->id,
+                        'name' => $lesson->staff?->name,
                     ],
                     'subscriber' => [
                         'id' => $lesson->subscriber->id,
@@ -83,7 +102,7 @@ class LessonController extends Controller
      */
     public function show($id)
     {
-        $lesson = Lesson::with('staff', 'staff.details:id,age,gender,staff_id', 'subscriber', 'course', 'availabilities')
+        $lesson = Lesson::with('staff', 'staff.details:id,age,gender,staff_id', 'subscriber', 'course', 'supervisor', 'availabilities')
             ->where('id', $id)
             ->first();
 
@@ -100,13 +119,13 @@ class LessonController extends Controller
                 $lesson->toArray(),
                 [
                     'staff' => [
-                        'id' => $lesson->staff->id,
-                        'name' => $lesson->staff->name,
-                        'email' => $lesson->staff->email,
-                        'phone' => $lesson->staff->phone,
-                        'qualifications' => $lesson->staff->qualifications,
-                        'age' => $lesson->staff->details?->age,
-                        'gender' => $lesson->staff->details?->gender,
+                        'id' => $lesson->staff?->id,
+                        'name' => $lesson->staff?->name,
+                        'email' => $lesson->staff?->email,
+                        'phone' => $lesson->staff?->phone,
+                        'qualifications' => $lesson->staff?->qualifications,
+                        'age' => $lesson->staff?->details?->age,
+                        'gender' => $lesson->staff?->details?->gender,
                     ],
                     'availabilities' => $availabilities,
                 ]
@@ -122,8 +141,8 @@ class LessonController extends Controller
         $data = $request->validated();
 
         $lesson->update([
-            'staff_id' => $data['staff_id'] ?? $lesson->staff_id,
-            'subscriber_id' => $data['subscriber_id'] ?? $lesson->subscriber_id,
+            'staff_id' => $data['staff_id'], // nullable
+            'supervisor_id' => $data['supervisor_id'] ?? $lesson->supervisor_id,
             'course_id' => $data['course_id'] ?? $lesson->course_id,
             'is_active' => $data['is_active'] ?? $lesson->is_active,
         ]);

@@ -39,9 +39,9 @@ Route::get('admin/users/export', [App\Http\Controllers\UserController::class, 'e
 Route::apiResource('admin/users', App\Http\Controllers\UserController::class, ['as' => 'admin'])->middleware('auth');
 
 // ToDo: admin will update profile here
+Route::get('supervisors', [App\Http\Controllers\SupervisorController::class, 'supervisors'], ['as' => 'admin'])->middleware('auth');
 Route::apiResource('admin/lessons', App\Http\Controllers\LessonController::class, ['as' => 'admin'])->middleware('auth');
 Route::apiResource('admin/supervisors', App\Http\Controllers\SupervisorController::class, ['as' => 'admin'])->middleware('auth');
-Route::get('supervisors', [App\Http\Controllers\SupervisorController::class, 'supervisors']);
 Route::apiResource('admin/staff', App\Http\Controllers\StaffController::class, ['as' => 'admin'])->middleware('auth');
 Route::get('staff', [App\Http\Controllers\StaffController::class, 'staff']);
 Route::post('staff/match', [App\Http\Controllers\StaffController::class, 'match']);

@@ -68,13 +68,14 @@ const TeacherTable = () => {
 
     return (
         <div>
-            <Table columns="0.4fr 1fr 0.5fr 1.5fr 1fr" minWidth="150rem">
+            <Table columns="0.4fr 1.2fr 0.5fr 0.5fr 0.5fr 1fr 0.5fr" minWidth="150rem">
                 <Table.Header>
                     <div># </div>
                     <div>الاسم</div>
                     <div>الحالة</div>
                     <div>الصورة</div>
-
+                    <div>التقييم</div>
+                    <div>الظهور في الموقع</div>
                     <div>الاجراءات</div>
                 </Table.Header>
                 <Table.Body

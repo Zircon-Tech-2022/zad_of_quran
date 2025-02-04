@@ -12,8 +12,7 @@ import { API_URL } from "../../Constants";
 import { useLessonShow } from "./useLessonShow";
 import Spinner from "../../ui/Spinner";
 import { calculateTimezone } from "../../utils/helpers";
-import { getSubscriberData, getSubscribers } from "../../services/apiSubscribers";
-import SubscriberProfileInfo from "../subscribers/ProfileInfo";
+import { getSubscriberData } from "../../services/apiSubscribers";
 import { matchTeachers } from "../../services/apiTeacher";
 
 const FormStyle = styled.form`
@@ -23,28 +22,41 @@ const FormStyle = styled.form`
     gap: 3rem;
 `;
 
-const DivStyle = styled.div`
-    display: flex;
-    gap: 2rem;
-`;
-
 const LessonForm = ({ lessonToEdit = null }) => {
-    const [selectedCourse, setSelectedCourse] = React.useState([]);
+    const [selectedCourse, setSelectedCourse] = React.useState(null);
+    const [selectedSupervisor, setSelectedSupervisor] = React.useState(null);
     const [selectedSubscriber, setSelectedSubscriber] = React.useState("");
     const [courses, setCourses] = React.useState([]);
-    const [subscribers, setSubscribers] = React.useState([]);
-    const [suggested, setSuggested] = React.useState([]);
+    const [supervisors, setSupervisors] = React.useState([]);
+
+    const [suggested, setSuggested] = React.useState({
+        exact: [],
+        maybe: []
+    });
+
     const subscriberData = React.useRef(lessonToEdit);
 
     const [isLoadingSomething, setIsLoadingSomething] = React.useState(false);
-
-    const [search, setSearch] = React.useState("");
 
     const isEditSession = Boolean(lessonToEdit?.id); // check if we are editing a lesson
 
     let defaultTimezone = "GMT+2";
     const { isLoading, lesson } = useLessonShow(lessonToEdit?.id, defaultTimezone);
     const lessonData = React.useRef(lessonToEdit);
+
+    if (!isLoading && lessonData.current && lesson) {
+        lessonData.current = lesson.data;
+        const availability = lessonData.current?.availabilities.map((item) => {
+            return {
+                day: item.days.local,
+                start_time: item.start_times.local,
+                end_time: item.end_times.local,
+                timezone: calculateTimezone(item.start_times.local, item.start_times.gmt),
+            }
+        });
+
+        lessonData.current.availability = availability;
+    }
 
     const {
         register,
@@ -55,107 +67,104 @@ const LessonForm = ({ lessonToEdit = null }) => {
         getValues,
         setError,
     } = useForm({
-        defaultValues: {
-            subscriber_id: "",
-            age: "",
-            gender: "",
-            course: "",
-            staff_id: "",
-            availability: [
-                { day: "", start_time: "", end_time: "", timezone: "" }
-            ]
-        },
+        defaultValues: isEditSession ? lessonData.current : {},
     });
 
     const { isEditing, editLesson } = useEditLesson(setError);
     const { isCreating, createLesson } = useCreateLesson(setError);
 
     useEffect(() => {
-        const fetchCourses = async () => {
+        const fetchData = async () => {
             setIsLoadingSomething(true);
-            const res = await fetch(`${API_URL}availableCourses`, {
-                headers: {
+
+            try {
+                const token = localStorage.getItem("token");
+                const headers = {
                     Accept: "application/json",
                     "Content-Type": "application/json",
-                },
-            });
+                };
+                const authHeaders = token ? { ...headers, Authorization: `Bearer ${token}` } : headers;
 
-            if (!res.ok) {
-                throw new Error(`Failed to fetch courses: ${res.statusText}`);
+                const [coursesRes, supervisorsRes] = await Promise.all([
+                    fetch(`${API_URL}availableCourses`, { headers }),
+                    fetch(`${API_URL}supervisors`, { headers: authHeaders }),
+                ]);
+
+                if (!coursesRes.ok || !supervisorsRes.ok) {
+                    throw new Error(
+                        `Failed to fetch data: ${coursesRes.statusText}, ${supervisorsRes.statusText}`
+                    );
+                }
+
+                const [coursesData, supervisorsData] = await Promise.all([
+                    coursesRes.json(),
+                    supervisorsRes.json(),
+                ]);
+
+                setCourses(coursesData.data);
+                setSupervisors(supervisorsData.data);
+            } catch (error) {
+                console.error("Error fetching data:", error);
+            } finally {
+                setIsLoadingSomething(false);
             }
-            const courses = await res.json();
-            setIsLoadingSomething(false);
-            setCourses(courses.data);
         };
 
-        fetchCourses();
+        fetchData();
     }, []);
 
-    useEffect(() => {
-        const getSubsctiberDataRequest = async () => {
-            if (selectedSubscriber) {
-                setIsLoadingSomething(true);
-                const res = await getSubscriberData(selectedSubscriber, localStorage.getItem("token"));
-                setIsLoadingSomething(false);
-                subscriberData.current = res.data;
-                reset({
-                    subscriber_id: selectedSubscriber,
-                    age: parseInt(res.data.age),
-                    gender: res.data.gender,
-                    availability: getValues().availability,
-                    staff_id: getValues().staff_id,
-                    course: selectedCourse,
-                });
-            }
-        }
-        getSubsctiberDataRequest();
-    }, [selectedSubscriber, reset, getValues]);
+    // useEffect(() => {
+    //     const getSubsctiberDataRequest = async () => {
+    //         if (selectedSubscriber) {
+    //             setIsLoadingSomething(true);
+    //             const res = await getSubscriberData(selectedSubscriber, localStorage.getItem("token"));
+    //             setIsLoadingSomething(false);
+    //             subscriberData.current = res.data;
+    //             reset({
+    //                 subscriber_id: selectedSubscriber,
+    //                 age: parseInt(res.data.age),
+    //                 gender: res.data.gender,
+    //                 staff_id: getValues().staff_id,
+    //                 course: selectedCourse,
+    //             });
+    //         }
+    //     }
+    //     getSubsctiberDataRequest();
+    // }, [selectedSubscriber, reset, getValues]);
+
+    // useEffect(() => {
+    //     if (!isLoadingSomething && subscriberData?.current) {
+    //         reset({
+    //             subscriber_id: selectedSubscriber,
+    //             age: parseInt(subscriberData.current.age),
+    //             gender: subscriberData.current.gender,
+    //             staff_id: getValues().staff_id,
+    //             course: selectedCourse,
+    //         });
+    //     }
+    // }, [isLoadingSomething, reset, selectedSubscriber, getValues]);
 
     useEffect(() => {
-        if (!isLoadingSomething && subscriberData?.current) {
+        if (isEditSession && !isLoading && lessonData?.current) {
             reset({
-                subscriber_id: selectedSubscriber,
-                age: parseInt(subscriberData.current.age),
-                gender: subscriberData.current.gender,
-                availability: getValues().availability,
-                staff_id: getValues().staff_id,
-                course: selectedCourse,
-            });
-        }
-    }, [isLoadingSomething, reset, selectedSubscriber, getValues]);
-
-    useEffect(() => {
-        if (isEditSession && !isLoading && lesson) {
-            lessonData.current = lesson.data;
-            const availability = lessonData.current?.availabilities.map((item) => {
-                return {
-                    day: item.days.local,
-                    start_time: item.start_times.local,
-                    end_time: item.end_times.local,
-                    timezone: calculateTimezone(item.start_times.local, item.start_times.gmt),
-                }
-            });
-
-            lessonData.current.availability = availability;
-
-            setSelectedCourse(lessonData.current.course.id);
-            setSuggested([lessonData.current.staff]);
-            subscriberData.current = lessonData.current.subscriber;
-
-            reset({
+                ...lessonData.current,
+                name: lessonData.current.subscriber.name,
+                phone: lessonData.current.subscriber.phone,
                 age: parseInt(lessonData.current.subscriber.age),
                 gender: lessonData.current.subscriber.gender,
-                availability,
-                course: selectedCourse,
-                subscriber_id: lessonData.current.subscriber_id,
-                staff_id: lessonData.current.staff_id
+                staff_id: lessonData.current.staff_id ?? '',
             },
                 { keepDirty: true, keepTouched: true }
             );
+
+            setSelectedCourse(lessonData.current.course.id);
+            setSelectedSupervisor(lessonData.current.supervisor.id);
+            setSuggested({
+                exact: lessonData.current.staff?.id ? [lessonData.current.staff] : [],
+            });
+            subscriberData.current = lessonData.current.subscriber;
         }
     }, [isEditSession, isLoading, lessonData, reset]);
-
-
 
     const isWorking = isCreating || isEditing || isLoadingSomething || isLoading; // loading state
 
@@ -177,7 +186,9 @@ const LessonForm = ({ lessonToEdit = null }) => {
             editLesson(
                 {
                     newLessonData: {
-                        ...data, ...availability, course_id: data.course,
+                        ...data, ...availability,
+                        course_id: isNaN(parseInt(data.course)) ? data.course.id : data.course,
+                        staff_id: parseInt(data.staff_id) ? data.staff_id : '',
                     },
                     id: lessonToEdit.id,
                 },
@@ -189,7 +200,12 @@ const LessonForm = ({ lessonToEdit = null }) => {
                 }
             );
         } else {
-            const obj = { ...data, ...availability, course_id: data.course };
+            const obj = {
+                ...data, ...availability,
+                course_id: data.course,
+                supervisor_id: data.supervisor,
+                staff_id: data.staff_id ? data.staff_id : '',
+            };
             createLesson(obj, {
                 onSuccess: (data) => {
                     reset();
@@ -204,18 +220,11 @@ const LessonForm = ({ lessonToEdit = null }) => {
         setIsLoadingSomething(true);
         const response = await matchTeachers(data);
         setIsLoadingSomething(false);
-        setSuggested(response.data);
+        setSuggested({
+            exact: response.data.exact,
+            maybe: response.data.maybe
+        });
     }
-
-    const handleSearchSubscribers = async (e) => {
-        e.preventDefault();
-        if (search) {
-            setIsLoadingSomething(true);
-            const res = await getSubscribers({ search }, localStorage.getItem("token"), 1);
-            setIsLoadingSomething(false);
-            setSubscribers(res.data);
-        }
-    };
 
     if (isEditSession && isLoading) {
         return <Spinner />;
@@ -299,34 +308,33 @@ const LessonForm = ({ lessonToEdit = null }) => {
                 />
             </FormControl>
 
-            {/* المشرف */}
             <FormControl>
-                <InputLabel id="courses-select-label" style={{
+                <InputLabel id="supervisors-select-label" style={{
                     fontSize: "1.6rem",
                 }}>
-                    الدورة
+                    المشرف
                 </InputLabel>
                 <Select
-                    labelId="courses-select-label"
-                    {...register("course", {
+                    labelId="supervisors-select-label"
+                    {...register("supervisor", {
                         required: "يجب ادخال هذا الحقل",
                     })}
-                    value={selectedCourse}
-                    onChange={(e) => setSelectedCourse(e.target.value)}
-                    error={errors?.course}
-                    label="الدورة"
+                    value={selectedSupervisor}
+                    onChange={(e) => setSelectedSupervisor(e.target.value)}
+                    error={errors?.supervisor}
+                    label="المشرف"
                     id="outlined-required"
                 >
-                    {courses.map((course) => (
-                        <MenuItem key={course.id} value={course.id}>
-                            {course.name}
+                    {supervisors.map((supervisor) => (
+                        <MenuItem key={supervisor.id} value={supervisor.id}>
+                            {supervisor.name} | {supervisor.email}
                         </MenuItem>
                     ))}
                 </Select>
                 <FormHelperText style={{
                     color: "#d32f2f",
                     fontSize: "1.6rem",
-                }}>{errors?.course?.message}</FormHelperText>
+                }}>{errors?.supervisor?.message}</FormHelperText>
             </FormControl>
 
             <FormControl>
@@ -370,43 +378,71 @@ const LessonForm = ({ lessonToEdit = null }) => {
             {suggested && (
                 <>
                     <FormControl>
-                        <InputLabel id="staff-select-label" style={{
+                        <InputLabel id="staff-exact-select-label" style={{
                             fontSize: "1.6rem",
                         }}>
-                            المعلمين المقترحين
+                            المعلمين المطابقين
                         </InputLabel>
                         <Controller
                             name="staff_id"
                             control={control}
-                            rules={{ required: "يجب ادخال هذا الحقل" }}
+                            rules={{ required: "" }}
                             render={({ field: { value, onChange }, fieldState: { error } }) => (
                                 <>
                                     <Select
-                                        labelId="staff-select-label"
+                                        labelId="staff-exact-select-label"
                                         value={value || lessonData.current?.staff_id || ""} // Ensure value is not undefined
                                         onChange={(e) => onChange(e.target.value)} // Update React Hook Form state
                                         error={!!error}
-                                        label="المعلمين المقترحين"
+                                        label="المعلمين المطابقين"
                                         id="outlined-required"
                                     >
-                                        {suggested.length > 0 ? (
-                                            suggested.map((suggestedTeacher) => (
+                                        <MenuItem value="0">غير محدد</MenuItem>
+                                        {suggested?.exact?.length > 0 ? (
+                                            suggested.exact.map((suggestedTeacher) => (
                                                 <MenuItem key={suggestedTeacher.id} value={suggestedTeacher.id}>
                                                     {suggestedTeacher.name} | {suggestedTeacher.email} | {suggestedTeacher.phone}
                                                 </MenuItem>
                                             ))
                                         ) : (
-                                            <MenuItem value="">لا يوجد نتائج</MenuItem>
+                                            <MenuItem value="">لا يوجد نتائج مطابقة</MenuItem>
                                         )}
                                     </Select>
-                                    <FormHelperText
-                                        style={{
-                                            color: "#d32f2f",
-                                            fontSize: "1.6rem",
-                                        }}
+                                </>
+                            )}
+                        />
+                    </FormControl>
+                    <FormControl>
+                        <InputLabel id="staff-maybe-select-label" style={{
+                            fontSize: "1.6rem",
+                        }}>
+                            معلمين قد تناسبهم
+                        </InputLabel>
+                        <Controller
+                            name="staff_id"
+                            control={control}
+                            rules={{ required: "" }}
+                            render={({ field: { value, onChange }, fieldState: { error } }) => (
+                                <>
+                                    <Select
+                                        labelId="staff-maybe-select-label"
+                                        value={value || lessonData.current?.staff_id || ""} // Ensure value is not undefined
+                                        onChange={(e) => onChange(e.target.value)} // Update React Hook Form state
+                                        error={!!error}
+                                        label="معلمين قد تناسبهم"
+                                        id="outlined-required"
                                     >
-                                        {error?.message}
-                                    </FormHelperText>
+                                        <MenuItem value="0">غير محدد</MenuItem>
+                                        {suggested?.maybe?.length > 0 ? (
+                                            suggested.maybe.map((suggestedTeacher) => (
+                                                <MenuItem key={suggestedTeacher.id} value={suggestedTeacher.id}>
+                                                    {suggestedTeacher.name} | {suggestedTeacher.email} | {suggestedTeacher.phone}
+                                                </MenuItem>
+                                            ))
+                                        ) : (
+                                            <MenuItem value="">لا يوجد نتائج مقترحة</MenuItem>
+                                        )}
+                                    </Select>
                                 </>
                             )}
                         />

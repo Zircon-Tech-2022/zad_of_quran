@@ -26,21 +26,8 @@ class StoreStaffRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string', 'min:2', 'max:255', new NumOfWords(2)],
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:10240',
-            'phone' => ['required', 'string', 'max:13', 'min:13', 'phone_number', 'unique:staff,phone,NULL,id,deleted_at,NULL'],
-            'email' => 'required|email|unique:staff,email,|unique:staff_details,email',
-            'password' => 'required|string|confirmed|min:8',
-            'gender' => ['required', Rule::in(['male', 'female'])],
-            'courses' => 'nullable|array|min:1|exists:courses,id',
-            'qualifications' => ['required', 'string'],
-            'age' => 'required|integer|min:18',
-            'locale' => ['required', 'string', 'in:' . implode(',', array_keys(config('app.locales')))],
-            'availability' => 'nullable|array|min:1',
-            'availability.*.day' => ['required', Rule::in(['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'])],
-            'availability.*.start_time' => 'required|date_format:H:i',
-            'availability.*.end_time' => 'required|date_format:H:i',
-            'availability.*.timezone' => 'required|string',
+            'email' => 'required|unique:staff,email,|unique:staff_details,email',
+            'password' => 'nullable|string|confirmed|min:8',
         ];
     }
 
@@ -54,10 +41,8 @@ class StoreStaffRequest extends FormRequest
         }
 
         $this->merge([
-            'name' => trim($this->name),
             'email' => trim($this->email),
             'password' => trim($this->password),
-            'phone' => $this->unifyPhone($this->phone),
         ]);
     }
 }

@@ -24,9 +24,13 @@ class StoreLessonRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'staff_id' => ['required', 'exists:staff,id'],
+            'name' => ['required', 'string', 'max:255', new NumOfWords(2)],
+            'phone' => ['required', 'string', 'max:255', 'phone_number'],
+            'age' => ['required', 'numeric'],
+            'gender' => ['required', 'in:male,female'],
+            'staff_id' => ['nullable', 'exists:staff,id'],
             'course_id' => ['required', 'exists:courses,id'],
-            'subscriber_id' => ['required', 'exists:subscribers,id'],
+            'supervisor_id' => ['required', 'exists:users,id'],
             'availability' => 'required|array|min:1',
             'availability.*.day' => ['required', Rule::in(['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'])],
             'availability.*.start_time' => 'required|date_format:H:i',

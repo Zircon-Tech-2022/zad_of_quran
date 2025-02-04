@@ -34,7 +34,7 @@ class StaffController extends Controller
     public function index()
     {
         $staff = Staff::when(request('q'), fn($query, $q) => $query->search($q))
-            ->select(['id', 'name', 'image', 'phone', 'email', 'qualifications', 'locale'])
+            ->select(['id', 'name', 'image', 'phone', 'email', 'qualifications', 'locale', 'rate', 'display_at_home'])
             ->orderBy(request('orderBy', 'id'), request('orderDir', 'asc'))
             ->paginate(request('limit', 25));
 
@@ -48,56 +48,26 @@ class StaffController extends Controller
     {
         $data = $request->validated();
 
-        if ($request->hasFile('image')) {
-            $data['image'] = $this->storeImage($request);
-        }
-
         $staff = Staff::create([
-            'name' => $data['name'],
-            'image' => $data['image'] ?? null,
-            'phone' => $data['phone'],
             'email' => $data['email'],
-            'qualifications' => $data['qualifications'] ?? null,
         ]);
+
+        $password = !empty($data['password']) ? $data['password'] : $this->generateRandomPassword();
 
         $staff->details()->create([
             'email' => $data['email'],
-            'password' => Hash::make($data['password']),
-            'age' => $data['age'],
-            'gender' => $data['gender'],
+            'password' => Hash::make($password),
         ]);
-
-        if (array_key_exists('availability', $data) && count($data['availability'])) {
-            $this->storeAvailabilities($this->reformAvailabilities($data['availability']), $staff);
-        }
-
-        if ($data['courses'] && count($data['courses'])) {
-            $courses = $data['courses'];
-            $staff->courses()->sync($courses);
-        }
-
-        $availabilities = $this->getAvailabilities($staff->availabilities);
 
         return apiSuccessResponse(
             __('messages.added_success'),
             array_merge(
                 $staff->only([
                     "id",
-                    "name",
-                    "image",
-                    "phone",
                     "email",
-                    "qualifications",
-                    "locale",
-                    "deleted_at",
-                    "created_at",
-                    "updated_at",
                 ]),
                 [
-                    'age' => $staff->details->age,
-                    'gender' => $staff->details->gender,
-                    'availabilities' => $availabilities,
-                    'courses' => $staff->courses->toArray(),
+                    'password' => $password,
                 ]
             )
         );
@@ -184,9 +154,12 @@ class StaffController extends Controller
             });
         }
 
+        $exactStaff = $staff->clone();
+        $maybeStaff = $staff->clone();
+
         if ($request->has('availability') && $request->availability && count($request->availability)) {
             $availabilities = $this->reformAvailabilities($request->availability);
-            $staff->where(function ($query) use ($availabilities) {
+            $exactStaff = $exactStaff->where(function ($query) use ($availabilities) {
                 foreach ($availabilities as $availability) {
                     $day = $availability['day'];
                     $startTime = $availability['start_time'];
@@ -195,27 +168,64 @@ class StaffController extends Controller
                     $query->whereHas('availabilities', function ($subQuery) use ($startTime, $endTime, $day) {
                         $subQuery->where('day', $day)
                             ->where(DB::raw('ABS(TIMEDIFF(end_time, start_time))'), '>=', DB::raw("ABS(TIMEDIFF('" . $endTime . "', '" . $startTime . "'))"))
-                            ->where(DB::raw('DATE_SUB(start_time, INTERVAL 1 HOUR)'), '<=', $startTime)
-                            ->where(DB::raw('DATE_SUB(start_time, INTERVAL 1 HOUR)'), '<=', $endTime)
-                            ->where(DB::raw('DATE_ADD(end_time, INTERVAL 1 HOUR)'), '>=', $startTime)
-                            ->where(DB::raw('DATE_ADD(end_time, INTERVAL 1 HOUR)'), '>=', $endTime);
+                            ->where(DB::raw('start_time'), '<=', $startTime)
+                            ->where(DB::raw('start_time'), '<=', $endTime)
+                            ->where(DB::raw('end_time'), '>=', $startTime)
+                            ->where(DB::raw('end_time'), '>=', $endTime);
+                    });
+                }
+            });
+            $maybeStaff = $maybeStaff->where(function ($query) use ($availabilities) {
+                foreach ($availabilities as $availability) {
+                    $day = $availability['day'];
+                    $startTime = $availability['start_time'];
+                    $endTime = $availability['end_time'];
+
+                    $query->whereHas('availabilities', function ($subQuery) use ($startTime, $endTime, $day) {
+                        $subQuery->where('day', $day)
+                            ->where(DB::raw('ABS(TIMEDIFF(end_time, start_time))'), '>=', DB::raw("ABS(TIMEDIFF('" . $endTime . "', '" . $startTime . "'))"))
+                            ->where(DB::raw('DATE_SUB(start_time, INTERVAL 2 HOUR)'), '<=', $startTime)
+                            ->where(DB::raw('DATE_SUB(start_time, INTERVAL 2 HOUR)'), '<=', $endTime)
+                            ->where(DB::raw('DATE_ADD(end_time, INTERVAL 2 HOUR)'), '>=', $startTime)
+                            ->where(DB::raw('DATE_ADD(end_time, INTERVAL 2 HOUR)'), '>=', $endTime);
                     });
                 }
             });
         }
 
-        $staff = $staff->orderBy(StaffDetails::select('age')
+        $exactStaff = $exactStaff->orderBy(StaffDetails::select('age')
             ->whereColumn('staff_id', 'staff.id')
             ->orderBy('age', 'asc'))
+            ->orderBy('rate', 'desc')
+            ->get();
+        $maybeStaff = $maybeStaff->orderBy(StaffDetails::select('age')
+            ->whereColumn('staff_id', 'staff.id')
+            ->orderBy('age', 'asc'))
+            ->orderBy('rate', 'desc')
             ->get();
 
-        $results = [];
+        $results = [
+            'exact' => [],
+            'maybe' => [],
+        ];
 
-        foreach ($staff as $staffMember) {
+        $exactStaffIds = array_map(fn($staff) => $staff['id'], $exactStaff->toArray());
+
+        foreach ($exactStaff as $staffMember) {
             $availabilities = $this->getAvailabilities($staffMember->availabilities);
             $item = $staffMember->toArray();
             $item['availabilities'] = $availabilities;
-            $results[] = $item;
+            $results['exact'][] = $item;
+        }
+
+        foreach ($maybeStaff as $staffMember) {
+            if (in_array($staffMember->id, $exactStaffIds)) {
+                continue;
+            }
+            $availabilities = $this->getAvailabilities($staffMember->availabilities);
+            $item = $staffMember->toArray();
+            $item['availabilities'] = $availabilities;
+            $results['maybe'][] = $item;
         }
 
         return apiSuccessResponse(__('messages.data_retrieved_successfully'), $results);
@@ -226,7 +236,7 @@ class StaffController extends Controller
      */
     public function staff()
     {
-        $staff = Staff::select(['name', 'image', 'phone', 'email', 'qualifications', 'locale'])
+        $staff = Staff::select(['name', 'image', 'phone', 'email', 'qualifications', 'locale', 'rate'])
             ->where('display_at_home', true)
             ->orderBy('id')
             ->where('locale', app()->getLocale())
@@ -250,14 +260,16 @@ class StaffController extends Controller
             $data['image'] = $this->storeImage($request);
         }
 
-        $staffDetails->staff->update([
+        $staff->update([
             'name' => $data['name'] ?? $staff->name,
             'image' => $data['image'] ?? $staff->image,
             'phone' => $data['phone'] ?? $staff->phone,
+            'rate' => $data['rate'] ?? $staff->rate,
+            'display_at_home' => $data['display_at_home'] ?? $staff->display_at_home,
             'qualifications' => $data['qualifications'] ?? $staff->qualifications,
         ]);
 
-        $staffDetails->update([
+        $staffDetails?->update([
             'age' => $data['age'] ?? $staffDetails->age,
             'gender' => $data['gender'] ?? $staffDetails->gender,
         ]);
@@ -266,7 +278,7 @@ class StaffController extends Controller
             $this->storeAvailabilities($this->reformAvailabilities($data['availability']), $staff, true);
         }
 
-        if ($data['courses'] && count($data['courses'])) {
+        if (isset($data['courses']) && count($data['courses'])) {
             $staff->courses()->detach();
             $courses = $data['courses'];
             $staff->courses()->sync($courses);
@@ -290,10 +302,10 @@ class StaffController extends Controller
                     "updated_at",
                 ]),
                 [
-                    'age' => $staff->details->age,
-                    'gender' => $staff->details->gender,
+                    'age' => $staff?->details?->age,
+                    'gender' => $staff?->details?->gender,
                     'availabilities' => $availabilities,
-                    'courses' => $staff->courses->toArray(),
+                    'courses' => $staff?->courses->toArray(),
                 ]
             )
         );
@@ -312,5 +324,10 @@ class StaffController extends Controller
         }
         $staff->delete();
         return apiSuccessResponse(__('messages.deleted_success'));
+    }
+
+    protected function generateRandomPassword()
+    {
+        return substr(str_shuffle('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_*&%$#@!'), 0, 10);
     }
 }

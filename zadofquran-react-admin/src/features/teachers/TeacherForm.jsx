@@ -11,7 +11,7 @@ import Editor from "../../ui/form/Editor";
 import { useEditTeacher } from "./useEditTeacher";
 import AvailabilityInput from "../../ui/form/AvailabilityInput";
 import { BiLock } from "react-icons/bi";
-import { Avatar, FormControl, FormHelperText, InputLabel, MenuItem, Select } from "@mui/material";
+import { Avatar, FormControl, FormHelperText, InputLabel, MenuItem, Select, Typography } from "@mui/material";
 import { API_URL } from "../../Constants";
 import { useTeacherShow } from "./useTeacherShow";
 import Spinner from "../../ui/Spinner";
@@ -23,32 +23,19 @@ const FormStyle = styled.form`
     gap: 3rem;
 `;
 
-const TeacherForm = ({ teacherToEdit = {} }) => {
+const TeacherForm = ({ teacherToEdit = null }) => {
     const [selectedCourses, setSelectedCourses] = React.useState([]);
     const [courses, setCourses] = React.useState([]);
+    const [displayResults, setDisplayResults] = React.useState({
+        display: false,
+        data: null,
+    });
 
     const isEditSession = Boolean(teacherToEdit?.id); // check if we are editing a teacher
 
     let defaultTimezone = "GMT+2";
     const { isLoading, user } = useTeacherShow(teacherToEdit?.id, defaultTimezone);
     const teacherData = React.useRef(teacherToEdit);
-
-    const {
-        register,
-        handleSubmit,
-        reset,
-        formState,
-        control,
-        getValues,
-        setError,
-        setValue,
-    } = useForm({
-        defaultValues: {
-            "availability": [
-                { day: "", start_time: "", end_time: "", timezone: "" }
-            ]
-        },
-    });
 
     if (!isLoading && teacherData.current && user) {
         teacherData.current = user.data;
@@ -64,25 +51,44 @@ const TeacherForm = ({ teacherToEdit = {} }) => {
         teacherData.current.availability = availability;
     }
 
+    const {
+        register,
+        handleSubmit,
+        reset,
+        formState,
+        control,
+        getValues,
+        setError,
+        setValue,
+    } = useForm({
+        defaultValues: isEditSession ? teacherData.current : {
+            "availability": [
+                { day: "", start_time: "", end_time: "", timezone: "GMT+2" }
+            ]
+        },
+    });
+
     const { isEditing, editTeacher } = useEditTeacher(setError);
     const { isCreating, createTeacher } = useCreateTeacher(setError);
 
     useEffect(() => {
         const fetchCourses = async () => {
-            const res = await fetch(`${API_URL}availableCourses`, {
-                headers: {
-                    "accept-language": "ar",
-                    Accept: "application/json",
-                    "Content-Type": "application/json",
-                },
-            });
+            if (isEditSession) {
+                const res = await fetch(`${API_URL}availableCourses`, {
+                    headers: {
+                        "accept-language": "ar",
+                        Accept: "application/json",
+                        "Content-Type": "application/json",
+                    },
+                });
 
-            if (!res.ok) {
-                throw new Error(`Failed to fetch courses: ${res.statusText}`);
+                if (!res.ok) {
+                    throw new Error(`Failed to fetch courses: ${res.statusText}`);
+                }
+
+                const courses = await res.json();
+                setCourses(courses.data);
             }
-
-            const courses = await res.json();
-            setCourses(courses.data);
         };
 
         fetchCourses();
@@ -95,7 +101,6 @@ const TeacherForm = ({ teacherToEdit = {} }) => {
         }
     }, [isEditSession, isLoading, teacherData, reset]);
 
-
     const isWorking = isCreating || isEditing; // loading state
 
     const { errors, isSubmitted } = formState;
@@ -103,19 +108,27 @@ const TeacherForm = ({ teacherToEdit = {} }) => {
     const { close } = useContext(ModalContext);
 
     function onSubmit(data) {
-        const image = typeof data.image === "string" ? null : data.image[0];
+        let image = null;
+        if (data.image && typeof data.image !== "string") {
+            image = data.image[0];
+        }
         let availability = {};
         let courses = {};
 
-        data.availability.forEach((item, index) => {
-            availability[`availability[${index}][day]`] = item.day;
-            availability[`availability[${index}][start_time]`] = item.start_time;
-            availability[`availability[${index}][end_time]`] = item.end_time;
-            availability[`availability[${index}][timezone]`] = item.timezone;
-        });
-        data.courses.forEach((item, index) => {
-            courses[`courses[${index}]`] = item.id ?? item;
-        });
+        if (data.availability) {
+            data.availability.forEach((item, index) => {
+                availability[`availability[${index}][day]`] = item.day;
+                availability[`availability[${index}][start_time]`] = item.start_time;
+                availability[`availability[${index}][end_time]`] = item.end_time;
+                availability[`availability[${index}][timezone]`] = item.timezone;
+            });
+        }
+
+        if (data.courses) {
+            data.courses.forEach((item, index) => {
+                courses[`courses[${index}]`] = item.id ?? item;
+            });
+        }
 
         if (isEditSession) {
             editTeacher(
@@ -137,7 +150,10 @@ const TeacherForm = ({ teacherToEdit = {} }) => {
             createTeacher(obj, {
                 onSuccess: (data) => {
                     reset();
-                    close();
+                    setDisplayResults({
+                        display: true,
+                        data: data.data,
+                    });
                 },
             });
         }
@@ -149,169 +165,191 @@ const TeacherForm = ({ teacherToEdit = {} }) => {
 
     return (
         <FormStyle onSubmit={handleSubmit(onSubmit)}>
-            <MyInput
-                label="اسم المدرس"
-                id="name"
-                reg={{
-                    ...register("name", {
-                        required: "يجب ادخال هذا الحقل",
-                    }),
-                }}
-                error={errors?.name}
-                disabled={isWorking}
-            />
-            <MyInput
-                label="سن المدرس"
-                id="age"
-                reg={{
-                    ...register("age", {
-                        required: "يجب ادخال هذا الحقل",
-                    }),
-                }}
-                type="number"
-                error={errors?.age}
-                disabled={isWorking}
-            />
-            <MyInput
-                label="رقم الهاتف(201111111111+)"
-                id="phone"
-                reg={{
-                    ...register("phone", {
-                        required: "يجب ادخال هذا الحقل",
-                    }),
-                }}
-                error={errors?.phone}
-                disabled={isWorking}
-            />
-            {!isEditSession && (
+            {isEditSession && (
                 <>
                     <MyInput
-                        label="البريد الالكتروني"
-                        id="email"
+                        label="اسم المدرس"
+                        id="name"
                         reg={{
-                            ...register("email", {
+                            ...register("name", {
                                 required: "يجب ادخال هذا الحقل",
                             }),
                         }}
-                        error={errors?.email}
+                        error={errors?.name}
                         disabled={isWorking}
                     />
                     <MyInput
-                        error={errors?.password}
+                        label="سن المدرس"
+                        id="age"
                         reg={{
-                            ...register("password", {
+                            ...register("age", {
                                 required: "يجب ادخال هذا الحقل",
                             }),
                         }}
-                        type="password"
-                        label="كلمة المرور"
-                        icon={<BiLock />}
+                        type="number"
+                        error={errors?.age}
+                        disabled={isWorking}
                     />
                     <MyInput
-                        error={errors?.password}
+                        label="رقم الهاتف(201111111111+)"
+                        id="phone"
                         reg={{
-                            ...register("password_confirmation", {
+                            ...register("phone", {
                                 required: "يجب ادخال هذا الحقل",
                             }),
                         }}
-                        name="password_confirmation"
-                        type="password"
-                        label="تأكيد كلمة المرور"
-                        icon={<BiLock />}
+                        error={errors?.phone}
+                        disabled={isWorking}
                     />
+                    <MultiSelect
+                        fieldName="النوع"
+                        id="gender"
+                        setFormValue={setValue}
+                        defaultValue={teacherData.current?.gender}
+                        error={errors?.gender}
+                        name="gender"
+                        control={control}
+                        myOptions={[
+                            { value: "male", title: "ذكر" },
+                            { value: "female", title: "أنثى" },
+                        ]}
+                    />
+                    <FormControl>
+                        <InputLabel id="courses-select-label" style={{
+                            fontSize: "1.6rem",
+                        }}>
+                            الدورات
+                        </InputLabel>
+                        <Select
+                            labelId="courses-select-label"
+                            {...register("courses", {
+                                required: "يجب ادخال هذا الحقل",
+                            })}
+                            multiple
+                            value={selectedCourses}
+                            onChange={(e) => setSelectedCourses(e.target.value)}
+                            error={errors?.courses}
+                            label="الدورات"
+                            id="outlined-required"
+                        >
+                            {courses.map((course) => (
+                                <MenuItem key={course.id} value={course.id}>
+                                    {course.name}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                        <FormHelperText style={{
+                            color: "#d32f2f",
+                            fontSize: "1.6rem",
+                        }}>{errors?.courses?.message}</FormHelperText>
+                    </FormControl>
+                    <AvailabilityInput control={control} register={register} error={errors?.availability} />
+                    <InputLabel
+                        style={{
+                            fontSize: "1.6rem",
+                        }}
+                    >
+                        المؤهلات
+                    </InputLabel>
+                    <div style={{ marginBottom: "3rem" }}>
+                        <Editor
+                            control={control}
+                            name="qualifications"
+                            setValue={setValue}
+                            isEditSession={isEditSession}
+                            editValue={teacherData.current?.qualifications}
+                            reg={{
+                                ...register("qualifications", {
+                                    required: "يجب ادخال هذا الحقل",
+                                }),
+                            }}
+                        />
+                        <span style={{ color: "#d32f2f" }}>
+                            {errors?.qualifications?.message}
+                        </span>
+                    </div>
+                    <div>
+                        <div style={{ display: "flex", justifyContent: "center", marginBottom: "10px" }}>
+                            <Avatar alt={teacherData.current?.name} src={teacherData.current?.image}
+                                sx={{ width: 100, height: 100 }}
+                            />
+                        </div>
+                        <FileInput
+                            id="image"
+                            setValue={setValue}
+                            accept="image/*"
+                            reg={{
+                                ...register("image", {
+                                    required: isEditSession ? false : "الصورة مطلوبة",
+                                }),
+                            }}
+                            isSubmitted={isSubmitted}
+                            getValues={getValues}
+                        />
+                        <span style={{ color: "#d32f2f" }}>
+                            {errors?.image?.message}
+                        </span>
+                    </div>
                 </>
             )}
-            <MultiSelect
-                fieldName="النوع"
-                id="gender"
-                setFormValue={setValue}
-                defaultValue={teacherData.current?.gender}
-                error={errors?.gender}
-                name="gender"
-                control={control}
-                myOptions={[
-                    { value: "male", title: "ذكر" },
-                    { value: "female", title: "أنثى" },
-                ]}
-            />
-            <FormControl>
-                <InputLabel id="courses-select-label" style={{
-                    fontSize: "1.6rem",
-                }}>
-                    الدورات
-                </InputLabel>
-                <Select
-                    labelId="courses-select-label"
-                    {...register("courses", {
-                        required: "يجب ادخال هذا الحقل",
-                    })}
-                    multiple
-                    value={selectedCourses}
-                    onChange={(e) => setSelectedCourses(e.target.value)}
-                    error={errors?.courses}
-                    label="الدورات"
-                    id="outlined-required"
-                >
-                    {courses.map((course) => (
-                        <MenuItem key={course.id} value={course.id}>
-                            {course.name}
-                        </MenuItem>
-                    ))}
-                </Select>
-                <FormHelperText style={{
-                    color: "#d32f2f",
-                    fontSize: "1.6rem",
-                }}>{errors?.courses?.message}</FormHelperText>
-            </FormControl>
-            <AvailabilityInput control={control} register={register} error={errors?.availability} />
-            <InputLabel
-                style={{
-                    fontSize: "1.6rem",
-                }}
-            >
-                المؤهلات
-            </InputLabel>
-            <div style={{ marginBottom: "3rem" }}>
-                <Editor
-                    control={control}
-                    name="qualifications"
-                    setValue={setValue}
-                    isEditSession={isEditSession}
-                    editValue={teacherData.current?.qualifications}
-                    reg={{
-                        ...register("qualifications", {
-                            required: "يجب ادخال هذا الحقل",
-                        }),
-                    }}
-                />
-                <span style={{ color: "#d32f2f" }}>
-                    {errors?.qualifications?.message}
-                </span>
-            </div>
-            <div>
-                {isEditSession && (
-                    <div style={{ display: "flex", justifyContent: "center", marginBottom: "10px" }}>
-                        <Avatar alt={teacherData.current?.name} src={teacherData.current?.image}
-                            sx={{ width: 100, height: 100 }}
-                        />
-                    </div>
-                )}
-                <FileInput
-                    id="image"
-                    setValue={setValue}
-                    accept="image/*"
-                    reg={{
-                        ...register("image", {
-                            required: isEditSession ? false : "الصورة مطلوبة",
-                        }),
-                    }}
-                    isSubmitted={isSubmitted}
-                    getValues={getValues}
-                />
-                <span style={{ color: "#d32f2f" }}>
-                    {errors?.image?.message}
-                </span>
-            </div>
+            {!isEditSession && (
+                <>
+                    {!displayResults.display && (
+                        <>
+                            <MyInput
+                                label="البريد الالكتروني أو اسم المستخدم"
+                                id="email"
+                                reg={{
+                                    ...register("email", {
+                                        required: "",
+                                    }),
+                                }}
+                                error={errors?.email}
+                                disabled={isWorking}
+                            />
+                            <MyInput
+                                error={errors?.password}
+                                reg={{
+                                    ...register("password", {
+                                        required: "",
+                                    }),
+                                }}
+                                type="password"
+                                label="كلمة المرور"
+                                icon={<BiLock />}
+                            />
+                            <MyInput
+                                error={errors?.password}
+                                reg={{
+                                    ...register("password_confirmation", {
+                                        required: "",
+                                    }),
+                                }}
+                                name="password_confirmation"
+                                type="password"
+                                label="تأكيد كلمة المرور"
+                                icon={<BiLock />}
+                            />
+                            <FormHelperText style={{
+                                fontSize: "1.6rem",
+                                textAlign: "right"
+                            }}>
+                                اترك حقل كلمة المرور والتأكيد فاغين إن شئت ليتم التوليد التلقائي
+                            </FormHelperText>
+                        </>
+                    )}
+                    {displayResults.display && (
+                        <>
+                            <Typography variant="h6" gutterBottom>
+                                البريد الإلكتروني أو اسم المستخدم: {displayResults.data.email}
+                            </Typography>
+                            <Typography variant="h6" gutterBottom>
+                                كلمة المرور: {displayResults.data.password}
+                            </Typography>
+                        </>
+                    )}
+                </>
+            )}
             <MyModal.Footer>
                 <Button
                     disabled={isWorking}

@@ -2,9 +2,10 @@ import React, { useRef } from "react";
 import styled from "styled-components";
 import { Controller, useFieldArray } from "react-hook-form";
 import Button from "../../ui/Button";
-import { TextField, Box, Typography, Grid, FormControl, InputLabel, Select, MenuItem, FormHelperText } from "@mui/material";
+import { TextField, Box, Typography, Grid } from "@mui/material";
 import { FaRegTrashAlt } from "react-icons/fa";
 import TimezoneButton from './../TimezoneButton';
+import { useLocation } from "react-router-dom";
 
 const Wrapper = styled.div`
   display: flex;
@@ -17,13 +18,13 @@ const Wrapper = styled.div`
 `;
 
 const daysOfWeek = [
-  "السبت",
-  "الأحد",
-  "الإثنين",
-  "الثلاثاء",
-  "الأربعاء",
-  "الخميس",
-  "الجمعة",
+  { en: "saturday", ar: "السبت" },
+  { en: "sunday", ar: "الأحد" },
+  { en: "monday", ar: "الإثنين" },
+  { en: "tuesday", ar: "الثلاثاء" },
+  { en: "wednesday", ar: "الأربعاء" },
+  { en: "thursday", ar: "الخميس" },
+  { en: "friday", ar: "الجمعة" },
 ];
 
 const AvailabilityInput = ({ control, register, errors }) => {
@@ -32,10 +33,13 @@ const AvailabilityInput = ({ control, register, errors }) => {
     name: "availability",
   });
 
+  const location = useLocation();
+  const isLesson = location.pathname.includes('lesson');
+
   const defaultTimezoneRef = useRef("GMT+2");
 
   const handleAddSlot = (day) => {
-    append({ day, start_time: "", end_time: "", timezone: defaultTimezoneRef.current });
+    append({ day: day.en, start_time: "", end_time: "", timezone: defaultTimezoneRef.current });
   };
 
   const handleRemoveSlot = (id) => {
@@ -57,24 +61,23 @@ const AvailabilityInput = ({ control, register, errors }) => {
       <Typography
         variant="h6"
         style={{
-          color: "var(--color-grey-0)",
           fontSize: "1.6rem",
         }}
       >
         الإتاحة
       </Typography>
 
-      <TimezoneButton defaultValue={defaultTimezoneRef.current} handleChange={handleTimezoneChange} />
+      {isLesson && (<TimezoneButton defaultValue={defaultTimezoneRef.current} handleChange={handleTimezoneChange} />)}
       {daysOfWeek.map((day) => (
         <Box
-          key={day}
+          key={day.en}
           sx={{ mb: 3, p: 2, border: "1px solid #ddd", borderRadius: "8px" }}
         >
           <Typography variant="h6" style={{ marginBottom: "5px" }}>
-            {day}
+            {day.ar}
           </Typography>
           {fields
-            .filter((slot) => slot.day === day)
+            .filter((slot) => slot.day === day.en)
             .map((slot, index) => (
               <Grid
                 container
@@ -85,7 +88,7 @@ const AvailabilityInput = ({ control, register, errors }) => {
               >
                 <Grid item xs={5}>
                   <Controller
-                    name={`availability.${day}.${index}.start_time`}
+                    name={`availability.${day.en}.${index}.start_time`}
                     control={control}
                     defaultValue={slot.start_time}
                     render={({ field }) => (
@@ -109,7 +112,7 @@ const AvailabilityInput = ({ control, register, errors }) => {
                 </Grid>
                 <Grid item xs={5}>
                   <Controller
-                    name={`availability.${day}.${index}.end_time`}
+                    name={`availability.${day.en}.${index}.end_time`}
                     control={control}
                     defaultValue={slot.end_time}
                     render={({ field }) => (

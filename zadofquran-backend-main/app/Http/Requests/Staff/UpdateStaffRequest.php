@@ -33,6 +33,8 @@ class UpdateStaffRequest extends FormRequest
             'courses' => 'nullable|array|min:1|exists:courses,id',
             'age' => 'nullable|integer|min:18',
             'availability' => 'nullable|array|min:1',
+            'rate' => 'nullable|numeric|min:0|max:5',
+            'display_at_home' => 'nullable|boolean',
             'availability.*.day' => ['required', Rule::in(['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'])],
             'availability.*.start_time' => 'required|date_format:H:i',
             'availability.*.end_time' => 'required|date_format:H:i',

@@ -18,6 +18,23 @@ export async function matchTeachersQuery({ search, page }, token) {
     return data;
 }
 
+export async function toggleDisplayTeacher(id, token, isActive) {
+    const res = await fetch(`${API_URL}admin/staff/${id}`, {
+        method: "PUT",
+        headers: {
+            "accept-language": "ar",
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ display_at_home: !isActive }),
+    });
+
+    if (!res.ok) throw Error("حدث خطأ اثناء التنشيط/إالغاء التنشيط ");
+    const data = await res.json();
+    return data;
+}
+
 export async function getTeacherData(id, token, timezone = null) {
     if (!id) return null;
     let endpoint = `${API_URL}admin/staff/${id}`;

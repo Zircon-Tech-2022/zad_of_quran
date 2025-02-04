@@ -22,9 +22,10 @@ class UpdateCourseRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|max:255',
+            'name' => 'nullable|string|max:255',
             'description' => 'nullable|string|max:255',
             'image' => 'nullable|image|max:10240',
+            'display_at_home' => 'nullable|boolean',
             'locale' => 'required|string|in:' . implode(',', array_keys(config('app.locales'))),
         ];
     }

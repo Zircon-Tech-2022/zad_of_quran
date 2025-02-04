@@ -51,6 +51,11 @@ const LessonView = ({ lessonToView }) => {
                         <Typography variant="h4">{"بيانات المعلم"}</Typography>
                     </Link>
                     <ProfileInfo user={lesson.data.staff} />
+                    {/* supervisor */}
+                    <Typography variant="h4">بيانات المشرف</Typography>
+                    <Typography variant="h5">{"الاسم"}: {lesson.data.supervisor.name}</Typography>
+                    <Typography variant="body1">{"البريد الإلكتروني"}: {lesson.data.supervisor.email}</Typography>
+
                     <SubscriberProfileInfo subscriber={lesson.data.subscriber} />
                     <CoursesList courses={[lesson.data.course]} />
                     <TimezoneButton defaultValue={defaultTimezone} handleChange={handleTimezoneChange} />

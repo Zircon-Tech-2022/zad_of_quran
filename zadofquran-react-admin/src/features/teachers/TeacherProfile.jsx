@@ -40,8 +40,8 @@ const TeacherProfile = ({ teacherToView }) => {
             {!isLoading && !isUpdateTimezoneLoading && user && (
                 <DivStyle>
                     <ProfileInfo user={user?.data} />
-                    <TimezoneButton defaultValue={defaultTimezone} handleChange={handleTimezoneChange} />
                     <CoursesList courses={user?.data?.courses} />
+                    <TimezoneButton defaultValue={defaultTimezone} handleChange={handleTimezoneChange} />
                     <AvailabilityTable availabilities={user?.data?.availabilities} />
                     <LessonsTable lessons={user?.data?.lessons} />
                 </DivStyle>

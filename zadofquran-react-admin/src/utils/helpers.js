@@ -2,8 +2,13 @@ export const calculateTimezone = (local, gmt) => {
   const [localHours, localMinutes] = local.split(":").map(Number);
   const [gmtHours, gmtMinutes] = gmt.split(":").map(Number);
 
-  const localTotalMinutes = localHours * 60 + localMinutes;
+  let localTotalMinutes = localHours * 60 + localMinutes;
   const gmtTotalMinutes = gmtHours * 60 + gmtMinutes;
+
+  // Adjust for day wrap-around when local is "next day"
+  if (localTotalMinutes < gmtTotalMinutes) {
+    localTotalMinutes += 24 * 60; // Add 24 hours to local time
+  }
 
   const differenceInMinutes = localTotalMinutes - gmtTotalMinutes;
 

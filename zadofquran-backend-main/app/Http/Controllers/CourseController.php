@@ -24,7 +24,7 @@ class CourseController extends Controller
     public function index()
     {
         $courser = Course::when(request('q'), fn($query, $q) => $query->search($q))
-            ->select(['id', 'name', 'description', 'image', 'locale'])
+            ->select(['id', 'name', 'description', 'image', 'locale', 'display_at_home'])
             ->orderBy(request('orderBy', 'id'), request('orderDir', 'asc'))
             ->paginate(request('limit', 25));
 
