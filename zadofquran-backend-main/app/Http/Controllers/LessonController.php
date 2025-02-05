@@ -137,7 +137,7 @@ class LessonController extends Controller
     {
         $data = $request->validated();
 
-        if (isset($data['status'])) {
+        if (isset($data['status']) && !array_key_exists('course_id', $data)) {
             $lesson->update([
                 'status' => $lesson?->staff_id ? $data['status'] : 'not_added',
             ]);
