@@ -21,7 +21,8 @@ const LessonsTable = ({ lessons }) => {
                 .map((slot) => ({
                     lessonId: lesson.id,
                     courseName: lesson.course.name,
-                    staffName: lesson.staff.name,
+                    staffName: lesson.staff?.name || "لا يوجد",
+                    staffPhone: lesson.staff?.phone || "لا يوجد",
                     studentName: lesson.subscriber.name,
                     studentPhone: lesson.subscriber.phone,
                     startTime: slot.start_times.local,
@@ -71,7 +72,7 @@ const LessonsTable = ({ lessons }) => {
                                                     <Chip sx={{
                                                         color: (theme) => theme.palette.common.white,
                                                         backgroundColor: (theme) => theme.palette.primary.main,
-                                                    }} variant="outlined" label={`حلقة #${slot.lessonId} | ${slot.startTime} - ${slot.endTime} | ${slot.staffName} | ${slot.courseName} | ${slot.studentName} / ${slot.studentPhone}`} />
+                                                    }} variant="outlined" label={`حلقة #${slot.lessonId} | ${slot.startTime} - ${slot.endTime} | ${slot.courseName} | الطالب: ${slot.studentName} / ${slot.studentPhone} | المعلم: ${slot.staffName} / ${slot.staffPhone}`} />
                                                 </li>
                                             ))}
                                         </ul>

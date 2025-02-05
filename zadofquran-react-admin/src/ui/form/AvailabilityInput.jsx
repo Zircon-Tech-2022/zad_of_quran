@@ -6,6 +6,7 @@ import { TextField, Box, Typography, Grid } from "@mui/material";
 import { FaRegTrashAlt } from "react-icons/fa";
 import TimezoneButton from './../TimezoneButton';
 import { useLocation } from "react-router-dom";
+import { convertToGMT3 } from "../../utils/helpers";
 
 const Wrapper = styled.div`
   display: flex;
@@ -92,21 +93,25 @@ const AvailabilityInput = ({ control, register, errors }) => {
                     control={control}
                     defaultValue={slot.start_time}
                     render={({ field }) => (
-                      <TextField
-                        {...field}
-                        type="time"
-                        label="من"
-                        InputLabelProps={{
-                          shrink: true,
-                        }}
-                        inputProps={{
-                          step: 300, // 5 min
-                        }}
-                        onChange={(e) => {
-                          field.onChange(e.target.value);
-                          handleChange(slot.id, "start_time", e.target.value);
-                        }}
-                      />
+                      <>
+                        <TextField
+                          {...field}
+                          type="time"
+                          label="من"
+                          InputLabelProps={{
+                            shrink: true,
+                          }}
+                          inputProps={{
+                            step: 300, // 5 min
+                          }}
+                          onChange={(e) => {
+                            field.onChange(e.target.value);
+                            handleChange(slot.id, "start_time", e.target.value);
+                          }}
+                        />
+                        <p>يعادل: <span style={{ direction: "ltr", display: "inline-block" }}>
+                          {convertToGMT3(field.value, defaultTimezoneRef.current)}</span></p>
+                      </>
                     )}
                   />
                 </Grid>
@@ -116,21 +121,25 @@ const AvailabilityInput = ({ control, register, errors }) => {
                     control={control}
                     defaultValue={slot.end_time}
                     render={({ field }) => (
-                      <TextField
-                        {...field}
-                        type="time"
-                        label="إلى"
-                        InputLabelProps={{
-                          shrink: true,
-                        }}
-                        inputProps={{
-                          step: 300, // 5 min
-                        }}
-                        onChange={(e) => {
-                          field.onChange(e.target.value);
-                          handleChange(slot.id, "end_time", e.target.value);
-                        }}
-                      />
+                      <>
+                        <TextField
+                          {...field}
+                          type="time"
+                          label="إلى"
+                          InputLabelProps={{
+                            shrink: true,
+                          }}
+                          inputProps={{
+                            step: 300, // 5 min
+                          }}
+                          onChange={(e) => {
+                            field.onChange(e.target.value);
+                            handleChange(slot.id, "end_time", e.target.value);
+                          }}
+                        />
+                        <p>يعادل: <span style={{ direction: "ltr", display: "inline-block" }}>
+                          {convertToGMT3(field.value, defaultTimezoneRef.current)}</span></p>
+                      </>
                     )}
                   />
                 </Grid>
@@ -143,6 +152,7 @@ const AvailabilityInput = ({ control, register, errors }) => {
                     <FaRegTrashAlt />
                   </Button>
                 </Grid>
+                <p>بتوقيت المملكة العربية السعودية</p>
               </Grid>
             ))}
           <Button

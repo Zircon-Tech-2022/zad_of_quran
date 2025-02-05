@@ -351,7 +351,7 @@ const TeacherForm = ({ teacherToEdit = null }) => {
                 </>
             )}
             <MyModal.Footer>
-                <Button
+                {!displayResults.display && (<Button
                     disabled={isWorking}
                     style={{
                         background: isWorking ? "var(--color-grey-300)" : "",
@@ -359,9 +359,10 @@ const TeacherForm = ({ teacherToEdit = null }) => {
                     type="submit"
                 >
                     حفظ
-                </Button>
+                </Button>)
+                }
                 <Button onClick={close} variation="third" type="button">
-                    إلغاء
+                    {displayResults.display ? "إغلاق" : "إلغاء"}
                 </Button>
             </MyModal.Footer>
         </FormStyle>

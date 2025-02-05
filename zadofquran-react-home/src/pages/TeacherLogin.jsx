@@ -173,13 +173,6 @@ const TeacherLogin = () => {
                                 {t("login")}
                             </HeadLogin>
                             <LoginForm />
-                            <Has className={StyleSheet}>
-                                {t("don't-have-acoount")}
-                                <Link to={`/${language}/teacher/signup`}>
-                                    {" "}
-                                    {t("signup")}
-                                </Link>
-                            </Has>
                         </Left>
                     </Grid>
                 </StyleGrid>

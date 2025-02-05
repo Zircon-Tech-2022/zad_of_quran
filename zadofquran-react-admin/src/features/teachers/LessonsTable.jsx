@@ -70,7 +70,7 @@ const LessonsTable = ({ lessons }) => {
                                                     <Chip sx={{
                                                         color: (theme) => theme.palette.common.white,
                                                         backgroundColor: (theme) => theme.palette.primary.main,
-                                                    }} variant="outlined" label={`حلقة #${slot.lessonId} | ${slot.startTime} - ${slot.endTime} | ${slot.courseName} | ${slot.studentName} / ${slot.studentPhone}`} />
+                                                    }} variant="outlined" label={`حلقة #${slot.lessonId} | ${slot.startTime} - ${slot.endTime} | ${slot.courseName} | الطالب: ${slot.studentName} / ${slot.studentPhone}`} />
                                                 </li>
                                             ))}
                                         </ul>

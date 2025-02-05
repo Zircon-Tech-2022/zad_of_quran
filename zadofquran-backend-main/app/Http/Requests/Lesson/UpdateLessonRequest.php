@@ -27,7 +27,7 @@ class UpdateLessonRequest extends FormRequest
             'staff_id' => ['nullable', 'exists:staff,id'],
             'course_id' => ['nullable', 'exists:courses,id'],
             'supervisor_id' => ['nullable', 'exists:users,id'],
-            'is_active' => 'nullable|boolean',
+            'status' => 'nullable|in:not_added,waiting,confirmed',
             'availability' => 'nullable|array|min:1',
             'availability.*.day' => ['required', Rule::in(['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'])],
             'availability.*.start_time' => 'required|date_format:H:i',

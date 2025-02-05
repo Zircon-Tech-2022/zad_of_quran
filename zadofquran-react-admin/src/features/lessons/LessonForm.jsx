@@ -12,7 +12,6 @@ import { API_URL } from "../../Constants";
 import { useLessonShow } from "./useLessonShow";
 import Spinner from "../../ui/Spinner";
 import { calculateTimezone } from "../../utils/helpers";
-import { getSubscriberData } from "../../services/apiSubscribers";
 import { matchTeachers } from "../../services/apiTeacher";
 
 const FormStyle = styled.form`
@@ -25,7 +24,6 @@ const FormStyle = styled.form`
 const LessonForm = ({ lessonToEdit = null }) => {
     const [selectedCourse, setSelectedCourse] = React.useState(null);
     const [selectedSupervisor, setSelectedSupervisor] = React.useState(null);
-    const [selectedSubscriber, setSelectedSubscriber] = React.useState("");
     const [courses, setCourses] = React.useState([]);
     const [supervisors, setSupervisors] = React.useState([]);
 
@@ -113,37 +111,6 @@ const LessonForm = ({ lessonToEdit = null }) => {
         fetchData();
     }, []);
 
-    // useEffect(() => {
-    //     const getSubsctiberDataRequest = async () => {
-    //         if (selectedSubscriber) {
-    //             setIsLoadingSomething(true);
-    //             const res = await getSubscriberData(selectedSubscriber, localStorage.getItem("token"));
-    //             setIsLoadingSomething(false);
-    //             subscriberData.current = res.data;
-    //             reset({
-    //                 subscriber_id: selectedSubscriber,
-    //                 age: parseInt(res.data.age),
-    //                 gender: res.data.gender,
-    //                 staff_id: getValues().staff_id,
-    //                 course: selectedCourse,
-    //             });
-    //         }
-    //     }
-    //     getSubsctiberDataRequest();
-    // }, [selectedSubscriber, reset, getValues]);
-
-    // useEffect(() => {
-    //     if (!isLoadingSomething && subscriberData?.current) {
-    //         reset({
-    //             subscriber_id: selectedSubscriber,
-    //             age: parseInt(subscriberData.current.age),
-    //             gender: subscriberData.current.gender,
-    //             staff_id: getValues().staff_id,
-    //             course: selectedCourse,
-    //         });
-    //     }
-    // }, [isLoadingSomething, reset, selectedSubscriber, getValues]);
-
     useEffect(() => {
         if (isEditSession && !isLoading && lessonData?.current) {
             reset({
@@ -204,7 +171,7 @@ const LessonForm = ({ lessonToEdit = null }) => {
                 ...data, ...availability,
                 course_id: data.course,
                 supervisor_id: data.supervisor,
-                staff_id: data.staff_id ? data.staff_id : '',
+                staff_id: parseInt(data.staff_id) ? data.staff_id : '',
             };
             createLesson(obj, {
                 onSuccess: (data) => {
@@ -381,7 +348,7 @@ const LessonForm = ({ lessonToEdit = null }) => {
                         <InputLabel id="staff-exact-select-label" style={{
                             fontSize: "1.6rem",
                         }}>
-                            المعلمين المطابقين
+                            المعلمون المقترحون
                         </InputLabel>
                         <Controller
                             name="staff_id"
@@ -394,7 +361,7 @@ const LessonForm = ({ lessonToEdit = null }) => {
                                         value={value || lessonData.current?.staff_id || ""} // Ensure value is not undefined
                                         onChange={(e) => onChange(e.target.value)} // Update React Hook Form state
                                         error={!!error}
-                                        label="المعلمين المطابقين"
+                                        label="المعلمون المقترحون"
                                         id="outlined-required"
                                     >
                                         <MenuItem value="0">غير محدد</MenuItem>
@@ -416,7 +383,7 @@ const LessonForm = ({ lessonToEdit = null }) => {
                         <InputLabel id="staff-maybe-select-label" style={{
                             fontSize: "1.6rem",
                         }}>
-                            معلمين قد تناسبهم
+                            معلمون قد تناسبهم
                         </InputLabel>
                         <Controller
                             name="staff_id"
@@ -429,7 +396,7 @@ const LessonForm = ({ lessonToEdit = null }) => {
                                         value={value || lessonData.current?.staff_id || ""} // Ensure value is not undefined
                                         onChange={(e) => onChange(e.target.value)} // Update React Hook Form state
                                         error={!!error}
-                                        label="معلمين قد تناسبهم"
+                                        label="معلمون قد تناسبهم"
                                         id="outlined-required"
                                     >
                                         <MenuItem value="0">غير محدد</MenuItem>

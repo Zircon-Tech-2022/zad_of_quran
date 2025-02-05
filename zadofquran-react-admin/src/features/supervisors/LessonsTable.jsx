@@ -23,8 +23,8 @@ const LessonsTable = ({ lessons }) => {
                     courseName: lesson.course.name,
                     studentName: lesson.subscriber.name,
                     studentPhone: lesson.subscriber.phone,
-                    staffName: lesson.staff.name,
-                    staffPhone: lesson.staff.phone,
+                    staffName: lesson.staff?.name,
+                    staffPhone: lesson.staff?.phone,
                     startTime: slot.start_times.local,
                     endTime: slot.end_times.local,
                 }))
@@ -72,7 +72,7 @@ const LessonsTable = ({ lessons }) => {
                                                     <Chip sx={{
                                                         color: (theme) => theme.palette.common.white,
                                                         backgroundColor: (theme) => theme.palette.primary.main,
-                                                    }} variant="outlined" label={`حلقة #${slot.lessonId} | ${slot.startTime} - ${slot.endTime} | ${slot.courseName} | ${slot.studentName} / ${slot.studentPhone} | ${slot.staffName} / ${slot.staffPhone}`} />
+                                                    }} variant="outlined" label={`حلقة #${slot.lessonId} | ${slot.startTime} - ${slot.endTime} | ${slot.courseName} | الطالب: ${slot.studentName} / ${slot.studentPhone} | المعلم: ${slot.staffName} / ${slot.staffPhone}`} />
                                                 </li>
                                             ))}
                                         </ul>

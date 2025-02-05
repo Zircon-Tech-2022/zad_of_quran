@@ -10,26 +10,26 @@ import { useDeleteLesson } from "./useDeleteLesson";
 import Actions from "../../ui/table/Actions";
 import { Link, useSearchParams } from "react-router-dom";
 import { LIMIT } from "../../Constants";
-import { FaEye, FaToggleOn } from "react-icons/fa6";
+import { FaEye } from "react-icons/fa6";
 import LessonView from "./LessonView";
-import { PinkCell } from "../../ui/table/PinkCell";
-import { OrangeCell } from "../../ui/table/OrangeCell";
 import styles from './lesson.module.css'
-import { useToggleLessonActivation } from "./useToggleLessonActivation";
+import { useToggleLessonStatus } from "./useToggleLessonStatus";
 import { BiPencil } from "react-icons/bi";
 import LessonForm from "./LessonForm";
+import Spinner from "../../ui/Spinner";
+import { availableStatus } from "../../statusConstants";
+
 
 const LessonRow = ({ lesson, num }) => {
     const [searchParams] = useSearchParams();
     const page = +searchParams.get("page") || 1;
     const tableNum = (page - 1) * LIMIT + num;
-    const { id, subscriber, staff, course } = lesson;
+    const { id, subscriber, staff, course, status } = lesson;
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
 
-    const isActive = lesson.staff?.id ? true : false;
-
     const { isDeleting, deleteLesson } = useDeleteLesson();
+    const { isToggling, toggleLesson } = useToggleLessonStatus();
 
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
@@ -39,8 +39,20 @@ const LessonRow = ({ lesson, num }) => {
         setAnchorEl(null);
     };
 
+    const toggleLessonStatus = (currentStatus) => {
+        if (currentStatus === availableStatus.not_added.value) return;
+        toggleLesson({ id, currentStatus })
+    }
+
     return (
         <Table.Row>
+            {isToggling && <Spinner style={{
+                position: "absolute",
+                top: "50%",
+                left: "50%",
+                zIndex: "100",
+            }} />}
+
             <div>{tableNum}</div>
             <Cell title={id}>{id}</Cell>
             <Cell title={subscriber.name}>
@@ -73,7 +85,11 @@ const LessonRow = ({ lesson, num }) => {
                     </Link>
                 </BlueCell>
             </Cell>
-            <Cell title={isActive ? "تمت الإضافة" : "غير نشطة"}>{isActive ? <OrangeCell>تمت الإضافة</OrangeCell> : <PinkCell>غير نشطة</PinkCell>}</Cell>
+            <Cell style={{
+                cursor: status === availableStatus.not_added.value ? "default" : "pointer"
+            }} onClick={() => toggleLessonStatus(availableStatus[status].value)} title={availableStatus[status].text}>
+                {availableStatus[status].element}
+            </Cell>
             <Actions open={open} onClick={handleClick} />
             <MyModal>
                 <Menu

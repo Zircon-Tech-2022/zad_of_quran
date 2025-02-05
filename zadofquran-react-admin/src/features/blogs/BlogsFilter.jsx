@@ -6,7 +6,7 @@ import AddBlogModal from "./AddBlogModal";
 
 const BlogsFilter = () => {
     return (
-        <FilterLayout title="لائحة المدرسين">
+        <FilterLayout title="لائحة التدوينات">
             {/* <Filters
                 filterField="courses"
                 label="الجزئية الدراسية"

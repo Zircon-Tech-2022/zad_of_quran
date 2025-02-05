@@ -1,4 +1,5 @@
 import { API_URL } from "../Constants";
+import { availableStatus } from "../statusConstants";
 
 export async function getLessons({ search, page }, token) {
     const res = await fetch(
@@ -44,7 +45,7 @@ export async function getLessonData(id, token, timezone = null) {
     return data;
 }
 
-export async function toggleDeactivateLesson(id, token, isActive) {
+export async function toggleLessonStatus(id, token, currentStatus) {
     const res = await fetch(`${API_URL}admin/lessons/${id}`, {
         method: "PUT",
         headers: {
@@ -53,10 +54,10 @@ export async function toggleDeactivateLesson(id, token, isActive) {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ is_active: !isActive }),
+        body: JSON.stringify({ status: currentStatus === availableStatus.waiting.value ? availableStatus.confirmed.value : availableStatus.waiting.value }),
     });
 
-    if (!res.ok) throw Error("حدث خطأ اثناء التنشيط/إالغاء التنشيط ");
+    if (!res.ok) throw Error("حدث خطأ اثناء تغيير الحالة ");
     const data = await res.json();
     return data;
 }

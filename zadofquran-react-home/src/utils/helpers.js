@@ -7,7 +7,7 @@ export const scrollToSection = (ref) => {
     window.scrollTo(scrollOptions);
 };
 
-export const calculateTimezone =(local, gmt) => {
+export const calculateTimezone = (local, gmt) => {
     const [localHours, localMinutes] = local.split(":").map(Number);
     const [gmtHours, gmtMinutes] = gmt.split(":").map(Number);
 

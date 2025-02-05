@@ -31,10 +31,6 @@ class LessonController extends Controller
             ->orderBy(request('orderBy', 'id'), request('orderDir', 'asc'))
             ->paginate(request('limit', 25));
 
-        $lessons->getCollection()->transform(function ($lesson) {
-            return $lesson->makeVisible(['is_active']);
-        });
-
         return apiSuccessResponse(__('messages.data_retrieved_successfully'), $lessons);
     }
 
@@ -67,6 +63,7 @@ class LessonController extends Controller
             'supervisor_id' => $data['supervisor_id'],
             'subscriber_id' => $subscriber->id,
             'course_id' => $data['course_id'],
+            'status' => isset($data['staff_id']) && !empty($data['staff_id']) ? 'waiting' : 'not_added',
         ]);
 
         if (array_key_exists('availability', $data) && count($data['availability'])) {
@@ -140,11 +137,20 @@ class LessonController extends Controller
     {
         $data = $request->validated();
 
+        if (isset($data['status'])) {
+            $lesson->update([
+                'status' => $lesson?->staff_id ? $data['status'] : 'not_added',
+            ]);
+
+            return apiSuccessResponse(__('messages.updated_success'), [
+                $lesson->toArray(),
+            ]);
+        }
+
         $lesson->update([
             'staff_id' => $data['staff_id'], // nullable
             'supervisor_id' => $data['supervisor_id'] ?? $lesson->supervisor_id,
             'course_id' => $data['course_id'] ?? $lesson->course_id,
-            'is_active' => $data['is_active'] ?? $lesson->is_active,
         ]);
 
         if (array_key_exists('availability', $data) && count($data['availability'])) {

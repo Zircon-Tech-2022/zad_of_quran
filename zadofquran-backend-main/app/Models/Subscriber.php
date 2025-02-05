@@ -39,7 +39,7 @@ class Subscriber extends Model
 
     public function lessons()
     {
-        return $this->hasMany(Lesson::class)->where('is_active', true);
+        return $this->hasMany(Lesson::class)->where('status', 'confirmed');
     }
 
     public function scopeSearch($query, $q)

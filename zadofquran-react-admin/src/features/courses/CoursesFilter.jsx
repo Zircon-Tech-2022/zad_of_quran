@@ -6,7 +6,7 @@ import AddCourseModal from "./AddCourseModal";
 
 const CoursesFilter = () => {
     return (
-        <FilterLayout title="لائحة المدرسين">
+        <FilterLayout title="لائحة الدورات">
             {/* <Filters
                 filterField="courses"
                 label="الجزئية الدراسية"

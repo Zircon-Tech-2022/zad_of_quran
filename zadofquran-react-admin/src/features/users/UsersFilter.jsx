@@ -6,7 +6,7 @@ import AddUserModal from "./AddUserModal";
 
 const UsersFilter = () => {
     return (
-        <FilterLayout title="لائحة المدرسين">
+        <FilterLayout title="لائحة الطلاب">
             {/* <Filters
                 filterField="courses"
                 label="الجزئية الدراسية"

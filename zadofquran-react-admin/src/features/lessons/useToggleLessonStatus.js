@@ -1,16 +1,16 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { toggleDeactivateLesson } from "../../services/apiLessons";
+import { toggleLessonStatus } from "../../services/apiLessons";
 import { toast } from "react-hot-toast";
 
-export function useToggleLessonActivation() {
+export function useToggleLessonStatus() {
     const queryClient = useQueryClient();
 
     const { mutate: toggleLesson, isLoading: isToggling } = useMutation({
-        mutationFn: ({ id, isActive }) =>
-            toggleDeactivateLesson(
+        mutationFn: ({ id, currentStatus }) =>
+            toggleLessonStatus(
                 id,
                 localStorage.getItem("token"),
-                isActive
+                currentStatus
             ),
         onSuccess: () => {
             toast.success("تم التعديل بنجاح");

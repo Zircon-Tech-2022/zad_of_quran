@@ -25,7 +25,7 @@ const ProfileInfo = ({ user }) => {
                         <Typography variant="body1">{user.email}</Typography>
                         <Typography variant="body2">{t('phoneWord')}: {user.phone}</Typography>
                         <Typography variant="body2">{t('gender')}: {gender}</Typography>
-                        <Typography variant="body2">{t('age')}: "{age}"</Typography>
+                        <Typography variant="body2">{t('age')}: {age}</Typography>
                         <Typography style={{ marginTop: "5px" }} variant="h6">
                             {t('qualifications')}
                         </Typography>
