@@ -151,6 +151,9 @@ class LessonController extends Controller
             'staff_id' => $data['staff_id'], // nullable
             'supervisor_id' => $data['supervisor_id'] ?? $lesson->supervisor_id,
             'course_id' => $data['course_id'] ?? $lesson->course_id,
+            'status' => isset($data['staff_id']) && !empty($data['staff_id']) ?
+                (($data['staff_id'] !== $lesson->staff_id) ? 'waiting' : $lesson->status)
+                : 'not_added',
         ]);
 
         if (array_key_exists('availability', $data) && count($data['availability'])) {
