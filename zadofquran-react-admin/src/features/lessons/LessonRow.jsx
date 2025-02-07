@@ -24,7 +24,7 @@ const LessonRow = ({ lesson, num }) => {
     const [searchParams] = useSearchParams();
     const page = +searchParams.get("page") || 1;
     const tableNum = (page - 1) * LIMIT + num;
-    const { id, subscriber, staff, course, status } = lesson;
+    const { id, subscriber, staff, course, status, supervisor } = lesson;
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
 
@@ -74,6 +74,14 @@ const LessonRow = ({ lesson, num }) => {
                 ) : (
                     "لا يوجد معلم"
                 )}
+            </Cell>
+            <Cell title={supervisor.name}>
+                <Link
+                    to={`/supervisors?q=${supervisor.email}`}
+                    className={styles.link}
+                >
+                    {supervisor.name} <br /> {supervisor.email}
+                </Link>
             </Cell>
             <Cell title={course.name}>
                 <BlueCell>

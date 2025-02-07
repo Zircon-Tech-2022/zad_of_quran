@@ -142,20 +142,26 @@ class StaffController extends Controller
             });
         }
 
-        if ($request->has('gender') && $request) {
+        if ($request->has('gender') && $request->gender) {
             $staff->whereHas('details', function ($query) use ($request) {
                 $query->where('gender', $request->gender);
             });
         }
 
+        // the new value
         if ($request->has('course') && $request->course) {
             $staff->whereHas('courses', function ($query) use ($request) {
                 $query->where('course_id', $request->course);
             });
+            // the stored value
+        } else if ($request->has('course_id') && $request->course_id) {
+            $staff->whereHas('courses', function ($query) use ($request) {
+                $query->where('course_id', $request->course_id);
+            });
         }
 
-        $exactStaff = $staff->clone();
-        $maybeStaff = $staff->clone();
+        $exactStaff = clone $staff;
+        $maybeStaff = clone $staff;
 
         if ($request->has('availability') && $request->availability && count($request->availability)) {
             $availabilities = $this->reformAvailabilities($request->availability);
@@ -166,15 +172,35 @@ class StaffController extends Controller
                     $endTime = $availability['end_time'];
 
                     $query->whereHas('availabilities', function ($subQuery) use ($startTime, $endTime, $day) {
-                        $subQuery->where('day', $day)
-                            ->where(DB::raw('ABS(TIMEDIFF(end_time, start_time))'), '>=', DB::raw("ABS(TIMEDIFF('" . $endTime . "', '" . $startTime . "'))"))
-                            ->where(DB::raw('start_time'), '<=', $startTime)
-                            ->where(DB::raw('start_time'), '<=', $endTime)
-                            ->where(DB::raw('end_time'), '>=', $startTime)
-                            ->where(DB::raw('end_time'), '>=', $endTime);
+                        $subQuery
+                            ->where('day', $day)
+                            ->where('start_time', '<=', $startTime)
+                            ->where('end_time', '>=', $endTime);
                     });
                 }
+            })->whereDoesntHave('lessons', function ($query) use ($availabilities) {
+                foreach ($availabilities as $availability) {
+                    $day = $availability['day'];
+                    $startTime = $availability['start_time'];
+                    $endTime = $availability['end_time'];
+
+                    $query->where('status', 'confirmed')
+                        ->whereHas('availabilities', function ($subQuery) use ($day, $startTime, $endTime) {
+                            $subQuery->where('day', $day)
+                                ->where(function ($timeQuery) use ($startTime, $endTime) {
+                                    $timeQuery
+                                        ->whereBetween('start_time', [$startTime, $endTime])
+                                        ->orWhereBetween('end_time', [$startTime, $endTime])
+                                        ->orWhere(function ($overlapQuery) use ($startTime, $endTime) {
+                                            $overlapQuery
+                                                ->where('start_time', '<=', $startTime)
+                                                ->where('end_time', '>=', $endTime);
+                                        });
+                                });
+                        });
+                }
             });
+
             $maybeStaff = $maybeStaff->where(function ($query) use ($availabilities) {
                 foreach ($availabilities as $availability) {
                     $day = $availability['day'];
@@ -183,19 +209,14 @@ class StaffController extends Controller
 
                     $query->whereHas('availabilities', function ($subQuery) use ($startTime, $endTime, $day) {
                         $subQuery->where('day', $day)
-                            ->where(DB::raw('ABS(TIMEDIFF(end_time, start_time))'), '>=', DB::raw("ABS(TIMEDIFF('" . $endTime . "', '" . $startTime . "'))"))
-                            ->where(DB::raw('DATE_SUB(start_time, INTERVAL 2 HOUR)'), '<=', $startTime)
-                            ->where(DB::raw('DATE_SUB(start_time, INTERVAL 2 HOUR)'), '<=', $endTime)
-                            ->where(DB::raw('DATE_ADD(end_time, INTERVAL 2 HOUR)'), '>=', $startTime)
-                            ->where(DB::raw('DATE_ADD(end_time, INTERVAL 2 HOUR)'), '>=', $endTime);
+                            ->where('start_time', '<=', Carbon::parse($startTime)->addHours(2))
+                            ->where('end_time', '>=', Carbon::parse($endTime)->subHours(2));
                     });
                 }
             });
         }
 
-        $exactStaff = $exactStaff->orderBy(StaffDetails::select('age')
-            ->whereColumn('staff_id', 'staff.id')
-            ->orderBy('age', 'asc'))
+        $exactStaff = $exactStaff->orderByRaw('(SELECT age FROM staff_details WHERE staff_details.staff_id = staff.id) ASC')
             ->orderBy('rate', 'desc')
             ->get();
         $maybeStaff = $maybeStaff->orderBy(StaffDetails::select('age')
@@ -209,7 +230,7 @@ class StaffController extends Controller
             'maybe' => [],
         ];
 
-        $exactStaffIds = array_map(fn($staff) => $staff['id'], $exactStaff->toArray());
+        $exactStaffIds = $exactStaff->pluck('id')->toArray();
 
         foreach ($exactStaff as $staffMember) {
             $availabilities = $this->getAvailabilities($staffMember->availabilities);

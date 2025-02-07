@@ -56,7 +56,7 @@ trait TimeParser
       $day = $this->adjustDay($localStartTime, $startTime, $localDay);
       $dayIndex = $this->getDayIndex($day);
 
-      if ($endTime->hour > $startTime->hour) {
+      if ($endTime->hour >= $startTime->hour) {
         $updated[] = [
           "day" => $day,
           "start_time" => $startTime->format('H:i'),

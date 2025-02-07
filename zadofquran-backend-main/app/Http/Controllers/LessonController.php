@@ -27,7 +27,7 @@ class LessonController extends Controller
     public function index()
     {
         $lessons = Lesson::when(request('q'), fn($query, $q) => $query->search($q))
-            ->with('staff:id,name,email,phone', 'subscriber:id,name,email,phone', 'course:id,name')
+            ->with('staff:id,name,email,phone', 'subscriber:id,name,email,phone', 'course:id,name', 'supervisor:id,name,email')
             ->orderBy(request('orderBy', 'id'), request('orderDir', 'asc'))
             ->paginate(request('limit', 25));
 

@@ -21,12 +21,13 @@ const LessonTable = () => {
 
     return (
         <div>
-            <Table columns="0.4fr 0.6fr 1.2fr 1.2fr  1.5fr 1fr .5fr" minWidth="150rem">
+            <Table columns="0.4fr 0.6fr 1.2fr 1.2fr 1.2fr 1.5fr 1fr .5fr" minWidth="150rem">
                 <Table.Header>
                     <div>#</div>
                     <div>الرقم</div>
                     <div>المشترك</div>
                     <div>المعلم</div>
+                    <div>المشرف</div>
                     <div>الدورة</div>
                     <div>الحالة</div>
                     <div>الاجراءات</div>
