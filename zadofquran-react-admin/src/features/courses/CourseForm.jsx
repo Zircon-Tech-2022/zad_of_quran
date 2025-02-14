@@ -102,9 +102,7 @@ const CourseForm = (courseToEdit = {}) => {
                     isEditSession={isEditSession}
                     editValue={courseData?.description}
                     placeholder="الاجابة"
-                    {...register("description", {
-                        required: "يجب ادخال هذا الحقل",
-                    })}
+                    {...register("description")}
                 ></Textarea>
                 <span style={{ color: "#d32f2f" }}>
                     {errors?.description?.message}
