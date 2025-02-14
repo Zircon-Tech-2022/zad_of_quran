@@ -57,6 +57,8 @@ function App() {
         defaultOptions: {
             queries: {
                 staleTime: 0,
+                refetchInterval: 1 * 1000,    // Auto-refetch every 5 seconds
+                refetchOnMount: true,     // Always fetch on mount
             },
         },
     });
