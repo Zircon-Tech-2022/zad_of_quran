@@ -26,6 +26,7 @@ class StaffController extends Controller
         $this->middleware('permission:staff.create')->only(['store']);
         $this->middleware('permission:staff.update')->only(['update']);
         $this->middleware('permission:staff.softDelete')->only(['destroy']);
+        $this->middleware('role:admin')->only(['resetPassword']);
     }
 
     /**
