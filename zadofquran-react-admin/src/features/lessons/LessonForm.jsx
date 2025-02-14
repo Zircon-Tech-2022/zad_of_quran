@@ -7,7 +7,7 @@ import { Controller, useForm } from "react-hook-form";
 import styled from "styled-components";
 import { useEditLesson } from "./useEditLesson";
 import AvailabilityInput from "../../ui/form/AvailabilityInput";
-import { FormControl, FormHelperText, InputLabel, MenuItem, Select } from "@mui/material";
+import { FormControl, FormHelperText, InputLabel, MenuItem, Rating, Select } from "@mui/material";
 import { API_URL } from "../../Constants";
 import { useLessonShow } from "./useLessonShow";
 import Spinner from "../../ui/Spinner";
@@ -368,7 +368,13 @@ const LessonForm = ({ lessonToEdit = null }) => {
                                         {suggested?.exact?.length > 0 ? (
                                             suggested.exact.map((suggestedTeacher) => (
                                                 <MenuItem key={suggestedTeacher.id} value={suggestedTeacher.id}>
-                                                    {suggestedTeacher.name} | {suggestedTeacher.email} | {suggestedTeacher.phone}
+                                                    {suggestedTeacher.name} | <Rating
+                                                        readOnly
+                                                        style={{ direction: "ltr" }}
+                                                        precision={0.5}
+                                                        name="simple-rating"
+                                                        defaultValue={suggestedTeacher.rate}
+                                                    /> | {suggestedTeacher.phone}
                                                 </MenuItem>
                                             ))
                                         ) : (
@@ -403,7 +409,13 @@ const LessonForm = ({ lessonToEdit = null }) => {
                                         {suggested?.maybe?.length > 0 ? (
                                             suggested.maybe.map((suggestedTeacher) => (
                                                 <MenuItem key={suggestedTeacher.id} value={suggestedTeacher.id}>
-                                                    {suggestedTeacher.name} | {suggestedTeacher.email} | {suggestedTeacher.phone}
+                                                    {suggestedTeacher.name} | <Rating
+                                                        readOnly
+                                                        style={{ direction: "ltr" }}
+                                                        precision={0.5}
+                                                        name="simple-rating"
+                                                        defaultValue={suggestedTeacher.rate}
+                                                    /> | {suggestedTeacher.phone}
                                                 </MenuItem>
                                             ))
                                         ) : (
