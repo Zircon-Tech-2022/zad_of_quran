@@ -40,10 +40,10 @@ class UpdateAuthRequest extends FormRequest
     protected function prepareForValidation(): void
     {
         $this->merge([
-            'name' => trim($this->name),
-            'email' => trim($this->email),
-            'password' => trim($this->password),
-            'phone' => $this->unifyPhone($this->phone),
+            'name' => $this->name ? trim($this->name) : null,
+            'email' => $this->email ? trim($this->email) : null,
+            'password' => $this->password ? trim($this->password) : null,
+            'phone' => $this->phone ? $this->unifyPhone($this->phone) : null,
         ]);
     }
 }

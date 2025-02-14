@@ -42,8 +42,8 @@ class RegisterRequest extends FormRequest
     protected function prepareForValidation(): void
     {
         $this->merge([
-            'name' => trim($this->name),
-            'phone' => $this->unifyPhone($this->phone),
+            'name' => $this->name ? trim($this->name) : null,
+            'phone' => $this->phone ? $this->unifyPhone($this->phone) : null,
         ]);
     }
 }

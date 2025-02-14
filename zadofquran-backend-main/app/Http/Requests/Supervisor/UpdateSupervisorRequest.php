@@ -32,9 +32,9 @@ class UpdateSupervisorRequest extends FormRequest
     protected function prepareForValidation(): void
     {
         $this->merge([
-            'name' => trim($this->name),
-            'email' => trim($this->email),
-            'password' => trim($this->password),
+            'name' => $this->name ? trim($this->name) : null,
+            'email' => $this->email ? trim($this->email) : null,
+            'password' => $this->password ? trim($this->password) : null,
         ]);
     }
 }
