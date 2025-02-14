@@ -2,9 +2,10 @@ import React from "react";
 import Table from "../../ui/table/Table";
 import { Cell } from "../../ui/table/Cell";
 import { TableImg } from "../../ui/table/TableImg";
-import { Menu, MenuItem, Rating } from "@mui/material";
+import { Menu, MenuItem, Rating, Typography } from "@mui/material";
 import { BsTrash3Fill } from "react-icons/bs";
 import { BiPencil } from "react-icons/bi";
+import { IoReload } from "react-icons/io5";
 import { FaEye, FaToggleOff, FaToggleOn } from "react-icons/fa";
 import MyModal from "../../ui/MyModal";
 import TeacherForm from "./TeacherForm";
@@ -12,7 +13,7 @@ import ConfirmDelete from "../../ui/ConfirmDelete";
 import { useDeleteTeacher } from "./useDeleteTeacher";
 import Actions from "../../ui/table/Actions";
 import { useSearchParams } from "react-router-dom";
-import { LIMIT } from "../../Constants";
+import { API_URL, LIMIT } from "../../Constants";
 import { PinkCell } from "../../ui/table/PinkCell";
 import { OrangeCell } from "../../ui/table/OrangeCell";
 import TeacherProfile from "./TeacherProfile";
@@ -28,6 +29,11 @@ const TeacherRow = ({ teacher, num }) => {
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
 
+    const [displayResults, setDisplayResults] = React.useState({
+        display: false,
+        data: null,
+    });
+
     const { isEditing, editTeacher } = useEditTeacher();
     const { isDeleting, deleteTeacher } = useDeleteTeacher();
 
@@ -39,6 +45,28 @@ const TeacherRow = ({ teacher, num }) => {
     const handleClose = () => {
         setAnchorEl(null);
     };
+
+    const handleResetPassword = async (teacherId) => {
+        const res = await fetch(`${API_URL}staff/reset-password/${teacherId}`, {
+            headers: {
+                "accept-language": "ar",
+                Accept: "application/json",
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+            method: "PUT",
+        });
+
+        if (!res.ok) {
+            throw new Error(`Failed to fetch courses: ${res.statusText}`);
+        }
+
+        const data = await res.json();
+        setDisplayResults({
+            display: true,
+            data: data.data,
+        });
+    }
 
     const handleChangeRate = (newValue) => {
         editTeacher(
@@ -103,6 +131,14 @@ const TeacherRow = ({ teacher, num }) => {
                             <BiPencil />
                         </MenuItem>
                     </MyModal.Open>
+                    <MyModal.Open opens="reset-password" onClick={() => handleResetPassword(teacher.id)}>
+                        <MenuItem
+                            sx={{ gap: "1.5rem", fontSize: "1.6rem" }}
+                        >
+                            إعادة تعيين كلمة المرور
+                            <IoReload />
+                        </MenuItem>
+                    </MyModal.Open>
                     <MyModal.Open opens="delete" onClick={handleClose}>
                         <MenuItem
                             sx={{ gap: "1.5rem", fontSize: "1.6rem" }}
@@ -125,6 +161,19 @@ const TeacherRow = ({ teacher, num }) => {
                         disabled={isDeleting}
                         onConfirm={() => deleteTeacher(id)}
                     />
+                </MyModal.Window>
+                <MyModal.Window title="إعادة تعيين كلمة المرور" name="reset-password">
+                    {!displayResults.display && <Spinner />}
+                    {displayResults.display && (
+                        <>
+                            <Typography variant="h6" gutterBottom>
+                                البريد الإلكتروني أو اسم المستخدم: {displayResults.data.email}
+                            </Typography>
+                            <Typography variant="h6" gutterBottom>
+                                كلمة المرور: {displayResults.data.password}
+                            </Typography>
+                        </>
+                    )}
                 </MyModal.Window>
             </MyModal>
         </Table.Row>

@@ -266,6 +266,36 @@ class StaffController extends Controller
         return apiSuccessResponse(__('messages.data_retrieved_successfully'), $staff);
     }
 
+    public function resetPassword(Staff $staff)
+    {
+        $password = $this->generateRandomPassword();
+
+        $staff->details()->upsert(
+            [
+                [
+                    'staff_id' => $staff->id,
+                    'email' => $staff->email, // ✅ Ensure email exists in insert data
+                    'password' => Hash::make($password),
+                ]
+            ],
+            ['staff_id'], // ✅ Unique constraint to check for conflicts
+            ['password'] // ✅ Columns to update if a conflict occurs
+        );
+
+        return apiSuccessResponse(
+            __('messages.updated_success'),
+            array_merge(
+                $staff->only([
+                    "id",
+                    "email",
+                ]),
+                [
+                    'password' => $password,
+                ]
+            )
+        );
+    }
+
     /**
      * Update the specified resource in storage.
      */

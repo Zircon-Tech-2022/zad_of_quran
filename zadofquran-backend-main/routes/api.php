@@ -45,6 +45,7 @@ Route::apiResource('admin/supervisors', App\Http\Controllers\SupervisorControlle
 Route::apiResource('admin/staff', App\Http\Controllers\StaffController::class, ['as' => 'admin'])->middleware('auth');
 Route::get('staff', [App\Http\Controllers\StaffController::class, 'staff']);
 Route::post('staff/match', [App\Http\Controllers\StaffController::class, 'match']);
+Route::put('staff/reset-password/{staff}', [App\Http\Controllers\StaffController::class, 'resetPassword']);
 
 Route::apiResource('admin/FAQs', App\Http\Controllers\FAQController::class, ['as' => 'admin'])->middleware('auth');
 Route::get('FAQs', [App\Http\Controllers\FAQController::class, 'FAQs']);
