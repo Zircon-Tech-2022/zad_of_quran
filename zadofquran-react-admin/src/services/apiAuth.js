@@ -1,6 +1,9 @@
 import { API_URL } from "../Constants";
 
 export async function getCurrentUser(token) {
+    if (!token) {
+        return null;
+    }
     try {
         const res = await fetch(`${API_URL}auth`, {
             headers: {
