@@ -373,7 +373,7 @@ const LessonForm = ({ lessonToEdit = null }) => {
                                                         style={{ direction: "ltr" }}
                                                         precision={0.5}
                                                         name="simple-rating"
-                                                        defaultValue={suggestedTeacher.rate}
+                                                        value={suggestedTeacher.rate} // Use value instead of defaultValue
                                                     /> | {suggestedTeacher.phone}
                                                 </MenuItem>
                                             ))
@@ -414,7 +414,7 @@ const LessonForm = ({ lessonToEdit = null }) => {
                                                         style={{ direction: "ltr" }}
                                                         precision={0.5}
                                                         name="simple-rating"
-                                                        defaultValue={suggestedTeacher.rate}
+                                                        value={suggestedTeacher.rate} // Use value instead of defaultValue
                                                     /> | {suggestedTeacher.phone}
                                                 </MenuItem>
                                             ))

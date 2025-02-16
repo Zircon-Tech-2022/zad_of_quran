@@ -56,9 +56,9 @@ function App() {
     const queryClient = new QueryClient({
         defaultOptions: {
             queries: {
-                staleTime: 5 * 60 * 1000,  // Cache results for 5 minutes
-                refetchInterval: 5 * 1000, // Auto-refetch every 5 seconds
-                refetchOnMount: false, // Avoid unnecessary refetches
+                staleTime: 0,  // Cache results for 5 minutes
+                refetchInterval: 2 * 1000, // Auto-refetch every 5 seconds
+                refetchOnMount: true, // Avoid unnecessary refetches
                 refetchOnWindowFocus: true, // Refetch only when the user returns
             },
         },

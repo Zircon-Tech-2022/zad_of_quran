@@ -43,12 +43,12 @@ class Kernel extends HttpKernel
         'api' => [
             // \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
 
-                // Custom middleware
+            // Custom middleware
             \App\Http\Middleware\SetLocale::class,
-                // \App\Http\Middleware\ModifyRequestStyle::class,
+            // \App\Http\Middleware\ModifyRequestStyle::class,
 
-                // Laravel default middleware
-            \Illuminate\Routing\Middleware\ThrottleRequests::class.':api',
+            // Laravel default middleware
+            \Illuminate\Routing\Middleware\ThrottleRequests::class . ':100,1', // 100 requests per minute
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
 
         ],
