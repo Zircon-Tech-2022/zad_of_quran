@@ -8,6 +8,7 @@ use App\Models\Staff;
 use App\Models\StaffDetails;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
@@ -271,17 +272,23 @@ class StaffController extends Controller
     {
         $password = $this->generateRandomPassword();
 
-        $staff->details()->upsert(
-            [
-                [
-                    'staff_id' => $staff->id,
-                    'email' => $staff->email, // ✅ Ensure email exists in insert data
-                    'password' => Hash::make($password),
-                ]
-            ],
-            ['staff_id'], // ✅ Unique constraint to check for conflicts
-            ['password'] // ✅ Columns to update if a conflict occurs
-        );
+        if ($staff->details) {
+            $staff->details->update([
+                'password' => Hash::make($password),
+            ]);
+        } else {
+            if (!$staff->email) {
+                $staff->update([
+                    'email' => $this->generateRandomUsername($staff->name),
+                ]);
+            }
+
+            $staff->details()->create([
+                'staff_id' => $staff->id,
+                'email' => $staff->email,
+                'password' => Hash::make($password),
+            ]);
+        }
 
         return apiSuccessResponse(
             __('messages.updated_success'),
@@ -378,8 +385,25 @@ class StaffController extends Controller
         return apiSuccessResponse(__('messages.deleted_success'));
     }
 
-    protected function generateRandomPassword()
+    private function generateRandomPassword()
     {
         return substr(str_shuffle('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_*&%$#@!'), 0, 10);
+    }
+
+    private function generateRandomUsername($name)
+    {
+        // Convert name to lowercase and replace spaces with underscores
+        $baseUsername = Str::slug($name, '_');
+
+        // Check if username already exists
+        $username = $baseUsername;
+        $counter = 1;
+
+        while (Staff::where('email', $username)->exists()) {
+            $username = $baseUsername . '_' . $counter;
+            $counter++;
+        }
+
+        return $username;
     }
 }
