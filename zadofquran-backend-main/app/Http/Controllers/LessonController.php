@@ -121,6 +121,7 @@ class LessonController extends Controller
                         'email' => $lesson->staff?->email,
                         'phone' => $lesson->staff?->phone,
                         'qualifications' => $lesson->staff?->qualifications,
+                        'rate' => $lesson->staff?->rate,
                         'age' => $lesson->staff?->details?->age,
                         'gender' => $lesson->staff?->details?->gender,
                     ],
