@@ -24,6 +24,10 @@ class UpdateLessonRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'name' => ['nullable', 'string', 'max:255', new NumOfWords(2)],
+            'phone' => ['nullable', 'string', 'max:255', 'phone_number'],
+            'age' => ['nullable', 'numeric'],
+            'gender' => ['nullable', 'in:male,female'],
             'staff_id' => ['nullable', 'exists:staff,id'],
             'course_id' => ['nullable', 'exists:courses,id'],
             'supervisor_id' => ['nullable', 'exists:users,id'],

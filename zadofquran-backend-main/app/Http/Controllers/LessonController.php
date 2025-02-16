@@ -156,6 +156,15 @@ class LessonController extends Controller
                 : 'not_added',
         ]);
 
+        if ($lesson->subscriber) {
+            $lesson->subscriber->update([
+                'name' => $data['name'] ?? $lesson->subscriber->name,
+                'phone' => $data['phone'] ?? $lesson->subscriber->phone,
+                'age' => $data['age'] ?? $lesson->subscriber->age,
+                'gender' => $data['gender'] ?? $lesson->subscriber->gender,
+            ]);
+        }
+
         if (array_key_exists('availability', $data) && count($data['availability'])) {
             $this->storeAvailabilities($this->reformAvailabilities($data['availability']), $lesson, true);
         }
