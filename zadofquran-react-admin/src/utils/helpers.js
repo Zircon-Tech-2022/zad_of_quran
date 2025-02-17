@@ -1,3 +1,5 @@
+import { toast } from "react-hot-toast";
+
 export const calculateTimezone = (local, gmt) => {
   const [localHours, localMinutes] = local.split(":").map(Number);
   const [gmtHours, gmtMinutes] = gmt.split(":").map(Number);
@@ -32,11 +34,12 @@ export const convertToGMT3 = (time, timezone) => {
   const [hours, minutes] = time.split(":").map(Number);
 
   // Extract sign (+/-) and offset in hours and minutes
-  const match = timezone.match(/GMT([+-]\d+):?(\d+)?/);
-  if (!match) throw new Error("Invalid timezone format");
+  const match = timezone.match(/GMT(?:([+-]?\d+):?(\d+)?)?/);
+  if (!match) return toast.error("Invalid timezone format");
 
-  const offsetHours = parseInt(match[1], 10);
-  const offsetMinutes = parseInt(match[2] || "0", 10);
+  // Default to GMT+0 if no offset is provided
+  const offsetHours = match[1] ? parseInt(match[1], 10) : 0;
+  const offsetMinutes = match[2] ? parseInt(match[2], 10) : 0;
 
   // Convert input time to total minutes in UTC
   let totalMinutesUTC = (hours - offsetHours) * 60 + (minutes - offsetMinutes);
@@ -44,7 +47,7 @@ export const convertToGMT3 = (time, timezone) => {
   // Convert to GMT+3
   totalMinutesUTC += 3 * 60;
 
-  // Adjust for 12-hour format
+  // Ensure hours are within the 24-hour range
   let finalHours = Math.floor((totalMinutesUTC / 60) % 24);
   const finalMinutes = totalMinutesUTC % 60;
   const period = finalHours >= 12 ? "PM" : "AM";
