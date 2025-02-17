@@ -57,7 +57,6 @@ function App() {
         defaultOptions: {
             queries: {
                 staleTime: 0,  // Cache results for 5 minutes
-                refetchInterval: 2 * 1000, // Auto-refetch every 5 seconds
                 refetchOnMount: true, // Avoid unnecessary refetches
                 refetchOnWindowFocus: true, // Refetch only when the user returns
             },
