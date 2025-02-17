@@ -333,11 +333,11 @@ class StaffController extends Controller
             'gender' => $data['gender'] ?? $staffDetails->gender,
         ]);
 
-        if (array_key_exists('availability', $data) && count($data['availability'])) {
+        if (array_key_exists('availability', $data) && $data['availability'] && count($data['availability'])) {
             $this->storeAvailabilities($this->reformAvailabilities($data['availability']), $staff, true);
         }
 
-        if (isset($data['courses']) && count($data['courses'])) {
+        if (isset($data['courses']) && $data['courses'] && count($data['courses'])) {
             $staff->courses()->detach();
             $courses = $data['courses'];
             $staff->courses()->sync($courses);

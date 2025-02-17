@@ -44,7 +44,7 @@ class AuthController extends Controller
             'gender' => $data['gender'],
         ]);
 
-        if (array_key_exists('availability', $data) && count($data['availability'])) {
+        if (array_key_exists('availability', $data) && $data['availability'] && count($data['availability'])) {
             $this->storeAvailabilities($this->reformAvailabilities($data['availability']), $staff);
         }
 
@@ -174,7 +174,7 @@ class AuthController extends Controller
             'age' => $data['age'] ?? $staffDetails->age,
         ]);
 
-        if (array_key_exists('availability', $data) && count($data['availability'])) {
+        if (array_key_exists('availability', $data) && $data['availability'] && count($data['availability'])) {
             $this->storeAvailabilities($this->reformAvailabilities($data['availability']), $staff, true);
         }
 

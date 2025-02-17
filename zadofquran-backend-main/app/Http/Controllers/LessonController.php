@@ -66,7 +66,7 @@ class LessonController extends Controller
             'status' => isset($data['staff_id']) && !empty($data['staff_id']) ? 'waiting' : 'not_added',
         ]);
 
-        if (array_key_exists('availability', $data) && count($data['availability'])) {
+        if (array_key_exists('availability', $data) && $data['availability'] && count($data['availability'])) {
             $this->storeAvailabilities($this->reformAvailabilities($data['availability']), $lesson);
         }
 
@@ -166,7 +166,7 @@ class LessonController extends Controller
             ]);
         }
 
-        if (array_key_exists('availability', $data) && count($data['availability'])) {
+        if (array_key_exists('availability', $data) && $data['availability'] && count($data['availability'])) {
             $this->storeAvailabilities($this->reformAvailabilities($data['availability']), $lesson, true);
         }
 
