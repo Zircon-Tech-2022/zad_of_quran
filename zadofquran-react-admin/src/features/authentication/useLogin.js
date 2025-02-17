@@ -13,7 +13,7 @@ export function useLogin(setError) {
             localStorage.setItem("token", user.data.token);
             localStorage.setItem("permissions", JSON.stringify(user.data.user.permissions));
             queryClient.setQueryData(["user"], user.user);
-            navigate("/users", { replace: true });
+            window.location.href = "/users";
         },
         onError: (err) => {
             toast.error(err.message);
