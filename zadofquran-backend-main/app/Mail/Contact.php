@@ -18,9 +18,7 @@ class Contact extends Mailable
     /**
      * Create a new message instance.
      */
-    public function __construct(private array $data)
-    {
-    }
+    public function __construct(private array $data) {}
 
     /**
      * Get the message envelope.
@@ -29,7 +27,6 @@ class Contact extends Mailable
     {
         return new Envelope(
             subject: $this->data['subject'],
-            from: new Address($this->data['email'], $this->data['name']),
             to: User::query()
                 ->whereHas('roles.permissions', fn($q) => $q->where('name', 'mails.system.contact.recieve'))
                 ->orWhereHas('permissions', fn($q) => $q->where('name', 'mails.system.contact.recieve'))
@@ -43,9 +40,16 @@ class Contact extends Mailable
      */
     public function content(): Content
     {
+        if (isset($this->data['name'])) {
+            $this->data['content'] .= "<br><br>" . 'Name: ' . $this->data['name'];
+        }
+        if (isset($this->data['email'])) {
+            $this->data['content'] .= "<br><br>" . 'Email: ' . $this->data['email'];
+        }
         if (isset($this->data['phone'])) {
             $this->data['content'] .= "<br><br>" . 'Phone Number: ' . $this->data['phone'];
         }
+
         return new Content(
             htmlString: $this->data['content'],
         );
