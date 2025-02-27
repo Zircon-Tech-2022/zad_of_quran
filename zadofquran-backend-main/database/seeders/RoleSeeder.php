@@ -129,8 +129,11 @@ class RoleSeeder extends Seeder
             // staff permissions
             ...['staff.create', 'staff.list', 'staff.view', 'staff.update', 'staff.softDelete', 'staff.trash.list', 'staff.delete'],
 
+            // supervisors permissions
+            ...['supervisors.list', 'supervisors.view', 'supervisors.update', 'supervisors.softDelete', 'supervisors.trash.list', 'supervisors.delete'],
+
             // Course permissions
-            ...['courses.list', 'courses.view'],
+            ...['courses.create', 'courses.list', 'courses.update', 'courses.softDelete', 'courses.view'],
 
             // Lesson permadmin/auth/loginissions
             ...['lesson.create', 'lesson.list', 'lesson.update', 'lesson.softDelete', 'lesson.view'],
