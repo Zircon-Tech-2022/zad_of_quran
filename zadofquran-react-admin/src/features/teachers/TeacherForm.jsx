@@ -259,9 +259,7 @@ const TeacherForm = ({ teacherToEdit = null }) => {
                             isEditSession={isEditSession}
                             editValue={teacherData.current?.qualifications}
                             reg={{
-                                ...register("qualifications", {
-                                    required: "يجب ادخال هذا الحقل",
-                                }),
+                                ...register("qualifications"),
                             }}
                         />
                         <span style={{ color: "#d32f2f" }}>
