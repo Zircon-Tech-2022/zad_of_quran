@@ -29,7 +29,8 @@ const LessonForm = ({ lessonToEdit = null }) => {
 
     const [suggested, setSuggested] = React.useState({
         exact: [],
-        maybe: []
+        maybe: [],
+        random: []
     });
 
     const subscriberData = React.useRef(lessonToEdit);
@@ -127,7 +128,7 @@ const LessonForm = ({ lessonToEdit = null }) => {
             setSelectedCourse(lessonData.current.course.id);
             setSelectedSupervisor(lessonData.current.supervisor.id);
             setSuggested({
-                exact: lessonData.current.staff?.id ? [lessonData.current.staff] : [],
+                exact: lessonData.current.staff?.iصd ? [lessonData.current.staff] : [],
             });
             subscriberData.current = lessonData.current.subscriber;
         }
@@ -189,7 +190,8 @@ const LessonForm = ({ lessonToEdit = null }) => {
         setIsLoadingSomething(false);
         setSuggested({
             exact: response.data.exact,
-            maybe: response.data.maybe
+            maybe: response.data.maybe,
+            random: response.data.random
         });
     }
 
@@ -374,7 +376,7 @@ const LessonForm = ({ lessonToEdit = null }) => {
                                                         precision={0.5}
                                                         name="simple-rating"
                                                         value={suggestedTeacher.rate} // Use value instead of defaultValue
-                                                    /> | {suggestedTeacher.phone}
+                                                    /> | {suggestedTeacher.phone} | السن: {suggestedTeacher.details.age}
                                                 </MenuItem>
                                             ))
                                         ) : (
@@ -415,7 +417,48 @@ const LessonForm = ({ lessonToEdit = null }) => {
                                                         precision={0.5}
                                                         name="simple-rating"
                                                         value={suggestedTeacher.rate} // Use value instead of defaultValue
-                                                    /> | {suggestedTeacher.phone}
+                                                    /> | {suggestedTeacher.phone} | السن: {suggestedTeacher.details.age}
+                                                </MenuItem>
+                                            ))
+                                        ) : (
+                                            <MenuItem value="">لا يوجد نتائج مقترحة</MenuItem>
+                                        )}
+                                    </Select>
+                                </>
+                            )}
+                        />
+                    </FormControl>
+                    <FormControl>
+                        <InputLabel id="staff-random-select-label" style={{
+                            fontSize: "1.6rem",
+                        }}>
+                            ترشيح معلم عشوائي
+                        </InputLabel>
+                        <Controller
+                            name="staff_id"
+                            control={control}
+                            rules={{ required: "" }}
+                            render={({ field: { value, onChange }, fieldState: { error } }) => (
+                                <>
+                                    <Select
+                                        labelId="staff-random-select-label"
+                                        value={value || lessonData.current?.staff_id || ""} // Ensure value is not undefined
+                                        onChange={(e) => onChange(e.target.value)} // Update React Hook Form state
+                                        error={!!error}
+                                        label="ترشيح معلم عشوائي"
+                                        id="outlined-required"
+                                    >
+                                        <MenuItem value="0">غير محدد</MenuItem>
+                                        {suggested?.random?.length > 0 ? (
+                                            suggested.random.map((suggestedTeacher) => (
+                                                <MenuItem key={suggestedTeacher.id} value={suggestedTeacher.id}>
+                                                    {suggestedTeacher.name} | <Rating
+                                                        readOnly
+                                                        style={{ direction: "ltr" }}
+                                                        precision={0.5}
+                                                        name="simple-rating"
+                                                        value={suggestedTeacher.rate} // Use value instead of defaultValue
+                                                    /> | {suggestedTeacher.phone} | السن: {suggestedTeacher.details.age}
                                                 </MenuItem>
                                             ))
                                         ) : (

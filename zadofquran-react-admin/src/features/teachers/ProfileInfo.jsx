@@ -1,6 +1,6 @@
 import React from "react";
 import DOMPurify from 'dompurify';
-import { Avatar, Card, CardContent, Grid, Typography } from "@mui/material";
+import { Avatar, Card, CardContent, Grid, Typography, Rating } from "@mui/material";
 
 const ProfileInfo = ({ user }) => {
     const gender = !user.gender && "غير متوفر" || user.gender && user.gender == "male" && "ذكر" || "أنثى"
@@ -23,7 +23,15 @@ const ProfileInfo = ({ user }) => {
                         <Typography variant="body2">{"رقم الهاتف"}: {user.phone}</Typography>
                         <Typography variant="body2">{"السن"}: {user.age ?? "غير متوفر"}</Typography>
                         <Typography variant="body2">{"النوع"}: {gender}</Typography>
-                        <Typography style={{marginTop: "5px"}} variant="h6">
+                        <Typography variant="body2">{"التقييم"}: <Rating
+                            style={{ direction: "ltr" }}
+                            readOnly
+                            precision={0.5}
+                            name="simple-rating"
+                            defaultValue={user.rate}
+                        />
+                        </Typography>
+                        <Typography style={{ marginTop: "5px" }} variant="h6">
                             المؤهلات
                         </Typography>
                         <div dangerouslySetInnerHTML={{ __html: sanitizedHTML }} />
