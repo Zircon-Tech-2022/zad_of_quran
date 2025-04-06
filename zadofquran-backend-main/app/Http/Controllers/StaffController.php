@@ -9,7 +9,6 @@ use App\Models\StaffDetails;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 
@@ -137,17 +136,27 @@ class StaffController extends Controller
 
     public function match(Request $request)
     {
-        $staff = Staff::with('details', 'availabilities', 'courses');
-        if ($request->has('age') && $request->age) {
-            $staff->whereHas('details', function ($query) use ($request) {
-                $query->where('age', '>=', $request->age);
-            });
-        }
+        $staff = Staff::with('details', 'availabilities', 'courses')
+            ->whereNotNull('name')
+            ->where('name', '!=', '')
+            ->whereNotNull('phone');
 
         if ($request->has('gender') && $request->gender) {
             $staff->whereHas('details', function ($query) use ($request) {
                 $query->where('gender', $request->gender);
             });
+        }
+
+        if ($request->has('age') && $request->age) {
+            $maxAgeOfGender = StaffDetails::when($request->has('gender') && $request->gender, function ($query) use ($request) {
+                return $query->where('gender', $request->gender);
+            })->max('age');
+
+            if ($maxAgeOfGender > $request->age) {
+                $staff->whereHas('details', function ($query) use ($request) {
+                    $query->where('age', '>=', $request->age);
+                });
+            }
         }
 
         // the new value
@@ -230,6 +239,7 @@ class StaffController extends Controller
         $results = [
             'exact' => [],
             'maybe' => [],
+            'random' => [],
         ];
 
         $exactStaffIds = $exactStaff->pluck('id')->toArray();
@@ -249,6 +259,46 @@ class StaffController extends Controller
             $item = $staffMember->toArray();
             $item['availabilities'] = $availabilities;
             $results['maybe'][] = $item;
+        }
+
+        if (!count($results['exact']) && !count($results['maybe'])) {
+            $randomStaff = Staff::with('details', 'availabilities', 'courses')
+                ->whereNotNull('name')
+                ->where('name', '!=', '')
+                ->whereNotNull('phone');
+
+            if ($request->has('gender') && $request->gender) {
+                $randomStaff = $randomStaff->whereHas('details', function ($query) use ($request) {
+                    $query->where('gender', $request->gender);
+                });
+            }
+
+            if ($request->has('course') && $request->course) {
+                $randomStaff = $randomStaff->whereHas('courses', function ($query) use ($request) {
+                    $query->where('course_id', $request->course);
+                });
+                // the stored value
+            } else if ($request->has('course_id') && $request->course_id) {
+                $randomStaff = $randomStaff->whereHas('courses', function ($query) use ($request) {
+                    $query->where('course_id', $request->course_id);
+                });
+            }
+
+            $randomStaff = $randomStaff->orderBy(
+                StaffDetails::select('age')
+                    ->whereColumn('staff_id', 'staff.id')
+                    ->orderBy('age', 'asc')
+            )
+                ->orderBy('rate', 'desc')
+                ->take(35)
+                ->get();
+
+            foreach ($randomStaff as $staffMember) {
+                $availabilities = $this->getAvailabilities($staffMember->availabilities);
+                $item = $staffMember->toArray();
+                $item['availabilities'] = $availabilities;
+                $results['random'][] = $item;
+            }
         }
 
         return apiSuccessResponse(__('messages.data_retrieved_successfully'), $results);
@@ -333,7 +383,8 @@ class StaffController extends Controller
             'gender' => $data['gender'] ?? $staffDetails->gender,
         ]);
 
-        if (array_key_exists('availability', $data) && $data['availability'] && count($data['availability'])) {
+        if (array_key_exists('availability', $data)) {
+            $data['availability'] = $data['availability'] ?? [];
             $this->storeAvailabilities($this->reformAvailabilities($data['availability']), $staff, true);
         }
 

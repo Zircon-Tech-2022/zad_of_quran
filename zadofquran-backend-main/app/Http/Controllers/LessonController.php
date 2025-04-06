@@ -28,7 +28,7 @@ class LessonController extends Controller
     {
         $lessons = Lesson::when(request('q'), fn($query, $q) => $query->search($q))
             ->with('staff:id,name,email,phone', 'subscriber:id,name,email,phone', 'course:id,name', 'supervisor:id,name,email')
-            ->orderBy(request('orderBy', 'id'), request('orderDir', 'asc'))
+            ->orderBy(request('orderBy', 'created_at'), request('orderDir', 'desc'))
             ->paginate(request('limit', 25));
 
         return apiSuccessResponse(__('messages.data_retrieved_successfully'), $lessons);
