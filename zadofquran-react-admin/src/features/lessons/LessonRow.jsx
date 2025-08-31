@@ -55,12 +55,12 @@ const LessonRow = ({ lesson, num }) => {
 
             <div>{tableNum}</div>
             <Cell title={id}>{id}</Cell>
-            <Cell title={subscriber.name}>
+            <Cell title={subscriber?.name}>
                 <Link
-                    to={`/subscribers?q=${subscriber.email}`}
+                    to={`/subscribers?q=${subscriber?.email}`}
                     className={styles.link}
                 >
-                    {subscriber.name} <br /> {subscriber.email} <br /> {subscriber.phone}
+                    {subscriber?.name} <br /> {subscriber?.email} <br /> {subscriber?.phone}
                 </Link>
             </Cell>
             <Cell title={staff?.name || "لا يوجد معلم"}>
@@ -75,13 +75,17 @@ const LessonRow = ({ lesson, num }) => {
                     "لا يوجد معلم"
                 )}
             </Cell>
-            <Cell title={supervisor.name}>
-                <Link
-                    to={`/supervisors?q=${supervisor.email}`}
-                    className={styles.link}
-                >
-                    {supervisor.name} <br /> {supervisor.email}
-                </Link>
+            <Cell title={supervisor?.name || "لا يوجد مشرف"}>
+                {supervisor ? (
+                    <Link
+                        to={`/supervisors?q=${supervisor.email}`}
+                        className={styles.link}
+                    >
+                        {supervisor.name} <br /> {supervisor.email}
+                    </Link>
+                ) : (
+                    "لا يوجد مشرف"
+                )}
             </Cell>
             <Cell title={course.name}>
                 <BlueCell>
