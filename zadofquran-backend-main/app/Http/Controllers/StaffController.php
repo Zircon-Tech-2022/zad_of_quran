@@ -322,17 +322,18 @@ class StaffController extends Controller
     {
         $password = $this->generateRandomPassword();
 
+        if (!$staff->email) {
+            $staff->update([
+                'email' => $this->generateRandomUsername($staff->name),
+            ]);
+        }
+
         if ($staff->details) {
             $staff->details->update([
+                'email' => $staff->email,
                 'password' => Hash::make($password),
             ]);
         } else {
-            if (!$staff->email) {
-                $staff->update([
-                    'email' => $this->generateRandomUsername($staff->name),
-                ]);
-            }
-
             $staff->details()->create([
                 'staff_id' => $staff->id,
                 'email' => $staff->email,
