@@ -3,7 +3,7 @@ import { BlueCell } from "./ui/table/BlueCell";
 import { OrangeCell } from "./ui/table/OrangeCell";
 import { PinkCell } from "./ui/table/PinkCell";
 
-export const availableStatus = {
+export const lessonStatus = {
   'not_added': {
     'value': 'not_added',
     'text': 'لم تتم الإضافة بعد',

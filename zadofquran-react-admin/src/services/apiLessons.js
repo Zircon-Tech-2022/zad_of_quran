@@ -1,5 +1,5 @@
 import { API_URL } from "../Constants";
-import { availableStatus } from "../statusConstants";
+import { lessonStatus } from "../statusConstants";
 
 export async function getLessons({ search, page }, token) {
     const res = await fetch(
@@ -54,7 +54,7 @@ export async function toggleLessonStatus(id, token, currentStatus) {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ status: currentStatus === availableStatus.waiting.value ? availableStatus.confirmed.value : availableStatus.waiting.value }),
+        body: JSON.stringify({ status: currentStatus === lessonStatus.waiting.value ? lessonStatus.confirmed.value : lessonStatus.waiting.value }),
     });
 
     if (!res.ok) throw Error("حدث خطأ اثناء تغيير الحالة ");

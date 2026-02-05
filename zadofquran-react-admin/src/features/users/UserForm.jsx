@@ -84,6 +84,7 @@ const UserForm = (userToEdit = {}) => {
                 }}
                 error={errors?.phone}
                 disabled={isWorking}
+                style={{ direction: "ltr"}}
             />
             <MyInput
                 label="البريد الالكتروني"

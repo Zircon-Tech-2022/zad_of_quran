@@ -16,7 +16,7 @@ const DivStyle = styled.div`
 `;
 
 const SupervisorProfile = ({ supervisorToView }) => {
-    let defaultTimezone = "GMT+2";
+    let defaultTimezone = "Africa/Cairo";
     const { isLoading, user, updateTimezone, isUpdateTimezoneLoading } = useSupervisorShow(supervisorToView?.id, defaultTimezone);
     const { close } = useContext(ModalContext);
 

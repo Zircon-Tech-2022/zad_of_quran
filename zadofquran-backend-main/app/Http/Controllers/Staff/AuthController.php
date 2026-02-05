@@ -16,7 +16,6 @@ class AuthController extends Controller
 {
     use \App\Traits\StoreImage;
     use \App\Traits\AvailabilityHandler;
-    use \App\Traits\TimeParser;
 
     public function __construct()
     {
@@ -45,7 +44,7 @@ class AuthController extends Controller
         ]);
 
         if (array_key_exists('availability', $data) && $data['availability'] && count($data['availability'])) {
-            $this->storeAvailabilities($this->reformAvailabilities($data['availability']), $staff);
+            $this->storeAvailabilities($data['availability'], $staff, true);
         }
 
         $courses = $data['courses'];
@@ -53,7 +52,7 @@ class AuthController extends Controller
 
         $token = $staff->details->createToken('auth_token')->plainTextToken;
 
-        $availabilities = $this->getAvailabilities($staff->availabilities);
+        $availabilities = $this->getAvailabilitiesInTimezones($staff->availabilities);
 
         return apiSuccessResponse(__('messages.register_success'), [
             'token' => $token,
@@ -96,7 +95,7 @@ class AuthController extends Controller
 
         $token = $staffDetails->createToken('auth_token')->plainTextToken;
 
-        $availabilities = $this->getAvailabilities($staffDetails->staff->availabilities);
+        $availabilities = $this->getAvailabilitiesInTimezones($staffDetails->staff->availabilities);
 
         return apiSuccessResponse(__('messages.login_success'), [
             'token' => $token,
@@ -116,18 +115,26 @@ class AuthController extends Controller
     {
         $staffDetails = $request->user(); // token is valid
         $staffDetails = StaffDetails::where('email', $staffDetails['email']) // is staff
-            ->with('staff', 'staff.availabilities', 'staff.courses', 'staff.lessons', 'staff.lessons.subscriber', 'staff.lessons.course', 'staff.lessons.availabilities')->first();
+            ->with(['staff', 'staff.availabilities', 'staff.courses',
+            'staff.lessons' => function ($query) {
+                    $query->whereHas('availabilities', function ($q) {
+                        $q->where('start_time', '>', now());
+                    });
+                }, 
+            'staff.lessons.subscriber', 'staff.lessons.course', 'staff.lessons.availabilities'])->first();
 
         abort_if(!$staffDetails, 401);
-
+        $staff = $staffDetails->staff;
         $timezone = request('timezone_offset');
-        $availabilities = $this->getAvailabilities($staffDetails->staff->availabilities, $timezone);
 
-        $lessons = $staffDetails->staff->lessons;
+        $netAvailabilities = $this->getNetAvailabilities($staff);
+        $availabilities = $this->getAvailabilitiesInTimezones($netAvailabilities, $timezone);
+        
+        $lessons = $staff->lessons;
         $lessonsArray = [];
         $lessonsAvailabilitiesArray = [];
         foreach ($lessons as $lesson) {
-            $lessonAvailabilities = $this->getAvailabilities($lesson->availabilities, $timezone);
+            $lessonAvailabilities = $this->getAvailabilitiesInTimezones($lesson->availabilities, $timezone);
             foreach ($lessonAvailabilities as $lessonAvailability) {
                 $lessonsAvailabilitiesArray[] = $lessonAvailability;
             }
@@ -136,18 +143,13 @@ class AuthController extends Controller
             $lessonsArray[] = $item;
         }
 
-        $netAvailabilities = $this->getTimesArrayInZones(
-            $this->getNetAvailabilities($availabilities, $lessonsAvailabilitiesArray),
-            $timezone
-        );
-
         return apiSuccessResponse(__('messages.user_found'), [
             'user' => array_merge(
                 $staffDetails->staff->toArray(),
                 [
                     'age' => $staffDetails->age,
                     'gender' => $staffDetails->gender,
-                    'availabilities' => $netAvailabilities,
+                    'availabilities' => $availabilities,
                     'courses' => $staffDetails->staff->courses->toArray(),
                     'lessons' => $lessonsArray,
                 ]
@@ -175,10 +177,10 @@ class AuthController extends Controller
         ]);
 
         if (array_key_exists('availability', $data) && $data['availability'] && count($data['availability'])) {
-            $this->storeAvailabilities($this->reformAvailabilities($data['availability']), $staff, true);
+            $this->storeAvailabilities($data['availability'], $staff, true);
         }
 
-        $availabilities = $this->getAvailabilities($staff->availabilities);
+        $availabilities = $this->getAvailabilitiesInTimezones($staff->availabilities);
 
         return apiSuccessResponse(__('messages.updated_success'), [
             'user' => array_merge(

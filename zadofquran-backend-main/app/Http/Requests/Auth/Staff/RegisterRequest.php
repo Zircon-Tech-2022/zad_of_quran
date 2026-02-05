@@ -32,10 +32,10 @@ class RegisterRequest extends FormRequest
             'gender' => ['required', Rule::in(['male', 'female'])],
             'courses' => 'required|array|min:1|exists:courses,id',
             'availability' => 'required|array|min:1',
-            'availability.*.day' => ['required', Rule::in(['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'])],
+            'availability.*.day' => 'required|integer|between:0,6',
             'availability.*.start_time' => 'required|date_format:H:i',
-            'availability.*.end_time' => 'required|date_format:H:i',
-            'availability.*.timezone' => 'required|string',
+            'availability.*.end_time' => 'required|date_format:H:i|after:availability.*.start_time',
+            'availability.*.timezone' => 'required|timezone',
         ];
     }
 

@@ -81,6 +81,7 @@ const PlanForm = ({ id }) => {
                 }}
                 error={errors?.phone}
                 disabled={isLoading}
+                style={{ direction: "ltr"}}
             />
             <MyInput
                 label={t("individuals")}

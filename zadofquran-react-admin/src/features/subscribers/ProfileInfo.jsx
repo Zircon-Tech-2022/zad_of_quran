@@ -25,8 +25,8 @@ const ProfileInfo = ({ subscriber }) => {
                             <Typography variant="h4">بيانات المشترك</Typography>
                         </Link>
                         <Typography variant="h5">{"الاسم"}: {subscriber.name}</Typography>
-                        <Typography variant="body1">{"البريد الإلكتروني"}: {subscriber.email}</Typography>
-                        <Typography variant="body2">{"رقم الهاتف"}: {subscriber.phone}</Typography>
+                        <Typography variant="body1">{"البريد الإلكتروني"}: {subscriber.email || "غير متوفر"}</Typography>
+                        <Typography variant="body2">{"رقم الهاتف"}: <p style={{ direction: 'ltr', display: 'inline' }}>{subscriber.phone}</p></Typography>
                         <Typography variant="body2">{"السن"}: {age}</Typography>
                         <Typography variant="body2">{"النوع"}: {gender}</Typography>
                         <Typography variant="body2">{"عدد الأفراد"}: {subscriber.persons_count}</Typography>
@@ -38,7 +38,7 @@ const ProfileInfo = ({ subscriber }) => {
                                 <Typography variant="h5">بيانات حساب المستخدم</Typography>
                                 <Typography variant="h6">{"الاسم"}: {subscriber.user.name}</Typography>
                                 <Typography variant="body1">{"البريد الإلكتروني"}: {subscriber.user.email}</Typography>
-                                <Typography variant="body2">{"رقم الهاتف"}: {subscriber.user.phone}</Typography>
+                                <Typography variant="body2">{"رقم الهاتف"}: <p style={{ direction: 'ltr', display: 'inline' }}>{subscriber.user.phone}</p></Typography>
                             </>
                         )}
                         {subscriber.plan && (

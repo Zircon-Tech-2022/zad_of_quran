@@ -17,7 +17,7 @@ import { useToggleLessonStatus } from "./useToggleLessonStatus";
 import { BiPencil } from "react-icons/bi";
 import LessonForm from "./LessonForm";
 import Spinner from "../../ui/Spinner";
-import { availableStatus } from "../../statusConstants";
+import { lessonStatus } from "../../statusConstants";
 
 
 const LessonRow = ({ lesson, num }) => {
@@ -40,7 +40,7 @@ const LessonRow = ({ lesson, num }) => {
     };
 
     const toggleLessonStatus = (currentStatus) => {
-        if (currentStatus === availableStatus.not_added.value) return;
+        if (currentStatus === lessonStatus.not_added.value) return;
         toggleLesson({ id, currentStatus })
     }
 
@@ -60,7 +60,7 @@ const LessonRow = ({ lesson, num }) => {
                     to={`/subscribers?q=${subscriber?.email}`}
                     className={styles.link}
                 >
-                    {subscriber?.name} <br /> {subscriber?.email} <br /> {subscriber?.phone}
+                    {subscriber?.name} <br /> {subscriber?.email} <br /> <p style={{ direction: 'ltr', display: 'inline' }}>{subscriber?.phone}</p>
                 </Link>
             </Cell>
             <Cell title={staff?.name || "لا يوجد معلم"}>
@@ -69,7 +69,7 @@ const LessonRow = ({ lesson, num }) => {
                         to={`/teachers?q=${staff.email}`}
                         className={styles.link}
                     >
-                        {staff.name} <br /> {staff.email} <br /> {staff.phone}
+                        {staff.name} <br /> {staff.email} <br /> <p style={{ direction: 'ltr', display: 'inline' }}>{staff.phone}</p>
                     </Link>
                 ) : (
                     "لا يوجد معلم"
@@ -98,9 +98,9 @@ const LessonRow = ({ lesson, num }) => {
                 </BlueCell>
             </Cell>
             <Cell style={{
-                cursor: status === availableStatus.not_added.value ? "default" : "pointer"
-            }} onClick={() => toggleLessonStatus(availableStatus[status].value)} title={availableStatus[status].text}>
-                {availableStatus[status].element}
+                cursor: status === lessonStatus.not_added.value ? "default" : "pointer"
+            }} onClick={() => toggleLessonStatus(lessonStatus[status].value)} title={lessonStatus[status].text}>
+                {lessonStatus[status].element}
             </Cell>
             <Actions open={open} onClick={handleClick} />
             <MyModal>

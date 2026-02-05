@@ -21,7 +21,7 @@ const DivStyle = styled.div`
 `;
 
 const LessonView = ({ lessonToView }) => {
-    let defaultTimezone = "GMT+2";
+    let defaultTimezone = "Africa/Cairo";
     const { isLoading, lesson, updateTimezone, isUpdateTimezoneLoading } = useLessonShow(lessonToView?.id, defaultTimezone);
 
     const { close } = useContext(ModalContext);

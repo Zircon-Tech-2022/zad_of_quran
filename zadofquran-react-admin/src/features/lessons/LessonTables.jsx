@@ -69,10 +69,25 @@ const LessonsTable = ({ lessons }) => {
                                         <ul>
                                             {slots.map((slot, index) => (
                                                 <li key={index} style={{ marginBottom: "10px" }}>
-                                                    <Chip sx={{
-                                                        color: (theme) => theme.palette.common.white,
-                                                        backgroundColor: (theme) => theme.palette.primary.main,
-                                                    }} variant="outlined" label={`حلقة #${slot.lessonId} | ${slot.startTime} - ${slot.endTime} | ${slot.courseName} | الطالب: ${slot.studentName} / ${slot.studentPhone} | المعلم: ${slot.staffName} / ${slot.staffPhone}`} />
+                                                    <Chip 
+                                                        sx={{
+                                                            color: (theme) => theme.palette.common.white,
+                                                            backgroundColor: (theme) => theme.palette.primary.main,
+                                                        }} 
+                                                        variant="outlined" 
+                                                        label={
+                                                            <>
+                                                                حلقة #{slot.lessonId} | {slot.startTime} - {slot.endTime} | {slot.courseName} | الطالب: {slot.studentName} /{' '}
+                                                                <p style={{ direction: 'ltr', display: 'inline' }}>
+                                                                    {slot.studentPhone}
+                                                                </p>{' '}
+                                                                | المعلم: {slot.staffName} /{' '}
+                                                                <p style={{ direction: 'ltr', display: 'inline' }}>
+                                                                    {slot.staffPhone}
+                                                                </p>
+                                                            </>
+                                                        }
+                                                    />
                                                 </li>
                                             ))}
                                         </ul>

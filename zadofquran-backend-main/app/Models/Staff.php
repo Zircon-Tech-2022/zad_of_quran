@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Enums\LessonStatus;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class Staff extends Model
 {
@@ -62,6 +64,13 @@ class Staff extends Model
 
     public function lessons()
     {
-        return $this->hasMany(Lesson::class)->where('status', 'confirmed');
+        return $this->hasMany(Lesson::class)->where('status', LessonStatus::CONFIRMED);
+    }
+
+    protected function email(): Attribute
+    {
+        return Attribute::get(function ($value) {
+            return $value ?: $this->details?->email;
+        });
     }
 }

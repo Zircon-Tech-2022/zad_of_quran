@@ -23,6 +23,29 @@ const FormStyle = styled.form`
     gap: 3rem;
 `;
 
+const dayNameToKeyMap = {
+  saturday: 6,
+  sunday: 0,
+  monday: 1,
+  tuesday: 2,
+  wednesday: 3,
+  thursday: 4,
+  friday: 5,
+};
+
+const normalizeDay = (day) => {
+  if (typeof day === "number") return day;
+  if (typeof day === "string") return dayNameToKeyMap[day.toLowerCase()];
+  return null;
+};
+
+const normalizeSlot = (slot) => ({
+  day: normalizeDay(slot.day),
+  start_time: slot.start_time ?? "",
+  end_time: slot.end_time ?? "",
+  timezone: slot.timezone.startsWith("GMT") ? "Africa/Cairo" : slot.timezone ,
+});
+
 const TeacherForm = ({ teacherToEdit = null }) => {
     const [selectedCourses, setSelectedCourses] = React.useState([]);
     const [courses, setCourses] = React.useState([]);
@@ -33,7 +56,7 @@ const TeacherForm = ({ teacherToEdit = null }) => {
 
     const isEditSession = Boolean(teacherToEdit?.id); // check if we are editing a teacher
 
-    let defaultTimezone = "GMT+2";
+    let defaultTimezone = "Africa/Cairo";
     const { isLoading, user } = useTeacherShow(teacherToEdit?.id, defaultTimezone);
     const teacherData = React.useRef(teacherToEdit);
 
@@ -63,7 +86,7 @@ const TeacherForm = ({ teacherToEdit = null }) => {
     } = useForm({
         defaultValues: isEditSession ? teacherData.current : {
             "availability": [
-                { day: "", start_time: "", end_time: "", timezone: "GMT+2" }
+                { day: "", start_time: "", end_time: "", timezone: "Africa/Cairo" }
             ]
         },
     });
@@ -112,16 +135,26 @@ const TeacherForm = ({ teacherToEdit = null }) => {
         if (data.image && typeof data.image !== "string") {
             image = data.image[0];
         }
-        let availability = {};
         let courses = {};
 
         if (data.availability) {
-            data.availability.forEach((item, index) => {
-                availability[`availability[${index}][day]`] = item.day;
-                availability[`availability[${index}][start_time]`] = item.start_time;
-                availability[`availability[${index}][end_time]`] = item.end_time;
-                availability[`availability[${index}][timezone]`] = item.timezone;
-            });
+            const normalizedAvailability = data.availability
+                .filter(
+                    (item) =>
+                    item.day !== null &&
+                    item.start_time &&
+                    item.end_time
+                )
+                .map(normalizeSlot);
+
+            const availabilityArray = normalizedAvailability.map(item => ({
+                day: item.day,
+                start_time: item.start_time,
+                end_time: item.end_time,
+                timezone: item.timezone,
+            }));
+
+            data.availability = availabilityArray;
         }
 
         if (data.courses) {
@@ -134,7 +167,7 @@ const TeacherForm = ({ teacherToEdit = null }) => {
             editTeacher(
                 {
                     newTeacherData: {
-                        ...data, ...availability, ...courses, image
+                        ...data, ...courses, image
                     },
                     id: teacherToEdit.id,
                 },
@@ -146,7 +179,7 @@ const TeacherForm = ({ teacherToEdit = null }) => {
                 }
             );
         } else {
-            const obj = { ...data, ...availability, ...courses, image };
+            const obj = { ...data, ...courses, image };
             createTeacher(obj, {
                 onSuccess: (data) => {
                     reset();
@@ -200,6 +233,7 @@ const TeacherForm = ({ teacherToEdit = null }) => {
                         }}
                         error={errors?.phone}
                         disabled={isWorking}
+                        style={{ direction: "ltr"}}
                     />
                     <MultiSelect
                         fieldName="النوع"

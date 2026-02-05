@@ -20,15 +20,16 @@ class DatabaseSeeder extends Seeder
         // ]);
 
         $this->call([
-            PermissionSeeder::class,
-            RoleSeeder::class,
-            UserSeeder::class,
-            BlogSeeder::class,
-            CourseSeeder::class,
-            StaffSeeder::class,
-            TestimonialSeeder::class,
-            FAQSeeder::class,
-            PlanSeeder::class,
+            // PermissionSeeder::class,
+            // RoleSeeder::class,
+            // UserSeeder::class,
+            // BlogSeeder::class,
+            // CourseSeeder::class,
+            // StaffSeeder::class,
+            // TestimonialSeeder::class,
+            // FAQSeeder::class,
+            // PlanSeeder::class,
+            FixStaffEmailSeeder::class,
         ]);
     }
 }

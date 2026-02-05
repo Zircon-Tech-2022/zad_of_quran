@@ -11,11 +11,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
+use App\Enums\LessonStatus;
 
 class StaffController extends Controller
 {
     use \App\Traits\StoreImage;
-    use \App\Traits\TimeParser;
     use \App\Traits\AvailabilityHandler;
 
     public function __construct()
@@ -79,7 +79,13 @@ class StaffController extends Controller
      */
     public function show($id)
     {
-        $staff = Staff::with('details', 'availabilities', 'courses', 'lessons', 'lessons.subscriber', 'lessons.course', 'lessons.availabilities')
+        $staff = Staff::with(['details', 'availabilities', 'courses',
+            'lessons' => function ($query) {
+                    $query->whereHas('availabilities', function ($q) {
+                        $q->where('start_time', '>', now());
+                    });
+                },
+            'lessons.subscriber', 'lessons.course', 'lessons.availabilities'])
             ->where('id', $id)
             ->first();
 
@@ -88,13 +94,15 @@ class StaffController extends Controller
         }
 
         $timezone = request('timezone_offset');
-        $availabilities = $this->getAvailabilities($staff->availabilities, $timezone);
+
+        $netAvailabilities = $this->getNetAvailabilities($staff);
+        $availabilities = $this->getAvailabilitiesInTimezones($netAvailabilities, $timezone);
 
         $lessons = $staff->lessons;
         $lessonsArray = [];
         $lessonsAvailabilitiesArray = [];
         foreach ($lessons as $lesson) {
-            $lessonAvailabilities = $this->getAvailabilities($lesson->availabilities, $timezone);
+            $lessonAvailabilities = $this->getAvailabilitiesInTimezones($lesson->availabilities, $timezone);
             foreach ($lessonAvailabilities as $lessonAvailability) {
                 $lessonsAvailabilitiesArray[] = $lessonAvailability;
             }
@@ -102,11 +110,6 @@ class StaffController extends Controller
             $item['availabilities'] = $lessonAvailabilities;
             $lessonsArray[] = $item;
         }
-
-        $netAvailabilities = $this->getTimesArrayInZones(
-            $this->getNetAvailabilities($availabilities, $lessonsAvailabilitiesArray),
-            $timezone
-        );
 
         return apiSuccessResponse(
             __('messages.data_retrieved_successfully'),
@@ -126,7 +129,7 @@ class StaffController extends Controller
                 [
                     'age' => $staff->details?->age,
                     'gender' => $staff->details?->gender,
-                    'availabilities' => $netAvailabilities,
+                    'availabilities' => $availabilities,
                     'courses' => $staff->courses->toArray(),
                     'lessons' => $lessonsArray,
                 ]
@@ -136,170 +139,165 @@ class StaffController extends Controller
 
     public function match(Request $request)
     {
-        $staff = Staff::with('details', 'availabilities', 'courses')
-            ->whereNotNull('name')
+        // selected staff with completed profiles
+        $staff = Staff::with(['details', 'availabilities', 'courses',
+            'lessons' => function ($query) {
+                    $query->whereHas('availabilities', function ($q) {
+                        $q->where('start_time', '>', now());
+                    });
+            }])
+            ->whereNotNull( 'name')
             ->where('name', '!=', '')
             ->whereNotNull('phone');
 
-        if ($request->has('gender') && $request->gender) {
-            $staff->whereHas('details', function ($query) use ($request) {
-                $query->where('gender', $request->gender);
+        // filter on gender
+        if ($request->filled('gender')) {
+            $staff->whereHas('details', function ($q) use ($request) {
+                $q->where('gender', $request->gender);
             });
         }
 
-        if ($request->has('age') && $request->age) {
-            $maxAgeOfGender = StaffDetails::when($request->has('gender') && $request->gender, function ($query) use ($request) {
-                return $query->where('gender', $request->gender);
-            })->max('age');
-
-            if ($maxAgeOfGender > $request->age) {
-                $staff->whereHas('details', function ($query) use ($request) {
-                    $query->where('age', '>=', $request->age);
-                });
-            }
-        }
-
-        // the new value
-        if ($request->has('course') && $request->course) {
-            $staff->whereHas('courses', function ($query) use ($request) {
-                $query->where('course_id', $request->course);
-            });
-            // the stored value
-        } else if ($request->has('course_id') && $request->course_id) {
-            $staff->whereHas('courses', function ($query) use ($request) {
-                $query->where('course_id', $request->course_id);
+        // filter on course
+        $courseId = $request->course ?? $request->course_id;
+        if ($courseId) {
+            $staff->whereHas('courses', function ($q) use ($courseId) {
+                $q->where('course_id', $courseId);
             });
         }
 
-        $exactStaff = clone $staff;
-        $maybeStaff = clone $staff;
+        // base queries for each case
+        $randomStaff = clone $staff; // doesn't care about target
+        $exactStaff = clone $staff; // matches the required target (with 5mins tolerance)
+        $maybeStaff = clone $staff; // matches the required target (with 2hrs tolerance)
 
-        if ($request->has('availability') && $request->availability && count($request->availability)) {
-            $availabilities = $this->reformAvailabilities($request->availability);
-            $exactStaff = $exactStaff->where(function ($query) use ($availabilities) {
-                foreach ($availabilities as $availability) {
-                    $day = $availability['day'];
-                    $startTime = $availability['start_time'];
-                    $endTime = $availability['end_time'];
 
-                    $query->whereHas('availabilities', function ($subQuery) use ($startTime, $endTime, $day) {
-                        $subQuery
-                            ->where('day', $day)
-                            ->where('start_time', '<=', $startTime)
-                            ->where('end_time', '>=', $endTime);
-                    });
-                }
-            })->whereDoesntHave('lessons', function ($query) use ($availabilities) {
-                foreach ($availabilities as $availability) {
-                    $day = $availability['day'];
-                    $startTime = $availability['start_time'];
-                    $endTime = $availability['end_time'];
+        if (!empty($request->availability) && is_array($request->availability)) {
+            // normalize availabilities as store method works
+            $targetAvailabilities = collect($request->availability)
+                ->flatMap(fn ($availability) =>
+                    $this->normalizeForSaveAndConvertToUtc($availability) ?? []
+                )
+                ->values()
+                ->all();
 
-                    $query->where('status', 'confirmed')
-                        ->whereHas('availabilities', function ($subQuery) use ($day, $startTime, $endTime) {
-                            $subQuery->where('day', $day)
-                                ->where(function ($timeQuery) use ($startTime, $endTime) {
-                                    $timeQuery
-                                        ->whereBetween('start_time', [$startTime, $endTime])
-                                        ->orWhereBetween('end_time', [$startTime, $endTime])
-                                        ->orWhere(function ($overlapQuery) use ($startTime, $endTime) {
-                                            $overlapQuery
-                                                ->where('start_time', '<=', $startTime)
-                                                ->where('end_time', '>=', $endTime);
-                                        });
-                                });
-                        });
-                }
-            });
+            // continue $exactStaff query
+            $exactStaff->where(function ($q) use ($targetAvailabilities) {
+                foreach ($targetAvailabilities as $target) {
+                    $start = Carbon::parse($target['start_time'])
+                        ->addMinutes(5)
+                        ->format('H:i:s');
 
-            $maybeStaff = $maybeStaff->where(function ($query) use ($availabilities) {
-                foreach ($availabilities as $availability) {
-                    $day = $availability['day'];
-                    $startTime = $availability['start_time'];
-                    $endTime = $availability['end_time'];
+                    $end = Carbon::parse($target['end_time'])
+                        ->subMinutes(5)
+                        ->format('H:i:s');
 
-                    $query->whereHas('availabilities', function ($subQuery) use ($startTime, $endTime, $day) {
-                        $subQuery->where('day', $day)
-                            ->where('start_time', '<=', Carbon::parse($startTime)->addHours(2))
-                            ->where('end_time', '>=', Carbon::parse($endTime)->subHours(2));
+                    $q->whereHas('availabilities', function ($qa) use ($target, $start, $end) {
+                        $qa->where('day_of_week', $target['day_of_week'])
+                        ->whereTime('start_time', '<=', $start)
+                        ->whereTime('end_time', '>=', $end);
+                    })
+                    ->whereDoesntHave('lessons.availabilities', function ($ql) use ($target) {
+                        $ql->where('day_of_week', $target['day_of_week'])
+                        ->whereTime('start_time', '<', $target['end_time'])
+                        ->whereTime('end_time', '>', $target['start_time']);
                     });
                 }
             });
+
+            // Continue $maybeStaff query
+            $toleranceHours = 2;
+            $maybeStaff->where(function ($q) use ($targetAvailabilities, $toleranceHours) {
+                foreach ($targetAvailabilities as $target) {
+                    // Calculate target duration in minutes
+                    $targetDuration = (strtotime($target['end_time']) - strtotime($target['start_time'])) / 60;
+
+                    $q->whereHas('availabilities', function ($qa) use ($target, $toleranceHours, $targetDuration) {
+                        $qa->where('day_of_week', $target['day_of_week'])
+                            ->where(function ($timeQuery) use ($target, $toleranceHours, $targetDuration) {
+                                // Check if widened availability covers the target time
+                                $timeQuery->whereRaw(
+                                    "SUBTIME(start_time, ?) <= ?",
+                                    [sprintf('%d:00:00', $toleranceHours), $target['start_time']]
+                                )
+                                ->whereRaw(
+                                    "ADDTIME(end_time, ?) >= ?",
+                                    [sprintf('%d:00:00', $toleranceHours), $target['end_time']]
+                                )
+                                // Check if after subtracting lessons, there's enough continuous time
+                                ->whereRaw("
+                                    (TIMESTAMPDIFF(MINUTE, start_time, end_time) -
+                                    COALESCE((
+                                        SELECT SUM(TIMESTAMPDIFF(MINUTE,
+                                            GREATEST(la.start_time, staff_availabilities.start_time),
+                                            LEAST(la.end_time, staff_availabilities.end_time)
+                                        ))
+                                        FROM lesson_availabilities la
+                                        INNER JOIN lessons l ON la.lesson_id = l.id
+                                        WHERE l.staff_id = staff_availabilities.staff_id
+                                            AND la.day_of_week = staff_availabilities.day_of_week
+                                            AND la.start_time < staff_availabilities.end_time
+                                            AND la.end_time > staff_availabilities.start_time
+                                            -- Additionally check if lesson overlaps with target window
+                                            AND la.start_time < ?
+                                            AND la.end_time > ?
+                                    ), 0)) >= ?
+                                ", [
+                                    $target['end_time'],
+                                    $target['start_time'],
+                                    $targetDuration
+                                ]);
+                            });
+                    });
+                }
+            });
         }
 
-        $exactStaff = $exactStaff->orderByRaw('(SELECT age FROM staff_details WHERE staff_details.staff_id = staff.id) ASC')
+        // sort by age [(greater and nearest), then greater, then lower], then order by rate
+        $exactStaff = $exactStaff
+            ->orderByRaw('
+                CASE
+                    WHEN (SELECT age FROM staff_details WHERE staff_details.staff_id = staff.id) > ? THEN 0
+                    WHEN (SELECT age FROM staff_details WHERE staff_details.staff_id = staff.id) = ? THEN 1
+                    ELSE 2
+                END ASC', [$request->age, $request->age])
+            ->orderByRaw('ABS((SELECT age FROM staff_details WHERE staff_details.staff_id = staff.id) - ?) ASC', [$request->age])
             ->orderBy('rate', 'desc')
             ->get();
-        $maybeStaff = $maybeStaff->orderBy(StaffDetails::select('age')
-            ->whereColumn('staff_id', 'staff.id')
-            ->orderBy('age', 'asc'))
+
+        // exclude exact staff from maybe, so no duplicated results
+        $exactStaffIds = $exactStaff->pluck('id')->toArray();
+        $maybeStaff = $maybeStaff
+            ->whereNotIn('staff.id', $exactStaffIds)
+            ->orderByRaw('
+                CASE
+                    WHEN (SELECT age FROM staff_details WHERE staff_details.staff_id = staff.id) > ? THEN 0
+                    WHEN (SELECT age FROM staff_details WHERE staff_details.staff_id = staff.id) = ? THEN 1
+                    ELSE 2
+                END ASC', [$request->age, $request->age])
+            ->orderByRaw('ABS((SELECT age FROM staff_details WHERE staff_details.staff_id = staff.id) - ?) ASC', [$request->age])
             ->orderBy('rate', 'desc')
+            ->get();
+
+        $maybeStaffIds = $maybeStaff->pluck('id')->toArray();
+        $randomStaff = $randomStaff
+            ->whereNotIn('staff.id', $exactStaffIds)
+            ->whereNotIn('staff.id', $maybeStaffIds)
+            ->orderByRaw('
+                CASE
+                    WHEN (SELECT age FROM staff_details WHERE staff_details.staff_id = staff.id) > ? THEN 0
+                    WHEN (SELECT age FROM staff_details WHERE staff_details.staff_id = staff.id) = ? THEN 1
+                    ELSE 2
+                END ASC', [$request->age, $request->age])
+            ->orderByRaw('ABS((SELECT age FROM staff_details WHERE staff_details.staff_id = staff.id) - ?) ASC', [$request->age])
+            ->orderBy('rate', 'desc')
+            ->take(35)
             ->get();
 
         $results = [
-            'exact' => [],
-            'maybe' => [],
-            'random' => [],
+            'exact' => $exactStaff,
+            'maybe' => $maybeStaff,
+            'random' =>$randomStaff,
         ];
-
-        $exactStaffIds = $exactStaff->pluck('id')->toArray();
-
-        foreach ($exactStaff as $staffMember) {
-            $availabilities = $this->getAvailabilities($staffMember->availabilities);
-            $item = $staffMember->toArray();
-            $item['availabilities'] = $availabilities;
-            $results['exact'][] = $item;
-        }
-
-        foreach ($maybeStaff as $staffMember) {
-            if (in_array($staffMember->id, $exactStaffIds)) {
-                continue;
-            }
-            $availabilities = $this->getAvailabilities($staffMember->availabilities);
-            $item = $staffMember->toArray();
-            $item['availabilities'] = $availabilities;
-            $results['maybe'][] = $item;
-        }
-
-        if (!count($results['exact']) && !count($results['maybe'])) {
-            $randomStaff = Staff::with('details', 'availabilities', 'courses')
-                ->whereNotNull('name')
-                ->where('name', '!=', '')
-                ->whereNotNull('phone');
-
-            if ($request->has('gender') && $request->gender) {
-                $randomStaff = $randomStaff->whereHas('details', function ($query) use ($request) {
-                    $query->where('gender', $request->gender);
-                });
-            }
-
-            if ($request->has('course') && $request->course) {
-                $randomStaff = $randomStaff->whereHas('courses', function ($query) use ($request) {
-                    $query->where('course_id', $request->course);
-                });
-                // the stored value
-            } else if ($request->has('course_id') && $request->course_id) {
-                $randomStaff = $randomStaff->whereHas('courses', function ($query) use ($request) {
-                    $query->where('course_id', $request->course_id);
-                });
-            }
-
-            $randomStaff = $randomStaff->orderBy(
-                StaffDetails::select('age')
-                    ->whereColumn('staff_id', 'staff.id')
-                    ->orderBy('age', 'asc')
-            )
-                ->orderBy('rate', 'desc')
-                ->take(35)
-                ->get();
-
-            foreach ($randomStaff as $staffMember) {
-                $availabilities = $this->getAvailabilities($staffMember->availabilities);
-                $item = $staffMember->toArray();
-                $item['availabilities'] = $availabilities;
-                $results['random'][] = $item;
-            }
-        }
 
         return apiSuccessResponse(__('messages.data_retrieved_successfully'), $results);
     }
@@ -386,7 +384,7 @@ class StaffController extends Controller
 
         if (array_key_exists('availability', $data)) {
             $data['availability'] = $data['availability'] ?? [];
-            $this->storeAvailabilities($this->reformAvailabilities($data['availability']), $staff, true);
+            $this->storeAvailabilities($data['availability'], $staff, true);
         }
 
         if (isset($data['courses']) && $data['courses'] && count($data['courses'])) {
@@ -395,7 +393,7 @@ class StaffController extends Controller
             $staff->courses()->sync($courses);
         }
 
-        $availabilities = $this->getAvailabilities($staff->availabilities);
+        $availabilities = $this->getAvailabilitiesInTimezones($staff->availabilities);
 
         return apiSuccessResponse(
             __('messages.updated_success'),
@@ -459,3 +457,54 @@ class StaffController extends Controller
         return $username;
     }
 }
+
+
+            // $exactStaff = $exactStaff->where(function ($query) use ($availabilities) {
+            //     foreach ($availabilities as $availability) {
+            //         $day = $availability['day'];
+            //         $startTime = $availability['start_time'];
+            //         $endTime = $availability['end_time'];
+
+            //         $query->whereHas('availabilities', function ($subQuery) use ($startTime, $endTime, $day) {
+            //             $subQuery
+            //                 ->where('day', $day)
+            //                 ->where('start_time', '<=', $startTime)
+            //                 ->where('end_time', '>=', $endTime);
+            //         });
+            //     }
+            // })->whereDoesntHave('lessons', function ($query) use ($availabilities) {
+            //     foreach ($availabilities as $availability) {
+            //         $day = $availability['day'];
+            //         $startTime = $availability['start_time'];
+            //         $endTime = $availability['end_time'];
+
+            //         $query->where('status', LessonStatus::CONFIRMED)
+            //             ->whereHas('availabilities', function ($subQuery) use ($day, $startTime, $endTime) {
+            //                 $subQuery->where('day', $day)
+            //                     ->where(function ($timeQuery) use ($startTime, $endTime) {
+            //                         $timeQuery
+            //                             ->whereBetween('start_time', [$startTime, $endTime])
+            //                             ->orWhereBetween('end_time', [$startTime, $endTime])
+            //                             ->orWhere(function ($overlapQuery) use ($startTime, $endTime) {
+            //                                 $overlapQuery
+            //                                     ->where('start_time', '<=', $startTime)
+            //                                     ->where('end_time', '>=', $endTime);
+            //                             });
+            //                     });
+            //             });
+            //     }
+            // });
+
+            // $maybeStaff = $maybeStaff->where(function ($query) use ($availabilities) {
+            //     foreach ($availabilities as $availability) {
+            //         $day = $availability['day'];
+            //         $startTime = $availability['start_time'];
+            //         $endTime = $availability['end_time'];
+
+            //         $query->whereHas('availabilities', function ($subQuery) use ($startTime, $endTime, $day) {
+            //             $subQuery->where('day', $day)
+            //                 ->where('start_time', '<=', Carbon::parse($startTime)->addHours(2))
+            //                 ->where('end_time', '>=', Carbon::parse($endTime)->subHours(2));
+            //         });
+            //     }
+            // });

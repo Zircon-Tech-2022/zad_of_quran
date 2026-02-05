@@ -32,13 +32,13 @@ class UpdateStaffRequest extends FormRequest
             'gender' => ['nullable', Rule::in(['male', 'female'])],
             'courses' => 'nullable|array|min:1|exists:courses,id',
             'age' => 'nullable|integer|min:18',
-            'availability' => 'nullable|array|min:1',
             'rate' => 'nullable|numeric|min:0|max:5',
             'display_at_home' => 'nullable|boolean',
-            'availability.*.day' => ['required', Rule::in(['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'])],
+            'availability' => 'nullable|array|min:1',
+            'availability.*.day' => 'required|integer|between:0,6',
             'availability.*.start_time' => 'required|date_format:H:i',
-            'availability.*.end_time' => 'required|date_format:H:i',
-            'availability.*.timezone' => 'required|string',
+            'availability.*.end_time' => 'required|date_format:H:i|after:availability.*.start_time',
+            'availability.*.timezone' => 'required|timezone',
         ];
     }
 

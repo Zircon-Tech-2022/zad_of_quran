@@ -51,6 +51,7 @@ const ContactForm = () => {
                 error={errors?.phone}
                 type="text"
                 label={t("phone")}
+                style={{ direction: "ltr"}}
             />
             <MyInput
                 id="email_id"

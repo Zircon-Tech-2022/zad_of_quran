@@ -6,7 +6,7 @@ import { TextField, Box, Typography, Grid } from "@mui/material";
 import { FaRegTrashAlt } from "react-icons/fa";
 import TimezoneButton from './../TimezoneButton';
 import { useLocation } from "react-router-dom";
-import { convertToGMT3 } from "../../utils/helpers";
+import { convertToSA } from "../../utils/helpers";
 
 const Wrapper = styled.div`
   display: flex;
@@ -19,14 +19,33 @@ const Wrapper = styled.div`
 `;
 
 const daysOfWeek = [
-  { en: "saturday", ar: "السبت" },
-  { en: "sunday", ar: "الأحد" },
-  { en: "monday", ar: "الإثنين" },
-  { en: "tuesday", ar: "الثلاثاء" },
-  { en: "wednesday", ar: "الأربعاء" },
-  { en: "thursday", ar: "الخميس" },
-  { en: "friday", ar: "الجمعة" },
+  { key: 6, en: "saturday", ar: "السبت" },
+  { key: 0, en: "sunday", ar: "الأحد" },
+  { key: 1, en: "monday", ar: "الإثنين" },
+  { key: 2, en: "tuesday", ar: "الثلاثاء" },
+  { key: 3, en: "wednesday", ar: "الأربعاء" },
+  { key: 4, en: "thursday", ar: "الخميس" },
+  { key: 5, en: "friday", ar: "الجمعة" },
 ];
+
+const normalizeTimezone = (timezone) => {
+  if (!timezone) return "Africa/Cairo";
+
+  if (timezone.startsWith("GMT")) {
+    return "Africa/Cairo";
+  }
+  return timezone;
+};
+
+const normalizeDay = (day) => {
+  if (typeof day === 'number') return day;
+
+  if (typeof day === 'string') {
+    return daysOfWeek[daysOfWeek.findIndex(d => d.en === day.toLowerCase())].key;
+  }
+
+  return null;
+};
 
 const AvailabilityInput = ({ control, register, errors }) => {
   const { fields, append, remove, update } = useFieldArray({
@@ -34,13 +53,19 @@ const AvailabilityInput = ({ control, register, errors }) => {
     name: "availability",
   });
 
+  fields.map(field => {
+    field.day = normalizeDay(field.day);
+    field.timezone = normalizeTimezone(field.timezone);
+    return field;
+  });
+
   const location = useLocation();
   const isLesson = location.pathname.includes('lesson');
 
-  const defaultTimezoneRef = useRef("GMT+2");
+  const defaultTimezoneRef = useRef("Africa/Cairo");
 
   const handleAddSlot = (day) => {
-    append({ day: day.en, start_time: "", end_time: "", timezone: defaultTimezoneRef.current });
+    append({ day: day.key, start_time: "", end_time: "", timezone: defaultTimezoneRef.current });
   };
 
   const handleRemoveSlot = (id) => {
@@ -53,8 +78,14 @@ const AvailabilityInput = ({ control, register, errors }) => {
     update(index, { ...fields[index], [field]: value });
   };
 
-  const handleTimezoneChange = async (newValue) => {
+  const handleTimezoneChange = (newValue) => {
     defaultTimezoneRef.current = newValue;
+    fields.forEach((slot, index) => {
+        update(index, {
+          ...slot,
+          timezone: newValue,
+        });
+    });
   }
 
   return (
@@ -71,14 +102,14 @@ const AvailabilityInput = ({ control, register, errors }) => {
       {isLesson && (<TimezoneButton defaultValue={defaultTimezoneRef.current} handleChange={handleTimezoneChange} />)}
       {daysOfWeek.map((day) => (
         <Box
-          key={day.en}
+          key={day.key}
           sx={{ mb: 3, p: 2, border: "1px solid #ddd", borderRadius: "8px" }}
         >
           <Typography variant="h6" style={{ marginBottom: "5px" }}>
             {day.ar}
           </Typography>
           {fields
-            .filter((slot) => slot.day === day.en)
+            .filter((slot) => slot.day === day.key)
             .map((slot, index) => (
               <Grid
                 container
@@ -89,7 +120,7 @@ const AvailabilityInput = ({ control, register, errors }) => {
               >
                 <Grid item xs={5}>
                   <Controller
-                    name={`availability.${day.en}.${index}.start_time`}
+                    name={`availability.${day.key}.${index}.start_time`}
                     control={control}
                     defaultValue={slot.start_time}
                     render={({ field }) => (
@@ -110,14 +141,14 @@ const AvailabilityInput = ({ control, register, errors }) => {
                           }}
                         />
                         <p>يعادل: <span style={{ direction: "ltr", display: "inline-block" }}>
-                          {convertToGMT3(field.value, defaultTimezoneRef.current)}</span></p>
+                          {convertToSA(field.value, defaultTimezoneRef.current)}</span></p>
                       </>
                     )}
                   />
                 </Grid>
                 <Grid item xs={5}>
                   <Controller
-                    name={`availability.${day.en}.${index}.end_time`}
+                    name={`availability.${day.key}.${index}.end_time`}
                     control={control}
                     defaultValue={slot.end_time}
                     render={({ field }) => (
@@ -138,7 +169,7 @@ const AvailabilityInput = ({ control, register, errors }) => {
                           }}
                         />
                         <p>يعادل: <span style={{ direction: "ltr", display: "inline-block" }}>
-                          {convertToGMT3(field.value, defaultTimezoneRef.current)}</span></p>
+                          {convertToSA(field.value, defaultTimezoneRef.current)}</span></p>
                       </>
                     )}
                   />

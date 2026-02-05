@@ -18,14 +18,33 @@ const Wrapper = styled.div`
 `;
 
 const daysOfWeek = [
-  "saturday",
-  "sunday",
-  "monday",
-  "tuesday",
-  "wednesday",
-  "thursday",
-  "friday",
+  { key: 6, name:"saturday" },
+  { key: 0, name:"sunday" },
+  { key: 1, name:"monday" },
+  { key: 2, name:"tuesday" },
+  { key: 3, name:"wednesday" },
+  { key: 4, name:"thursday" },
+  { key: 5, name:"friday" },
 ];
+
+const normalizeTimezone = (timezone) => {
+  if (!timezone) return "Africa/Cairo";
+
+  if (timezone.startsWith("GMT")) {
+    return "Africa/Cairo";
+  }
+  return timezone;
+};
+
+const normalizeDay = (day) => {
+  if (typeof day === 'number') return day;
+
+  if (typeof day === 'string') {
+    return daysOfWeek[daysOfWeek.findIndex(d => d.name === day.toLowerCase())].key;
+  }
+
+  return null;
+};
 
 const AvailabilityInput = ({ control, register, errors }) => {
   const { t } = useTranslation();
@@ -35,8 +54,14 @@ const AvailabilityInput = ({ control, register, errors }) => {
     name: "availability",
   });
 
+  fields.map(field => {
+    field.day = normalizeDay(field.day);
+    field.timezone = normalizeTimezone(field.timezone);
+    return field;
+  });
+
   const handleAddSlot = (day) => {
-    append({ day, start_time: "", end_time: "", timezone: "GMT+2" });
+    append({ day: day.key, start_time: "", end_time: "", timezone: "Africa/Cairo" });
   };
 
   const handleRemoveSlot = (id) => {
@@ -62,14 +87,14 @@ const AvailabilityInput = ({ control, register, errors }) => {
       </Typography>
       {daysOfWeek.map((day) => (
         <Box
-          key={day}
+          key={day.key}
           sx={{ mb: 3, p: 2, border: "1px solid #ddd", borderRadius: "8px" }}
         >
           <Typography variant="h6" style={{ marginBottom: "5px" }}>
-            {t(day)}
+            {t(day.name)}
           </Typography>
           {fields
-            .filter((slot) => slot.day === day)
+            .filter((slot) => slot.day === day.key)
             .map((slot, index) => (
               <Grid
                 container
@@ -80,7 +105,7 @@ const AvailabilityInput = ({ control, register, errors }) => {
               >
                 <Grid item xs={5}>
                   <Controller
-                    name={`availability.${day}.${index}.start_time`}
+                    name={`availability.${day.key}.${index}.start_time`}
                     control={control}
                     defaultValue={slot.start_time}
                     render={({ field }) => (
@@ -116,7 +141,7 @@ const AvailabilityInput = ({ control, register, errors }) => {
                 </Grid>
                 <Grid item xs={5}>
                   <Controller
-                    name={`availability.${day}.${index}.end_time`}
+                    name={`availability.${day.key}.${index}.end_time`}
                     control={control}
                     defaultValue={slot.end_time}
                     render={({ field }) => (

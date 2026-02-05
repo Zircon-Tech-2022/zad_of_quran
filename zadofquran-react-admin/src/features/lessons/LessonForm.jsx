@@ -21,6 +21,29 @@ const FormStyle = styled.form`
     gap: 3rem;
 `;
 
+const dayNameToKeyMap = {
+  saturday: 6,
+  sunday: 0,
+  monday: 1,
+  tuesday: 2,
+  wednesday: 3,
+  thursday: 4,
+  friday: 5,
+};
+
+const normalizeDay = (day) => {
+  if (typeof day === "number") return day;
+  if (typeof day === "string") return dayNameToKeyMap[day.toLowerCase()];
+  return null;
+};
+
+const normalizeSlot = (slot) => ({
+  day: normalizeDay(slot.day),
+  start_time: slot.start_time ?? "",
+  end_time: slot.end_time ?? "",
+  timezone: slot.timezone.startsWith("GMT") ? "Africa/Cairo" : slot.timezone ,
+});
+
 const LessonForm = ({ lessonToEdit = null }) => {
     const [selectedCourse, setSelectedCourse] = React.useState(null);
     const [selectedSupervisor, setSelectedSupervisor] = React.useState(null);
@@ -39,7 +62,7 @@ const LessonForm = ({ lessonToEdit = null }) => {
 
     const isEditSession = Boolean(lessonToEdit?.id); // check if we are editing a lesson
 
-    let defaultTimezone = "GMT+2";
+    let defaultTimezone = "Africa/Cairo";
     const { isLoading, lesson } = useLessonShow(lessonToEdit?.id, defaultTimezone);
     const lessonData = React.useRef(lessonToEdit);
 
@@ -141,20 +164,29 @@ const LessonForm = ({ lessonToEdit = null }) => {
     const { close } = useContext(ModalContext);
 
     function onSubmit(data) {
-        let availability = {};
+        const normalizedAvailability = data.availability
+            .filter(
+                (item) =>
+                item.day !== null &&
+                item.start_time &&
+                item.end_time
+            )
+            .map(normalizeSlot);
 
-        data.availability.forEach((item, index) => {
-            availability[`availability[${index}][day]`] = item.day;
-            availability[`availability[${index}][start_time]`] = item.start_time;
-            availability[`availability[${index}][end_time]`] = item.end_time;
-            availability[`availability[${index}][timezone]`] = item.timezone;
-        });
+        const availabilityArray = normalizedAvailability.map(item => ({
+            day: item.day,
+            start_time: item.start_time,
+            end_time: item.end_time,
+            timezone: item.timezone,
+        }));
+
+        data.availability = availabilityArray;
 
         if (isEditSession) {
             editLesson(
                 {
                     newLessonData: {
-                        ...data, ...availability,
+                        ...data,
                         course_id: isNaN(parseInt(data.course)) ? data.course.id : data.course,
                         staff_id: parseInt(data.staff_id) ? data.staff_id : '',
                     },
@@ -169,7 +201,7 @@ const LessonForm = ({ lessonToEdit = null }) => {
             );
         } else {
             const obj = {
-                ...data, ...availability,
+                ...data,
                 course_id: data.course,
                 supervisor_id: data.supervisor,
                 staff_id: parseInt(data.staff_id) ? data.staff_id : '',
@@ -185,6 +217,24 @@ const LessonForm = ({ lessonToEdit = null }) => {
 
     async function handleMatching() {
         const data = getValues();
+        const normalizedAvailability = data.availability
+            .filter(
+                (item) =>
+                item.day !== null &&
+                item.start_time &&
+                item.end_time
+            )
+            .map(normalizeSlot);
+
+        const availabilityArray = normalizedAvailability.map(item => ({
+            day: item.day,
+            start_time: item.start_time,
+            end_time: item.end_time,
+            timezone: item.timezone,
+        }));
+
+        data.availability = availabilityArray;
+
         setIsLoadingSomething(true);
         const response = await matchTeachers(data);
         setIsLoadingSomething(false);
@@ -228,6 +278,7 @@ const LessonForm = ({ lessonToEdit = null }) => {
                 }}
                 error={errors?.phone}
                 disabled={isWorking}
+                style={{ direction: "ltr"}}
             />
             <AvailabilityInput control={control} register={register} error={errors?.availability} />
             <Controller
@@ -336,7 +387,8 @@ const LessonForm = ({ lessonToEdit = null }) => {
             </FormControl>
 
             <Button
-                disabled={isWorking}
+                // disabled={isWorking}
+                type="button"
                 variation="secondary"
                 style={{ minWidth: "fit-content", width: "20%" }}
                 onClick={handleMatching}
@@ -376,7 +428,7 @@ const LessonForm = ({ lessonToEdit = null }) => {
                                                         precision={0.5}
                                                         name="simple-rating"
                                                         value={suggestedTeacher.rate} // Use value instead of defaultValue
-                                                    /> | {suggestedTeacher.phone} | السن: {suggestedTeacher.details.age}
+                                                    /> | <p style={{ direction: 'ltr', display: 'inline' }}>{suggestedTeacher.phone}</p> | السن: {suggestedTeacher.details.age}
                                                 </MenuItem>
                                             ))
                                         ) : (
@@ -417,7 +469,7 @@ const LessonForm = ({ lessonToEdit = null }) => {
                                                         precision={0.5}
                                                         name="simple-rating"
                                                         value={suggestedTeacher.rate} // Use value instead of defaultValue
-                                                    /> | {suggestedTeacher.phone} | السن: {suggestedTeacher.details.age}
+                                                    /> | <p style={{ direction: 'ltr', display: 'inline' }}>{suggestedTeacher.phone}</p> | السن: {suggestedTeacher.details.age}
                                                 </MenuItem>
                                             ))
                                         ) : (
@@ -458,7 +510,7 @@ const LessonForm = ({ lessonToEdit = null }) => {
                                                         precision={0.5}
                                                         name="simple-rating"
                                                         value={suggestedTeacher.rate} // Use value instead of defaultValue
-                                                    /> | {suggestedTeacher.phone} | السن: {suggestedTeacher.details.age}
+                                                    /> | <p style={{ direction: 'ltr', display: 'inline' }}>{suggestedTeacher.phone}</p> | السن: {suggestedTeacher.details.age}
                                                 </MenuItem>
                                             ))
                                         ) : (

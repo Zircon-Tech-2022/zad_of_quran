@@ -38,7 +38,6 @@ Route::post('admin/auth/login', [App\Http\Controllers\AdminAuthController::class
 Route::get('admin/users/export', [App\Http\Controllers\UserController::class, 'export'])->name('admin.users.export')->middleware('auth');
 Route::apiResource('admin/users', App\Http\Controllers\UserController::class, ['as' => 'admin'])->middleware('auth');
 
-// ToDo: admin will update profile here
 Route::get('supervisors', [App\Http\Controllers\SupervisorController::class, 'supervisors'], ['as' => 'admin'])->middleware('auth');
 Route::apiResource('admin/lessons', App\Http\Controllers\LessonController::class, ['as' => 'admin'])->middleware('auth');
 Route::apiResource('admin/supervisors', App\Http\Controllers\SupervisorController::class, ['as' => 'admin'])->middleware('auth');

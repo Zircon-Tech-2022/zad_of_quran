@@ -27,14 +27,17 @@ const TeacherLanding = () => {
     const { language } = useLangContext();
     const open = Boolean(anchorEl);
 
-    let defaultTimezone = "GMT+2";
+    let defaultTimezone = "Africa/Cairo";
     let isProfileCompleted = null;
+    const token = localStorage.getItem("token");
     const isTeacher = localStorage.getItem('user-type') === "teacher";
 
     if (!isLoading && !isUpdateTimezoneLoading && user?.data?.user?.availabilities[0]) {
         defaultTimezone = calculateTimezone(user.data.user.availabilities[0].start_times['local'],
             user.data.user.availabilities[0].start_times['gmt']);
-        isProfileCompleted = user?.data?.user?.courses?.length && user?.data?.user?.availabilities?.length;
+    }
+    if (!isLoading && !isUpdateTimezoneLoading && user?.data?.user) {
+        isProfileCompleted = Boolean(user?.data?.user);
     }
 
     const handleClick = (event) => {
@@ -59,8 +62,8 @@ const TeacherLanding = () => {
                     }}
                 >
                     {(isLoading || isUpdateTimezoneLoading) && <Spinner />}
-                    {((!localStorage.getItem("token") && !isAuth && !isLoading && !isUpdateTimezoneLoading) ||
-                        (localStorage.getItem("token") && isAuth && !isTeacher && !isLoading && !isUpdateTimezoneLoading))
+                    {((!token && !isAuth && !isLoading && !isUpdateTimezoneLoading) ||
+                        (token && isAuth && !isTeacher && !isLoading && !isUpdateTimezoneLoading))
                         && (
                             <>
                                 <Link
@@ -75,7 +78,7 @@ const TeacherLanding = () => {
                             </>
                         )}
 
-                    {!isLoading && !isUpdateTimezoneLoading && isTeacher && isAuth && localStorage.getItem("token") && (
+                    {!isLoading && !isUpdateTimezoneLoading && isTeacher && isAuth && token && (
                         (isProfileCompleted) ? (
                             <>
                                 <button

@@ -12,6 +12,7 @@ class StaffDetails extends Authenticatable
 
     protected $table = 'staff_details';
     protected $guarded = [];
+    protected $hidden = ['password'];
 
     public function staff()
     {

@@ -68,7 +68,7 @@ class SubscriberController extends Controller
         $lessonsArray = [];
         $lessonsAvailabilitiesArray = [];
         foreach ($lessons as $lesson) {
-            $lessonAvailabilities = $this->getAvailabilities($lesson->availabilities, $timezone);
+            $lessonAvailabilities = $this->getAvailabilitiesInTimezones($lesson->availabilities, $timezone);
             foreach ($lessonAvailabilities as $lessonAvailability) {
                 $lessonsAvailabilitiesArray[] = $lessonAvailability;
             }

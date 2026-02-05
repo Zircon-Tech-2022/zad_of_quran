@@ -70,6 +70,29 @@ const StyleSelect = styled(Select)`
     }
 `;
 
+const dayNameToKeyMap = {
+  saturday: 6,
+  sunday: 0,
+  monday: 1,
+  tuesday: 2,
+  wednesday: 3,
+  thursday: 4,
+  friday: 5,
+};
+
+const normalizeDay = (day) => {
+  if (typeof day === "number") return day;
+  if (typeof day === "string") return dayNameToKeyMap[day.toLowerCase()];
+  return null;
+};
+
+const normalizeSlot = (slot) => ({
+  day: normalizeDay(slot.day),
+  start_time: slot.start_time ?? "",
+  end_time: slot.end_time ?? "",
+  timezone: slot.timezone.startsWith("GMT") ? "Africa/Cairo" : slot.timezone ,
+});
+
 const UpdateTeacherForm = ({ values }) => {
     const [imageFile, setImageFile] = React.useState(null);
 
@@ -97,7 +120,16 @@ const UpdateTeacherForm = ({ values }) => {
 
         for (const key in data) {
             if (key === "availability" && Array.isArray(data[key])) {
-                data[key].forEach((item, index) => {
+                const normalizedAvailability = data[key]
+                    .filter(
+                        (item) =>
+                        item.day !== null &&
+                        item.start_time &&
+                        item.end_time
+                    )
+                    .map(normalizeSlot);
+
+                normalizedAvailability.forEach((item, index) => {
                     formData.append(`${key}[${index}][day]`, item.day);
                     formData.append(`${key}[${index}][start_time]`, item.start_time);
                     formData.append(`${key}[${index}][end_time]`, item.end_time);
@@ -185,6 +217,7 @@ const UpdateTeacherForm = ({ values }) => {
                 type="text"
                 label={t("phone")}
                 icon={<BiPhone />}
+                style={{ direction: "ltr"}}
             />
 
             {isLoading && <Spinner />}

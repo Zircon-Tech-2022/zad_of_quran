@@ -2,16 +2,20 @@
 
 namespace App\Models;
 
-use App\Traits\TimeParser;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 
 class LessonAvailability extends Model
 {
-    use HasFactory, TimeParser;
+    use HasFactory;
 
     protected $table = 'lesson_availabilities';
     protected $guarded = [];
+
+    protected $casts = [
+        'day_of_week' => 'integer',
+     ];
 
     public function lesson()
     {

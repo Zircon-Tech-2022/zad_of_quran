@@ -60,10 +60,21 @@ const LessonsTable = ({ lessons }) => {
                                         <ul>
                                             {slots.map((slot, index) => (
                                                 <li key={index} style={{ marginBottom: "10px" }}>
-                                                    <Chip sx={{
-                                                        color: (theme) => theme.palette.common.white,
-                                                        backgroundColor: (theme) => theme.palette.secondary.main,
-                                                    }} variant="outlined" label={`#${slot.lessonId} | ${slot.startTime} - ${slot.endTime} | ${slot.courseName} | ${slot.studentName} / ${slot.studentPhone}`} />
+                                                    <Chip 
+                                                        sx={{
+                                                            color: (theme) => theme.palette.common.white,
+                                                            backgroundColor: (theme) => theme.palette.secondary.main,
+                                                        }} 
+                                                        variant="outlined" 
+                                                        label={
+                                                            <>
+                                                                #{slot.lessonId} | {slot.startTime} - {slot.endTime} | {slot.courseName} | {slot.studentName} /{' '}
+                                                                <p style={{ direction: 'ltr', display: 'inline' }}>
+                                                                    {slot.studentPhone}
+                                                                </p>
+                                                            </>
+                                                        } 
+                                                    />
                                                 </li>
                                             ))}
                                         </ul>

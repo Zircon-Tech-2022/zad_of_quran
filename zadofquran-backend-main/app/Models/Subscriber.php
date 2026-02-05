@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Enums\LessonStatus;
 
 class Subscriber extends Model
 {
@@ -39,7 +40,7 @@ class Subscriber extends Model
 
     public function lessons()
     {
-        return $this->hasMany(Lesson::class)->where('status', 'confirmed');
+        return $this->hasMany(Lesson::class)->where('status', LessonStatus::CONFIRMED);
     }
 
     public function scopeSearch($query, $q)

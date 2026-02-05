@@ -53,7 +53,11 @@ class SupervisorController extends Controller
     public function show($id)
     {
         $supervisor = User::role('supervisor')->where('id', $id)
-            ->with('lessons', 'lessons.subscriber', 'lessons.course', 'lessons.staff', 'lessons.availabilities')
+            ->with(['lessons' => function ($query) {
+                $query->whereHas('availabilities', function ($q) {
+                    $q->where('start_time', '>', now());
+                });
+            }, 'lessons.subscriber', 'lessons.course', 'lessons.staff', 'lessons.availabilities'])
             ->first();
 
         if (!$supervisor) {
@@ -66,7 +70,7 @@ class SupervisorController extends Controller
         $lessonsArray = [];
         $lessonsAvailabilitiesArray = [];
         foreach ($lessons as $lesson) {
-            $lessonAvailabilities = $this->getAvailabilities($lesson->availabilities, $timezone);
+            $lessonAvailabilities = $this->getAvailabilitiesInTimezones($lesson->availabilities, $timezone);
             foreach ($lessonAvailabilities as $lessonAvailability) {
                 $lessonsAvailabilitiesArray[] = $lessonAvailability;
             }

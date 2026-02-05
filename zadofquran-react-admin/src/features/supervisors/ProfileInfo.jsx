@@ -17,7 +17,7 @@ const ProfileInfo = ({ user }) => {
                     }}>
                         <Typography variant="h5">{user.name}</Typography>
                         <Typography variant="body1">{user.email}</Typography>
-                        <Typography variant="body2">{"رقم الهاتف"}: {user.phone}</Typography>
+                        <Typography variant="body2">{"رقم الهاتف"}: <p style={{ direction: 'ltr', display: 'inline' }}>{user.phone}</p></Typography>
                     </Grid>
                 </Grid>
             </CardContent>

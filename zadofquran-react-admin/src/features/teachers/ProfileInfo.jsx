@@ -20,7 +20,7 @@ const ProfileInfo = ({ user }) => {
                     }}>
                         <Typography variant="h5">{user.name}</Typography>
                         <Typography variant="body1">{user.email}</Typography>
-                        <Typography variant="body2">{"رقم الهاتف"}: {user.phone}</Typography>
+                        <Typography variant="body2">{"رقم الهاتف"}: <p style={{ direction: 'ltr', display: 'inline' }}>{user.phone}</p></Typography>
                         <Typography variant="body2">{"السن"}: {user.age ?? "غير متوفر"}</Typography>
                         <Typography variant="body2">{"النوع"}: {gender}</Typography>
                         <Typography variant="body2">{"التقييم"}: <Rating
@@ -34,7 +34,7 @@ const ProfileInfo = ({ user }) => {
                         <Typography style={{ marginTop: "5px" }} variant="h6">
                             المؤهلات
                         </Typography>
-                        <div dangerouslySetInnerHTML={{ __html: sanitizedHTML }} />
+                        {sanitizedHTML ? <div dangerouslySetInnerHTML={{ __html: sanitizedHTML }} /> : "غير متوفر"}
                     </Grid>
                 </Grid>
             </CardContent>

@@ -28,12 +28,7 @@ const MyInput = ({
             error={error}
             helperText={error?.message}
             onChange={(e) => {
-                // getValue && getValue(e.currentTarget.value.trim());
-                // console.log(getValue(e.target.name));
-                // getValue && getValue(e.target.name.trim());
                 action && action();
-                // console.log(getValues());
-                // console.log(getValues(e.target.name));
             }}
             sx={{
                 width: "100%",

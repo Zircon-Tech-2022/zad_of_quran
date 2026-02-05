@@ -16,7 +16,7 @@ const DivStyle = styled.div`
 `;
 
 const SubscriberProfile = ({ subscriberToView }) => {
-    let defaultTimezone = "GMT+2";
+    let defaultTimezone = "Africa/Cairo";
     const { isLoading, user, updateTimezone, isUpdateTimezoneLoading } = useSubscriberShow(subscriberToView?.id, defaultTimezone);
 
     const { close } = useContext(ModalContext);

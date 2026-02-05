@@ -5,6 +5,7 @@ namespace App\Http\Requests\Lesson;
 use App\Rules\NumOfWords;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use App\Enums\LessonStatus;
 
 class UpdateLessonRequest extends FormRequest
 {
@@ -31,12 +32,12 @@ class UpdateLessonRequest extends FormRequest
             'staff_id' => ['nullable', 'exists:staff,id'],
             'course_id' => ['nullable', 'exists:courses,id'],
             'supervisor_id' => ['nullable', 'exists:users,id'],
-            'status' => 'nullable|in:not_added,waiting,confirmed',
+            'status' => ['nullable', Rule::in(LessonStatus::getValues())],
             'availability' => 'nullable|array|min:1',
-            'availability.*.day' => ['required', Rule::in(['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'])],
+            'availability.*.day' => 'required|integer|between:0,6',
             'availability.*.start_time' => 'required|date_format:H:i',
-            'availability.*.end_time' => 'required|date_format:H:i',
-            'availability.*.timezone' => 'required|string',
+            'availability.*.end_time' => 'required|date_format:H:i|after:availability.*.start_time',
+            'availability.*.timezone' => 'required|timezone',
         ];
     }
 }

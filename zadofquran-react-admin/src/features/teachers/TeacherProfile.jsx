@@ -18,7 +18,7 @@ const DivStyle = styled.div`
 `;
 
 const TeacherProfile = ({ teacherToView }) => {
-    let defaultTimezone = "GMT+2";
+    let defaultTimezone = "Africa/Cairo";
     const { isLoading, user, updateTimezone, isUpdateTimezoneLoading } = useTeacherShow(teacherToView?.id, defaultTimezone);
     const { close } = useContext(ModalContext);
 

@@ -6,10 +6,10 @@ use App\Http\Requests\Lesson\StoreLessonRequest;
 use App\Http\Requests\Lesson\UpdateLessonRequest;
 use App\Models\Lesson;
 use App\Models\Subscriber;
+use App\Enums\LessonStatus;
 
 class LessonController extends Controller
 {
-    use \App\Traits\TimeParser;
     use \App\Traits\AvailabilityHandler;
 
     public function __construct()
@@ -27,7 +27,7 @@ class LessonController extends Controller
     public function index()
     {
         $lessons = Lesson::when(request('q'), fn($query, $q) => $query->search($q))
-            ->with('staff:id,name,email,phone', 'subscriber:id,name,email,phone', 'course:id,name', 'supervisor:id,name,email')
+            ->with('staff:id,name,email,phone', 'staff.details:id,email,staff_id', 'subscriber:id,name,email,phone', 'course:id,name', 'supervisor:id,name,email')
             ->orderBy(request('orderBy', 'created_at'), request('orderDir', 'desc'))
             ->paginate(request('limit', 25));
 
@@ -41,9 +41,23 @@ class LessonController extends Controller
     {
         $data = $request->validated();
 
+        $daysMap = [
+            0 => 'Sunday',
+            1 => 'Monday',
+            2 => 'Tuesday',
+            3 => 'Wednesday',
+            4 => 'Thursday',
+            5 => 'Friday',
+            6 => 'Saturday',
+        ];
+
         $flattenedArray = [];
         foreach ($data['availability'] as $index => $slot) {
             foreach ($slot as $key => $value) {
+                // Replace numeric day with name
+                if ($key === 'day' && isset($daysMap[$value])) {
+                    $value = $daysMap[$value];
+                }
                 $flattenedArray[] = "$key: $value";
             }
         }
@@ -63,14 +77,14 @@ class LessonController extends Controller
             'supervisor_id' => $data['supervisor_id'],
             'subscriber_id' => $subscriber->id,
             'course_id' => $data['course_id'],
-            'status' => isset($data['staff_id']) && !empty($data['staff_id']) ? 'waiting' : 'not_added',
+            'status' => isset($data['staff_id']) && !empty($data['staff_id']) ? LessonStatus::WAITING : LessonStatus::NOT_ADDED,
         ]);
 
         if (array_key_exists('availability', $data) && $data['availability'] && count($data['availability'])) {
-            $this->storeAvailabilities($this->reformAvailabilities($data['availability']), $lesson);
+            $this->storeAvailabilities($data['availability'], $lesson, true);
         }
 
-        $availabilities = $this->getAvailabilities($lesson->availabilities);
+        $availabilities = $this->getAvailabilitiesInTimezones($lesson->availabilities);
 
         return apiSuccessResponse(__('messages.added_success'), [
             array_merge(
@@ -108,7 +122,7 @@ class LessonController extends Controller
         }
 
         $timezone = request('timezone_offset');
-        $availabilities = $this->getAvailabilities($lesson->availabilities, $timezone);
+        $availabilities = $this->getAvailabilitiesInTimezones($lesson->availabilities, $timezone);
 
         return apiSuccessResponse(
             __('messages.data_retrieved_successfully'),
@@ -140,7 +154,7 @@ class LessonController extends Controller
 
         if (isset($data['status']) && !array_key_exists('course_id', $data)) {
             $lesson->update([
-                'status' => $lesson?->staff_id ? $data['status'] : 'not_added',
+                'status' => $lesson?->staff_id ? $data['status'] : LessonStatus::NOT_ADDED,
             ]);
 
             return apiSuccessResponse(__('messages.updated_success'), [
@@ -153,8 +167,8 @@ class LessonController extends Controller
             'supervisor_id' => $data['supervisor_id'] ?? $lesson->supervisor_id,
             'course_id' => $data['course_id'] ?? $lesson->course_id,
             'status' => isset($data['staff_id']) && !empty($data['staff_id']) ?
-                (($data['staff_id'] !== $lesson->staff_id) ? 'waiting' : $lesson->status)
-                : 'not_added',
+                (($data['staff_id'] !== $lesson->staff_id) ? LessonStatus::WAITING : $lesson->status)
+                : LessonStatus::NOT_ADDED,
         ]);
 
         if ($lesson->subscriber) {
@@ -167,11 +181,11 @@ class LessonController extends Controller
         }
 
         if (array_key_exists('availability', $data) && $data['availability'] && count($data['availability'])) {
-            $this->storeAvailabilities($this->reformAvailabilities($data['availability']), $lesson, true);
+            $this->storeAvailabilities($data['availability'], $lesson, true);
         }
 
         $lesson = $lesson->refresh();
-        $availabilities = $this->getAvailabilities($lesson->availabilities);
+        $availabilities = $this->getAvailabilitiesInTimezones($lesson->availabilities);
 
         return apiSuccessResponse(__('messages.updated_success'), [
             array_merge(
