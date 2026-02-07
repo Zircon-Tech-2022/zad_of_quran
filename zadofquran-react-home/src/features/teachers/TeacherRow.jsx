@@ -33,7 +33,7 @@ const TeacherRow = ({ teacher }) => {
             <Cell>{name}</Cell>
             <TableImg src={image} />
             <Cell>
-                <BlueCell>{phone}</BlueCell>
+                <BlueCell><p style={{ direction: 'ltr', display: 'inline' }}>{phone}</p></BlueCell>
             </Cell>
             <Cell>{email}</Cell>
             <Button

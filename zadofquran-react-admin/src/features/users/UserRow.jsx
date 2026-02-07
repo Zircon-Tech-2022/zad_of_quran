@@ -34,7 +34,7 @@ const UserRow = ({ user, num }) => {
             <div>{tableNum}</div>
             <Cell title={name}>{name}</Cell>
             <Cell title={phone}>
-                <BlueCell>{phone}</BlueCell>
+                <BlueCell><p style={{ direction: 'ltr', display: 'inline' }}>{phone}</p></BlueCell>
             </Cell>
             <Cell title={email}>{email}</Cell>
             <Actions open={open} onClick={handleClick} />
