@@ -18,7 +18,7 @@ const ProfileInfo = ({ subscriber }) => {
                         gap: "3px",
                     }}>
                         <Link
-                            to={`/subscribers?q=${subscriber.email}`}
+                            to={`/subscribers?q=${subscriber?.email || subscriber?.phone || subscriber?.name}`}
                             className={styles.link}
                         >
                             <Typography variant="h4">بيانات المشترك</Typography>

@@ -57,7 +57,7 @@ const LessonRow = ({ lesson, num }) => {
             <Cell title={id}>{id}</Cell>
             <Cell title={subscriber?.name}>
                 <Link
-                    to={`/subscribers?q=${subscriber?.email}`}
+                    to={`/subscribers?q=${subscriber?.email || subscriber?.phone || subscriber?.name}`}
                     className={styles.link}
                 >
                     {subscriber?.name} <br /> {subscriber?.email} <br /> <p style={{ direction: 'ltr', display: 'inline' }}>{subscriber?.phone}</p>
