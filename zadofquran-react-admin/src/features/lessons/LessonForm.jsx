@@ -94,6 +94,7 @@ const LessonForm = ({ lessonToEdit = null }) => {
 
     const { isEditing, editLesson } = useEditLesson(setError);
     const { isCreating, createLesson } = useCreateLesson(setError);
+    const data = getValues();
 
     useEffect(() => {
         const fetchData = async () => {
@@ -216,7 +217,6 @@ const LessonForm = ({ lessonToEdit = null }) => {
     }
 
     async function handleMatching() {
-        const data = getValues();
         const normalizedAvailability = data.availability
             .filter(
                 (item) =>
@@ -428,7 +428,7 @@ const LessonForm = ({ lessonToEdit = null }) => {
                                                         precision={0.5}
                                                         name="simple-rating"
                                                         value={suggestedTeacher.rate} // Use value instead of defaultValue
-                                                    /> | <p style={{ direction: 'ltr', display: 'inline' }}>{suggestedTeacher.phone}</p> | السن: {suggestedTeacher.details.age}
+                                                    /> | <p style={{ direction: 'ltr', display: 'inline' }}>{suggestedTeacher.phone}</p> | السن: <span style={{ color: suggestedTeacher.details.age < data.age ? "red" : "" }}>{suggestedTeacher.details.age}</span>
                                                 </MenuItem>
                                             ))
                                         ) : (
@@ -469,7 +469,7 @@ const LessonForm = ({ lessonToEdit = null }) => {
                                                         precision={0.5}
                                                         name="simple-rating"
                                                         value={suggestedTeacher.rate} // Use value instead of defaultValue
-                                                    /> | <p style={{ direction: 'ltr', display: 'inline' }}>{suggestedTeacher.phone}</p> | السن: {suggestedTeacher.details.age}
+                                                    /> | <p style={{ direction: 'ltr', display: 'inline' }}>{suggestedTeacher.phone}</p> | السن: <span style={{ color: suggestedTeacher.details.age < data.age ? "red" : "" }}>{suggestedTeacher.details.age}</span>
                                                 </MenuItem>
                                             ))
                                         ) : (
@@ -510,7 +510,7 @@ const LessonForm = ({ lessonToEdit = null }) => {
                                                         precision={0.5}
                                                         name="simple-rating"
                                                         value={suggestedTeacher.rate} // Use value instead of defaultValue
-                                                    /> | <p style={{ direction: 'ltr', display: 'inline' }}>{suggestedTeacher.phone}</p> | السن: {suggestedTeacher.details.age}
+                                                    /> | <p style={{ direction: 'ltr', display: 'inline' }}>{suggestedTeacher.phone}</p> | السن: <span style={{ color: suggestedTeacher.details.age < data.age ? "red" : "" }}>{suggestedTeacher.details.age}</span>
                                                 </MenuItem>
                                             ))
                                         ) : (
