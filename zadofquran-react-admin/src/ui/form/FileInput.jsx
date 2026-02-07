@@ -1,10 +1,6 @@
 import styled from "styled-components";
 
-import React, { useState } from "react";
-import { Button } from "@mui/material";
 import { BiCloudUpload } from "react-icons/bi";
-import { useRef } from "react";
-import { useEffect } from "react";
 const FileButtn = styled.label`
     background: var(--color-brand-600);
     color: var(--color-grey-0);

@@ -1,4 +1,3 @@
-import { cloneElement, useState } from "react";
 import { createPortal } from "react-dom";
 import { FaXmark } from "react-icons/fa6";
 import styled from "styled-components";

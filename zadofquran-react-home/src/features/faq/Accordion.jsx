@@ -1,5 +1,5 @@
 import { AccordionDetails, AccordionSummary, Accordion } from "@mui/material";
-import React, { useState } from "react";
+import React from "react";
 import styles from "./accordion.module.css";
 import { BiChevronDown } from "react-icons/bi";
 import MyPagination from "../../ui/MyPagination";

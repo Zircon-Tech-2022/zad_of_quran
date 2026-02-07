@@ -1,4 +1,3 @@
-import React from "react";
 import PageLayout from "../ui/PageLayout";
 import TestimoinalsFilter from "../features/testimonials/TestimoinalsFilter";
 import TestimoinalTable from "../features/testimonials/TestimoinalTable";

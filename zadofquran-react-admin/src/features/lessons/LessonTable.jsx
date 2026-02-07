@@ -1,4 +1,3 @@
-import React from "react";
 import Table from "../../ui/table/Table";
 import LessonRow from "./LessonRow";
 import styled from "styled-components";

@@ -1,4 +1,3 @@
-import React from "react";
 import { Avatar, Card, CardContent, Grid, Typography } from "@mui/material";
 import DOMPurify from 'dompurify';
 import { t } from "i18next";

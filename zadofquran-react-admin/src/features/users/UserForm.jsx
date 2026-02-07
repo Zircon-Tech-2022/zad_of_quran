@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import { useContext } from "react";
 import MyInput from "../../ui/form/MyInput";
 import { useCreateUser } from "./useCreateUser";
 import MyModal, { ModalContext } from "../../ui/MyModal";

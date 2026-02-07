@@ -1,4 +1,3 @@
-import React from "react";
 import { Card, CardContent, Chip, Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@mui/material";
 
 const AvailabilityTable = ({ availabilities }) => {

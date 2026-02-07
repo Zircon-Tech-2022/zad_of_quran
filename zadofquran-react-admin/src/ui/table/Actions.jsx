@@ -1,5 +1,4 @@
 import { Button } from "@mui/material";
-import React from "react";
 import { BsThreeDots } from "react-icons/bs";
 
 const Actions = ({ onClick, open }) => {

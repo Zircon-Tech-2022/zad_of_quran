@@ -1,9 +1,7 @@
-import React, { useEffect, useLayoutEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import styles from "./testimonials.module.css";
 import { Container } from "@mui/material";
-import { BsArrowLeft, BsArrowRight } from "react-icons/bs";
 import Empty from "../../ui/Empty";
-import { useSearchParams } from "react-router-dom";
 import Spinner from "../../ui/Spinner";
 import { API_URL } from "../../Constants";
 import { t } from "i18next";

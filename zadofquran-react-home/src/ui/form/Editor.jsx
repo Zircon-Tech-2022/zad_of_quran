@@ -1,6 +1,6 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import JoditEditor from "jodit-react";
-import { Controller, useForm } from "react-hook-form";
+import { Controller } from "react-hook-form";
 
 const Editor = ({
     reg,

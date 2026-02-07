@@ -1,4 +1,3 @@
-import React from "react";
 import { Card, CardContent, Grid, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
 import styles from "./../lessons/lesson.module.css";

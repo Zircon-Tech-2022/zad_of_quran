@@ -1,13 +1,10 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import styles from "./courses.module.css";
 import { Container } from "@mui/material";
-
-import { BsArrowRight, BsArrowLeft } from "react-icons/bs";
 
 import Button from "../../ui/Button";
 import Empty from "../../ui/Empty";
 import { scrollToSection } from "../../utils/helpers";
-import { useSearchParams } from "react-router-dom";
 import Spinner from "../../ui/Spinner";
 import { API_URL } from "../../Constants";
 import { t } from "i18next";

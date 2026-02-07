@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import styles from "./plans.module.css";
 import { Container, Grid } from "@mui/material";
 import Button from "../../ui/Button";

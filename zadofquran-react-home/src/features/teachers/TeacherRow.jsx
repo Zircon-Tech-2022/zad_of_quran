@@ -4,7 +4,7 @@ import styled from "styled-components";
 import { Cell } from "../../ui/table/Cell";
 import { TableImg } from "../../ui/table/TableImg";
 import { BlueCell } from "../../ui/table/BlueCell";
-import { Button, Menu, MenuItem, Modal } from "@mui/material";
+import { Button, Menu, MenuItem } from "@mui/material";
 import { BsThreeDots, BsTrash3Fill } from "react-icons/bs";
 import { BiPencil } from "react-icons/bi";
 import MyModal from "../../ui/MyModal";

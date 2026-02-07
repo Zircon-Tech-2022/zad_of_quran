@@ -1,7 +1,4 @@
 import { InputAdornment, TextField } from "@mui/material";
-import React from "react";
-import { useForm } from "react-hook-form";
-import { BiPhone } from "react-icons/bi";
 
 const MyInput = ({
     type = "text",

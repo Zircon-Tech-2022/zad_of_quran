@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Header from "../ui/Header";
 import Body from "../ui/Body";
 import { Grid } from "@mui/material";

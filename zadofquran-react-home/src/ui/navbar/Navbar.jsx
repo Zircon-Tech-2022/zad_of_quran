@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Container } from "@mui/material";
 import styles from "./navbar.module.css";
 

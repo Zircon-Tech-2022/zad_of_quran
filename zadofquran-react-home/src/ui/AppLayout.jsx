@@ -2,15 +2,13 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Outlet } from "react-router-dom";
 
 import { ThemeProvider, createTheme } from "@mui/material";
-import React, { useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import ProtectedRoutes from "./ProtectedRoutes";
 import Footer from "./Footer";
 import Navbar from "./navbar/Navbar";
 import { Toaster } from "react-hot-toast";
 import { useLocation } from "react-router";
-import Whatsapp from "./Whatsapp";
 import { styled } from "styled-components";
-import Button from "./Button";
 import { IoIosSend } from "react-icons/io";
 import { FaMessage, FaXmark } from "react-icons/fa6";
 import { BsWhatsapp } from "react-icons/bs";

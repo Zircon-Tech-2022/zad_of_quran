@@ -1,5 +1,3 @@
-import React, { useEffect } from "react";
-
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import { ThemeProvider, createTheme } from "@mui/material";

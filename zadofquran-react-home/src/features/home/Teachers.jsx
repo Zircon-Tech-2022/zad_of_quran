@@ -1,8 +1,7 @@
 import { Container } from "@mui/material";
 
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import styles from "./teachers.module.css";
-import { BsArrowLeft, BsArrowRight } from "react-icons/bs";
 import { FaUserTie } from "react-icons/fa6";
 import Spinner from "../../ui/Spinner";
 import Empty from "../../ui/Empty";

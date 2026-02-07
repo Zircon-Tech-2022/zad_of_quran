@@ -1,4 +1,3 @@
-import React from "react";
 import Table from "../../ui/table/Table";
 import TeacherRow from "./TeacherRow";
 

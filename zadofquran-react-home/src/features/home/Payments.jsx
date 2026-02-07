@@ -1,4 +1,3 @@
-import React from "react";
 import styles from "./payments.module.css";
 
 import { Container } from "@mui/material";

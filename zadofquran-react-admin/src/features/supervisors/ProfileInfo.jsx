@@ -1,5 +1,3 @@
-import React from "react";
-import DOMPurify from 'dompurify';
 import { Avatar, Card, CardContent, Grid, Typography } from "@mui/material";
 
 const ProfileInfo = ({ user }) => {

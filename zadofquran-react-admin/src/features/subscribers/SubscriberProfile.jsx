@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import { useContext } from "react";
 import MyModal, { ModalContext } from "../../ui/MyModal";
 import Button from "../../ui/Button";
 import styled from "styled-components";

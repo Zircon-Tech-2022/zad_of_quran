@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import styles from "./plans.module.css";
 import { FaBookQuran } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";

@@ -1,4 +1,3 @@
-import React from "react";
 import { Avatar, Card, CardContent, List, ListItem, ListItemAvatar, ListItemText, Typography } from "@mui/material";
 
 const CoursesList = ({ courses }) => (

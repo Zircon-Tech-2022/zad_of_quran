@@ -1,4 +1,3 @@
-import React from "react";
 import { BiSolidContact } from "react-icons/bi";
 import { scrollToSection } from "../utils/helpers";
 import styled from "styled-components";

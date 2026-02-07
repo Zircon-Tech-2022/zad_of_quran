@@ -1,4 +1,4 @@
-import { ObserverFun, scrollToSection } from "./utils/helpers";
+import { scrollToSection } from "./utils/helpers";
 
 export const API_URL = import.meta.env.VITE_SERVER_URI;
 

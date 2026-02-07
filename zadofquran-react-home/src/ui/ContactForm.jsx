@@ -1,4 +1,3 @@
-import React from "react";
 import styles from "./contactForm.module.css";
 import MyInput from "./form/MyInput";
 import { useForm } from "react-hook-form";

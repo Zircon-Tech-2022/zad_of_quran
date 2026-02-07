@@ -1,5 +1,3 @@
-import React from "react";
-
 import LoginForm from "../features/authentication/LoginForm";
 import { Container, Grid } from "@mui/material";
 import styled from "styled-components";

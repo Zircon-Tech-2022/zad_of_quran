@@ -1,13 +1,10 @@
-import React, { useContext } from "react";
-import MultiSelect from "../../ui/form/MultiSelect";
+import { useContext } from "react";
 import MyInput from "../../ui/form/MyInput";
 import { useCreateSupervisor } from "./useCreateSupervisor";
 import MyModal, { ModalContext } from "../../ui/MyModal";
 import Button from "../../ui/Button";
 import { useForm } from "react-hook-form";
 import styled from "styled-components";
-import FileInput from "../../ui/form/FileInput";
-import { Textarea } from "../../ui/form/Textarea";
 import { useEditSupervisor } from "./useEditSupervisor";
 import { BiLock } from "react-icons/bi";
 

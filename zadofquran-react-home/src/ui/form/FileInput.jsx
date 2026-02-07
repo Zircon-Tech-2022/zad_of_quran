@@ -1,6 +1,3 @@
-import styled from "styled-components";
-
-import React, { useState } from "react";
 import { Button } from "@mui/material";
 import { BiCloudUpload } from "react-icons/bi";
 const FileInput = ({ reg, getValues, isSubmitted, id, ...props }) => {

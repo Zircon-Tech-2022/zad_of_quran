@@ -1,6 +1,5 @@
 import { Container, Grid } from "@mui/material";
 
-import React from "react";
 import styles from "./stat.module.css";
 import { t } from "i18next";
 import { useLangContext } from "../../context/LangContext";

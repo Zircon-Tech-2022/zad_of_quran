@@ -1,4 +1,3 @@
-import React from "react";
 import LessonTable from "../features/lessons/LessonTable";
 import PageLayout from "../ui/PageLayout";
 import LessonsFilter from "../features/lessons/LessonsFilter";

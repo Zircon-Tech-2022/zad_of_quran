@@ -1,6 +1,5 @@
 import { Container, Grid } from "@mui/material";
 
-import React from "react";
 import { FaBookQuran } from "react-icons/fa6";
 import styles from "./header.module.css";
 import { scrollToSection } from "../../utils/helpers";
@@ -11,7 +10,6 @@ import ContactButton from "../../ui/ContactButton";
 import Insta from "../../ui/Insta";
 import Snap from "../../ui/Snap";
 import { useTranslation } from "react-i18next";
-import TikTok from "../../ui/TikTok";
 const Header = () => {
     const { t } = useTranslation();
     return (

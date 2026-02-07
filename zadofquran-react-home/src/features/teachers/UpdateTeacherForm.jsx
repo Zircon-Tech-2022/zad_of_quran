@@ -1,15 +1,14 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useUpdateTeacher } from "./useUpdateTeacher";
 import styled from "styled-components";
-import { BiFemale, BiLock, BiMailSend, BiMale, BiPhone, BiUser } from "react-icons/bi";
+import { BiFemale, BiMale, BiPhone, BiUser } from "react-icons/bi";
 import Spinner from "../../ui/Spinner";
 import MyInput from "../../ui/form/MyInput";
 import Button from "../../ui/Button";
 import { t } from "i18next";
-import { Avatar, FormControl, FormHelperText, InputLabel, MenuItem, Select } from "@mui/material";
+import { FormControl, FormHelperText, InputLabel, MenuItem, Select } from "@mui/material";
 import AvailabilityInput from "../../ui/form/AvailabilityInput";
-import Editor from "../../ui/form/Editor";
 
 const StyleForm = styled.form`
     display: flex;

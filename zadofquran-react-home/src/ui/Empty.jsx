@@ -1,5 +1,3 @@
-import React from "react";
-
 const style = {
     fontSize: "3.8rem",
     color: "var(--color-brand-600)",

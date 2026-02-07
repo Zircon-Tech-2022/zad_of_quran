@@ -1,6 +1,6 @@
 import Body from "../ui/Body";
 import Header from "../ui/Header";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import styles from "./blog.module.css";
 import Empty from "../ui/Empty";
 import { useParams } from "react-router-dom";

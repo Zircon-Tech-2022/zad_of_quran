@@ -1,12 +1,11 @@
-import React, { useEffect, useState } from "react";
-import AppLayout from "../ui/AppLayout";
+import { useEffect, useState } from "react";
 import Body from "../ui/Body";
 import Header from "../ui/Header";
 import AccordionComponent from "../features/faq/Accordion";
 import { useSearchParams } from "react-router-dom";
 import Spinner from "../ui/Spinner";
 import PageLayout from "../ui/PageLayout";
-import { t, use } from "i18next";
+import { t } from "i18next";
 import { useLangContext } from "../context/LangContext";
 async function getFaq(page, language) {
     const res = await fetch(

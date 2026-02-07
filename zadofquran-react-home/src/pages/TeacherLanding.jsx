@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Body from "../ui/Body";
 import Header from "../ui/Header";
 import Spinner from "../ui/Spinner";

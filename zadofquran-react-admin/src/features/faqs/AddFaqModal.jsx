@@ -1,4 +1,3 @@
-import React from "react";
 import MyModal from "../../ui/MyModal";
 import FaqForm from "./FaqForm";
 import Button from "../../ui/Button";

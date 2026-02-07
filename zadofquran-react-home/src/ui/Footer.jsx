@@ -1,5 +1,4 @@
 import { Container, Grid } from "@mui/material";
-import React from "react";
 import styles from "./footer.module.css";
 
 import ContactForm from "./ContactForm";

@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import { useContext } from "react";
 import MyInput from "../../ui/form/MyInput";
 import { useCreatePlans } from "./useCreatePlans";
 import MyModal, { ModalContext } from "../../ui/MyModal";
@@ -6,7 +6,6 @@ import Button from "../../ui/Button";
 import { useForm } from "react-hook-form";
 import styled from "styled-components";
 import { useEditPlans } from "./useEditPlans";
-import { Textarea } from "../../ui/form/Textarea";
 import MultiSelect from "../../ui/form/MultiSelect";
 
 const FormStyle = styled.form`

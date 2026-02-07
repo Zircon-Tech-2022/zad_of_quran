@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import MyInput from "./form/MyInput";
 import { useSearchParams } from "react-router-dom";
 import Button from "./Button";

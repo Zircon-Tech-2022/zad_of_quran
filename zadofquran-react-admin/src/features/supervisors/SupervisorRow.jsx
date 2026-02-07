@@ -1,7 +1,6 @@
 import React from "react";
 import Table from "../../ui/table/Table";
 import { Cell } from "../../ui/table/Cell";
-import { TableImg } from "../../ui/table/TableImg";
 import { Menu, MenuItem } from "@mui/material";
 import { BsTrash3Fill } from "react-icons/bs";
 import { BiPencil } from "react-icons/bi";
@@ -12,8 +11,6 @@ import { useDeleteSupervisor } from "./useDeleteSupervisor";
 import Actions from "../../ui/table/Actions";
 import { useSearchParams } from "react-router-dom";
 import { LIMIT } from "../../Constants";
-import { PinkCell } from "../../ui/table/PinkCell";
-import { OrangeCell } from "../../ui/table/OrangeCell";
 import SupervisorProfile from "./SupervisorProfile";
 
 const SupervisorRow = ({ supervisor, num }) => {

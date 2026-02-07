@@ -303,7 +303,7 @@ import { Checkbox, Paper } from "@mui/material";
 import { BiSquare } from "react-icons/bi";
 import { BsCheckSquareFill } from "react-icons/bs";
 import styled from "styled-components";
-import { Controller, set, useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { useLangContext } from "../../context/LangContext";
 
 const MyOption = styled.li`

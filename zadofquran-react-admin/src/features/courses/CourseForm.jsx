@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import { useContext } from "react";
 import MultiSelect from "../../ui/form/MultiSelect";
 import MyInput from "../../ui/form/MyInput";
 import { useCreateCourse } from "./useCreateCourse";
@@ -8,7 +8,6 @@ import { useForm } from "react-hook-form";
 import styled from "styled-components";
 import FileInput from "../../ui/form/FileInput";
 import { Textarea } from "../../ui/form/Textarea";
-import Editor from "../../ui/form/Editor";
 import { useEditCourse } from "./useEditCourse";
 
 const FormStyle = styled.form`

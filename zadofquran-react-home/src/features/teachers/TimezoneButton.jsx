@@ -1,4 +1,3 @@
-import * as React from "react";
 import { Autocomplete, TextField, Stack } from "@mui/material";
 import { useTranslation } from "react-i18next";
 

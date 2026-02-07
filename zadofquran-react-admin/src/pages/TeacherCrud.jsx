@@ -1,4 +1,3 @@
-import React from "react";
 import TeacherTable from "../features/teachers/TeacherTable";
 import PageLayout from "../ui/PageLayout";
 import TeachersFilter from "../features/teachers/TeachersFilter";

@@ -1,4 +1,3 @@
-import React from "react";
 import { FaSnapchat } from "react-icons/fa";
 
 const Snap = ({ className = "mainSnap" }) => {

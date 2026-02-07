@@ -4,7 +4,6 @@ import { useLangContext } from "../../context/LangContext";
 import toast from "react-hot-toast";
 
 export function useUser() {
-  const { language } = useLangContext();
   const queryClient = useQueryClient();
   const { isLoading, data: user } = useQuery({
     queryKey: ["user"],

@@ -1,4 +1,3 @@
-import React from "react";
 import SearchFilter from "../../ui/SearchFilter";
 import FilterLayout from "../../ui/FilterLayout";
 import { Grid } from "@mui/material";

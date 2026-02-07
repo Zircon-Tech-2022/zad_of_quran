@@ -1,5 +1,4 @@
 import { useLangContext } from "../context/LangContext";
-import { useUser } from "../features/authentication/useUser";
 
 const ProtectedRoutes = ({ children }) => {
     const { language } = useLangContext();

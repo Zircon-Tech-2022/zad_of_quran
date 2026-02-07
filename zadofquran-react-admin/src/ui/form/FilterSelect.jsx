@@ -6,7 +6,7 @@ import { Checkbox, Paper } from "@mui/material";
 import { BiSquare } from "react-icons/bi";
 import { BsCheckSquareFill } from "react-icons/bs";
 import styled from "styled-components";
-import { Controller, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 
 const MyOption = styled.li`
     font-size: 1.6rem;

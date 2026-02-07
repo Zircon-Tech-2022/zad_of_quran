@@ -1,4 +1,3 @@
-import React from "react";
 import { BlueCell } from "./ui/table/BlueCell";
 import { OrangeCell } from "./ui/table/OrangeCell";
 import { PinkCell } from "./ui/table/PinkCell";

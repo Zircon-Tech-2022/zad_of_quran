@@ -1,4 +1,3 @@
-import React from "react";
 import { useForm } from "react-hook-form";
 import { useLogin } from "./useLogin";
 import MyInput from "../../ui/form/MyInput";

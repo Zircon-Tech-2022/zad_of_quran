@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 
 import { useSideBarContext } from "../../context/SideBarContext";
 import styled from "styled-components";
