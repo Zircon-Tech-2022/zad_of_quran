@@ -237,7 +237,6 @@ const LessonForm = ({ lessonToEdit = null }) => {
 
         data.availability = availabilityArray;
 
-        console.log(data)
         setIsLoadingSomething(true);
         const response = await matchTeachers(data);
         setIsLoadingSomething(false);
