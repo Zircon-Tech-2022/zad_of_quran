@@ -85,7 +85,7 @@ class AuthController extends Controller
         $staffDetails = StaffDetails::where('email', $data['email'])
             ->with('staff', 'staff.availabilities', 'staff.courses')->first();
 
-        if (!$staffDetails || !Hash::check($data['password'], $staffDetails->password)) {
+        if (!$staffDetails || !$staffDetails->staff || !Hash::check($data['password'], $staffDetails->password)) {
             return apiErrorResponse(__('auth.failed'), [
                 'email' => [
                     'message' => __('auth.failed')
@@ -120,7 +120,7 @@ class AuthController extends Controller
                     $query->whereHas('availabilities', function ($q) {
                         $q->where('start_time', '>', now());
                     });
-                }, 
+                },
             'staff.lessons.subscriber', 'staff.lessons.course', 'staff.lessons.availabilities'])->first();
 
         abort_if(!$staffDetails, 401);
@@ -129,7 +129,7 @@ class AuthController extends Controller
 
         $netAvailabilities = $this->getNetAvailabilities($staff);
         $availabilities = $this->getAvailabilitiesInTimezones($netAvailabilities, $timezone);
-        
+
         $lessons = $staff->lessons;
         $lessonsArray = [];
         $lessonsAvailabilitiesArray = [];
