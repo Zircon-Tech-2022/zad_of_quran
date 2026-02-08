@@ -164,7 +164,8 @@ const LessonForm = ({ lessonToEdit = null }) => {
 
     const { close } = useContext(ModalContext);
 
-    function onSubmit(data) {
+    function onSubmit() {
+        const data = getValues();
         const normalizedAvailability = data.availability
             .filter(
                 (item) =>
@@ -217,6 +218,7 @@ const LessonForm = ({ lessonToEdit = null }) => {
     }
 
     async function handleMatching() {
+        const data = getValues();
         const normalizedAvailability = data.availability
             .filter(
                 (item) =>
@@ -235,6 +237,7 @@ const LessonForm = ({ lessonToEdit = null }) => {
 
         data.availability = availabilityArray;
 
+        console.log(data)
         setIsLoadingSomething(true);
         const response = await matchTeachers(data);
         setIsLoadingSomething(false);
