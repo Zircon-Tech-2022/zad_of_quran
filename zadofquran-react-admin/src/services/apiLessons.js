@@ -64,31 +64,28 @@ export async function toggleLessonStatus(id, token, currentStatus) {
 
 export async function createLessonApi(teacherData, token, setError) {
     try {
-        const formData = new FormData();
-        for (const [key, value] of Object.entries(teacherData)) {
-            formData.append(key, value);
-        }
         const res = await fetch(`${API_URL}admin/lessons`, {
             method: "POST",
             headers: {
                 "accept-language": "ar",
                 Accept: "application/json",
+                "Content-Type": "application/json",
                 Authorization: `Bearer ${token}`,
             },
-            body: formData,
+            body: JSON.stringify(teacherData),
         });
 
-        if (!res.ok) {
-            const errorData = await res.json();
-            if (errorData.data) {
-                for (const [key, value] of Object.entries(errorData?.data)) {
-                    setError(key, value);
-                }
-            }
-
-            throw new Error(errorData.message);
-        }
         const data = await res.json();
+
+        if (!res.ok) {
+            if (data?.data) {
+                Object.entries(data.data).forEach(([key, value]) => {
+                    setError(key, value);
+                });
+            }
+            throw new Error(data.message);
+        }
+
         return data;
     } catch (error) {
         throw new Error(error.message);
@@ -97,35 +94,28 @@ export async function createLessonApi(teacherData, token, setError) {
 
 export async function updateLessonApi(teacherData, id, token, setError) {
     try {
-        const formData = new FormData();
-        for (const [key, value] of Object.entries(teacherData)) {
-            if (key === "image" && value == null) {
-                continue;
-            }
-            formData.append(key, value);
-        }
-        formData.append("_method", "patch");
         const res = await fetch(`${API_URL}admin/lessons/${id}`, {
-            method: "POST",
+            method: "PUT",
             headers: {
                 "accept-language": "ar",
                 Accept: "application/json",
+                "Content-Type": "application/json",
                 Authorization: `Bearer ${token}`,
             },
-            body: formData,
+            body: JSON.stringify(teacherData),
         });
 
-        if (!res.ok) {
-            const errorData = await res.json();
-            if (errorData.data) {
-                for (const [key, value] of Object.entries(errorData?.data)) {
-                    setError(key, value);
-                }
-            }
-
-            throw new Error(errorData.message);
-        }
         const data = await res.json();
+
+        if (!res.ok) {
+            if (data?.data) {
+                Object.entries(data.data).forEach(([key, value]) => {
+                    setError(key, value);
+                });
+            }
+            throw new Error(data.message);
+        }
+
         return data;
     } catch (error) {
         throw new Error(error.message);
