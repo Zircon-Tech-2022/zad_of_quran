@@ -45,7 +45,7 @@ const normalizeDay = (day) => {
   return null;
 };
 
-const AvailabilityInput = ({ control, register, errors }) => {
+const AvailabilityInput = ({ control, register, error, clearErrors }) => {
   const { t } = useTranslation();
 
   const { fields, append, remove, update } = useFieldArray({
@@ -60,15 +60,18 @@ const AvailabilityInput = ({ control, register, errors }) => {
   });
 
   const handleAddSlot = (day) => {
+    clearErrors("availability");
     append({ day: day.key, start_time: "", end_time: "", timezone: "Africa/Cairo" });
   };
 
   const handleRemoveSlot = (id) => {
+    clearErrors("availability");
     const index = fields.findIndex((slot) => slot.id === id);
     remove(index)
   };
 
   const handleChange = (id, field, value) => {
+    clearErrors("availability");
     const index = fields.findIndex((slot) => slot.id === id);
     update(index, { ...fields[index], [field]: value });
   };

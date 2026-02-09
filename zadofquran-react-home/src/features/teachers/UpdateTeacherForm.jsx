@@ -107,6 +107,7 @@ const UpdateTeacherForm = ({ values }) => {
         setError,
         control,
         setValue,
+        clearErrors,
     } = useForm({
         defaultValues: values,
     });
@@ -207,7 +208,7 @@ const UpdateTeacherForm = ({ values }) => {
                     {errors?.gender?.message}
                 </FormHelperText>
             </FormControl>
-            <AvailabilityInput control={control} register={register} error={errors?.availability} />
+            <AvailabilityInput control={control} register={register} error={errors?.availability} clearErrors={clearErrors} />
             <StyleInput
                 error={errors?.phone}
                 reg={{

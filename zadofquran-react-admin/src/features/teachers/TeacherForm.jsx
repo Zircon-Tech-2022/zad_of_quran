@@ -81,6 +81,7 @@ const TeacherForm = ({ teacherToEdit = null }) => {
         formState,
         control,
         getValues,
+        clearErrors,
         setError,
         setValue,
     } = useForm({
@@ -277,7 +278,7 @@ const TeacherForm = ({ teacherToEdit = null }) => {
                             fontSize: "1.6rem",
                         }}>{errors?.courses?.message}</FormHelperText>
                     </FormControl>
-                    <AvailabilityInput control={control} register={register} error={errors?.availability} />
+                    <AvailabilityInput control={control} register={register} error={errors?.availability}  clearErrors={clearErrors} />
                     <InputLabel
                         style={{
                             fontSize: "1.6rem",

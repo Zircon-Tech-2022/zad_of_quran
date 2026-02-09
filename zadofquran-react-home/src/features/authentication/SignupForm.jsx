@@ -138,6 +138,7 @@ const SignupForm = () => {
         setError,
         control,
         setValue,
+        clearErrors,
         watch,
     } = useForm({
         defaultValues: {
@@ -240,7 +241,7 @@ const SignupForm = () => {
                             fontSize: "1.6rem",
                         }}>{errors?.gender?.message}</FormHelperText>
                     </FormControl>
-                    <AvailabilityInput control={control} register={register} error={errors?.availability} watch={watch} setValue={setValue} />
+                    <AvailabilityInput control={control} register={register} error={errors?.availability} watch={watch} setValue={setValue} clearErrors={clearErrors} />
                     <FormControl>
                         <InputLabel id="courses-select-label" style={{
                             color: "var(--color-grey-0)",

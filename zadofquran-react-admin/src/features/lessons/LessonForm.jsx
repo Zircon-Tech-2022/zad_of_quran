@@ -88,6 +88,7 @@ const LessonForm = ({ lessonToEdit = null }) => {
         control,
         getValues,
         setError,
+        clearErrors,
     } = useForm({
         defaultValues: isEditSession ? lessonData.current : {},
     });
@@ -282,7 +283,7 @@ const LessonForm = ({ lessonToEdit = null }) => {
                 disabled={isWorking}
                 style={{ direction: "ltr"}}
             />
-            <AvailabilityInput control={control} register={register} error={errors?.availability} />
+            <AvailabilityInput control={control} register={register} error={errors?.availability} clearErrors={clearErrors} />
             <Controller
                 name="age"
                 control={control}
