@@ -31,7 +31,7 @@ class StoreLessonRequest extends FormRequest
             'staff_id' => ['nullable', 'exists:staff,id'],
             'course_id' => ['required', 'exists:courses,id'],
             'supervisor_id' => ['required', 'exists:users,id'],
-            'availability' => 'required|array|min:1',
+            'availability' => 'nullable|array|min:0',
             'availability.*.day' => 'required|integer|between:0,6',
             'availability.*.start_time' => 'required|date_format:H:i',
             'availability.*.end_time' => 'required|date_format:H:i|after:availability.*.start_time',

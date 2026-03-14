@@ -31,7 +31,7 @@ class RegisterRequest extends FormRequest
             'age' => 'required|integer|min:18',
             'gender' => ['required', Rule::in(['male', 'female'])],
             'courses' => 'required|array|min:1|exists:courses,id',
-            'availability' => 'required|array|min:1',
+            'availability' => 'nullable|array|min:0',
             'availability.*.day' => 'required|integer|between:0,6',
             'availability.*.start_time' => 'required|date_format:H:i',
             'availability.*.end_time' => 'required|date_format:H:i|after:availability.*.start_time',

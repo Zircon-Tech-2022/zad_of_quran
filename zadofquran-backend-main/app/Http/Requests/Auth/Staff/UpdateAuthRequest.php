@@ -29,7 +29,7 @@ class UpdateAuthRequest extends FormRequest
             'name' => ['nullable', 'string', 'min:2', 'max:255', new NumOfWords(2)],
             'phone' => 'nullable|string|phone_number|unique:staff,phone,' . $this->user()->staff->id . ',id,deleted_at,NULL',
             'age' => 'nullable|integer|min:18',
-            'availability' => 'nullable|array|min:1',
+            'availability' => 'nullable|array|min:0',
             'availability.*.day' => 'required|integer|between:0,6',
             'availability.*.start_time' => 'required|date_format:H:i',
             'availability.*.end_time' => 'required|date_format:H:i|after:availability.*.start_time',

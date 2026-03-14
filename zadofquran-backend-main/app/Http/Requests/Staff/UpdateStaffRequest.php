@@ -34,7 +34,7 @@ class UpdateStaffRequest extends FormRequest
             'age' => 'nullable|integer|min:18',
             'rate' => 'nullable|numeric|min:0|max:5',
             'display_at_home' => 'nullable|boolean',
-            'availability' => 'nullable|array|min:1',
+            'availability' => 'nullable|array|min:0',
             'availability.*.day' => 'required|integer|between:0,6',
             'availability.*.start_time' => 'required|date_format:H:i',
             'availability.*.end_time' => 'required|date_format:H:i|after:availability.*.start_time',

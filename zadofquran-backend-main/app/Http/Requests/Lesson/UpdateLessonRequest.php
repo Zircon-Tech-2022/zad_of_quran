@@ -33,7 +33,7 @@ class UpdateLessonRequest extends FormRequest
             'course_id' => ['nullable', 'exists:courses,id'],
             'supervisor_id' => ['nullable', 'exists:users,id'],
             'status' => ['nullable', Rule::in(LessonStatus::getValues())],
-            'availability' => 'nullable|array|min:1',
+            'availability' => 'nullable|array|min:0',
             'availability.*.day' => 'required|integer|between:0,6',
             'availability.*.start_time' => 'required|date_format:H:i',
             'availability.*.end_time' => 'required|date_format:H:i|after:availability.*.start_time',
