@@ -87,7 +87,20 @@ export async function updateTeacherApi(teacherData, id, token, setError) {
             if (key === "image" && value == null) {
                 continue;
             }
-            formData.append(key, value);
+            if (key === "availability" && Array.isArray(value)) {
+                value.forEach((item, index) => {
+                    formData.append(`${key}[${index}][day]`, item.day);
+                    formData.append(`${key}[${index}][start_time]`, item.start_time);
+                    formData.append(`${key}[${index}][end_time]`, item.end_time);
+                    formData.append(`${key}[${index}][timezone]`, item.timezone);
+                });
+            } else if (key === "courses" && Array.isArray(value)) {
+                value.forEach((course, index) => {
+                    formData.append(`${key}[${index}]`, course);
+                });
+            } else {
+                formData.append(key, value);
+            }
         }
         formData.append("_method", "patch");
         const res = await fetch(`${API_URL}admin/staff/${id}`, {
@@ -120,9 +133,21 @@ export async function updateTeacherApi(teacherData, id, token, setError) {
 export async function createTeacherApi(teacherData, token, setError) {
     try {
         const formData = new FormData();
-        //
         for (const [key, value] of Object.entries(teacherData)) {
-            formData.append(key, value);
+            if (key === "availability" && Array.isArray(value)) {
+                value.forEach((item, index) => {
+                    formData.append(`${key}[${index}][day]`, item.day);
+                    formData.append(`${key}[${index}][start_time]`, item.start_time);
+                    formData.append(`${key}[${index}][end_time]`, item.end_time);
+                    formData.append(`${key}[${index}][timezone]`, item.timezone);
+                });
+            } else if (key === "courses" && Array.isArray(value)) {
+                value.forEach((course, index) => {
+                    formData.append(`${key}[${index}]`, course);
+                });
+            } else {
+                formData.append(key, value);
+            }
         }
         const res = await fetch(`${API_URL}admin/staff`, {
             method: "POST",

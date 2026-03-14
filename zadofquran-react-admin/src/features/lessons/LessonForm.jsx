@@ -157,7 +157,7 @@ const LessonForm = ({ lessonToEdit = null }) => {
             });
             subscriberData.current = lessonData.current.subscriber;
         }
-    }, [isEditSession, isLoading, lessonData?.current, reset]);
+    }, [isLoading]);
 
     const isWorking = isCreating || isEditing || isLoadingSomething || isLoading; // loading state
 

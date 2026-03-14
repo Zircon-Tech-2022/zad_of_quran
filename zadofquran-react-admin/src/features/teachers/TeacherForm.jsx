@@ -123,7 +123,7 @@ const TeacherForm = ({ teacherToEdit = null }) => {
             reset(teacherData.current);
             setSelectedCourses(teacherData.current.courses.map((item) => item.id));
         }
-    }, [isEditSession, isLoading, teacherData, reset]);
+    }, [isLoading]);
 
     const isWorking = isCreating || isEditing; // loading state
 

@@ -33,7 +33,7 @@ const ProfileInfo = ({ user }) => {
                         <Typography style={{ marginTop: "5px" }} variant="h6">
                             المؤهلات
                         </Typography>
-                        {sanitizedHTML ? <div dangerouslySetInnerHTML={{ __html: sanitizedHTML }} /> : "غير متوفر"}
+                        {sanitizedHTML && sanitizedHTML !== 'null' ? <div dangerouslySetInnerHTML={{ __html: sanitizedHTML }} /> : "غير متوفر"}
                     </Grid>
                 </Grid>
             </CardContent>

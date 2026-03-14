@@ -1,8 +1,7 @@
 import React from "react";
 import Table from "../../ui/table/Table";
 import { Cell } from "../../ui/table/Cell";
-import { TableImg } from "../../ui/table/TableImg";
-import { Menu, MenuItem, Rating, Typography } from "@mui/material";
+import { Avatar, Menu, MenuItem, Rating, Typography } from "@mui/material";
 import { BsTrash3Fill } from "react-icons/bs";
 import { BiPencil } from "react-icons/bi";
 import { IoReload } from "react-icons/io5";
@@ -95,7 +94,7 @@ const TeacherRow = ({ teacher, num }) => {
                 {locale === "ar" && <PinkCell>عرب</PinkCell>}
                 {locale === "en" && <OrangeCell>اعاجم</OrangeCell>}
             </Cell>
-            <TableImg src={image} />
+            <Avatar alt={name} src={image} sx={{ width: 80, height: 80 }} />
             <Rating
                 style={{ direction: "ltr" }}
                 precision={0.5}
